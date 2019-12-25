@@ -1,6 +1,7 @@
 # Project exclude paths
-/crawler/target/
-/domain/target/
-/J-ESI/target/
-/universe/target/
-/universe-client/target/
+target/
+/universe/src/main/json/
+
+# IDE exclude paths
+/.idea/
+.iml
