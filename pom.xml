@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.ractoc.eve</groupId>
+    <artifactId>MineBuildSell</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <modules>
+        <module>J-ESI</module>
+        <module>crawler</module>
+        <module>universe</module>
+        <module>domain</module>
+        <module>universe-client</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-plugin-version>1.0.0</maven-plugin-version>
+
+        <hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
+
+        <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
+        <jackson-datatype.version>2.9.9</jackson-datatype.version>
+        <speedment.version>3.1.15</speedment.version>
+        <mysql.version>8.0.17</mysql.version>
+        <springfox-swagger.version>2.9.2</springfox-swagger.version>
+
+        <jersey-version>2.29.1</jersey-version>
+        <swagger-annotations-version>1.6.0</swagger-annotations-version>
+        <swagger-maven-plugin-version>3.1.8</swagger-maven-plugin-version>
+        <jackson-version>2.10.1</jackson-version>
+        <jackson-databind-nullable-version>0.2.1</jackson-databind-nullable-version>
+        <junit-version>4.8.1</junit-version>
+        <findbugs-version>3.0.2</findbugs-version>
+
+        <lombok.version>1.18.8</lombok.version>
+        <mapstruct.version>1.3.0.Final</mapstruct.version>
+
+        <mariadb4j.version>2.3.0</mariadb4j.version>
+        <mariadb-client.version>2.4.2</mariadb-client.version>
+
+    </properties>
+
+    <dependencies>
+        <!-- common dependecies -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator-annotation-processor</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
+
+        <!-- compile dependencies -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+
+        <!-- interface documentation dependencies -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox-swagger.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox-swagger.version}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${mapstruct.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

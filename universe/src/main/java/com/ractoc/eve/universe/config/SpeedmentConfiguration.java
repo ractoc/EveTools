@@ -1,0 +1,91 @@
+package com.ractoc.eve.universe.config;
+
+import com.ractoc.eve.universe.db.UniverseApplication;
+import com.ractoc.eve.universe.db.UniverseApplicationBuilder;
+import com.ractoc.eve.universe.db.universe.eve_universe.region.RegionManager;
+import com.ractoc.eve.universe.db.universe.eve_universe.constellation.ConstellationManager;
+import com.speedment.runtime.core.component.transaction.TransactionComponent;
+import com.speedment.runtime.core.component.transaction.TransactionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+
+@Configuration
+public class SpeedmentConfiguration {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpeedmentConfiguration.class);
+
+    @Value("${dbms.host}")
+    private String host;
+    @Value("${dbms.port}")
+    private int port;
+    @Value("${dbms.schema}")
+    private String schema;
+    @Value("${dbms.username}")
+    private String username;
+    @Value("${dbms.password}")
+    private String password;
+    @Value("${dbms.collation}")
+    private String collation;
+    @Value("${dbms.collation.binary}")
+    private String collationBinary;
+    @Value("${debug}")
+    private boolean debug;
+
+    @Bean
+    public UniverseApplication getBackendApplication() {
+        if (debug) {
+            LOGGER.debug("connection parameters");
+            LOGGER.debug("host: {}", host);
+            LOGGER.debug("port: {}", port);
+            LOGGER.debug("schema: {}", schema);
+            LOGGER.debug("collation: {}", collation);
+            LOGGER.debug("collationBinary: {}", collationBinary);
+            return new UniverseApplicationBuilder()
+                    .withIpAddress(host)
+                    .withPort(port)
+                    .withUsername(username)
+                    .withPassword(password)
+                    .withSchema(schema)
+                    .withParam("db.mysql.collationName", collation)
+                    .withParam("db.mysql.binaryCollationName", collationBinary)
+                    .withLogging(UniverseApplicationBuilder.LogType.STREAM)
+                    .withLogging(UniverseApplicationBuilder.LogType.REMOVE)
+                    .withLogging(UniverseApplicationBuilder.LogType.PERSIST)
+                    .withLogging(UniverseApplicationBuilder.LogType.UPDATE)
+                    .build();
+        }
+        return new UniverseApplicationBuilder()
+                .withIpAddress(host)
+                .withPort(port)
+                .withUsername(username)
+                .withPassword(password)
+                .withSchema(schema)
+                .withParam("db.mysql.collationName", collation)
+                .withParam("db.mysql.binaryCollationName", collationBinary)
+                .build();
+    }
+
+    @Bean
+    public TransactionHandler getTransactionHandler(UniverseApplication app) {
+        return app.getOrThrow(TransactionComponent.class).createTransactionHandler();
+    }
+
+    @Bean
+    public RegionManager getRegionManager(UniverseApplication app) {
+        return app.getOrThrow(RegionManager.class);
+    }
+
+    @Bean
+    public ConstellationManager getConstellationManager(UniverseApplication app) {
+        return app.getOrThrow(ConstellationManager.class);
+    }
+
+    @Bean
+    public Jackson2ObjectMapperBuilder jacksonBuilder() {
+        return new Jackson2ObjectMapperBuilder().indentOutput(true);
+    }
+}

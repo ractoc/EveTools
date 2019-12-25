@@ -1,0 +1,6 @@
+# Project exclude paths
+/crawler/target/
+/domain/target/
+/J-ESI/target/
+/universe/target/
+/universe-client/target/
