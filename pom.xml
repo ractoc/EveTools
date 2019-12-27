@@ -47,6 +47,8 @@
         <mariadb4j.version>2.3.0</mariadb4j.version>
         <mariadb-client.version>2.4.2</mariadb-client.version>
 
+        <jaxb-substitute.api.version>1.0.4.Final</jaxb-substitute.api.version>
+
     </properties>
 
     <dependencies>
