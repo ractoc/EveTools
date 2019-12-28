@@ -1,5 +1,6 @@
 package com.ractoc.eve.crawler.processor;
 
+import com.ractoc.eve.crawler.mapper.ConstellationMapper;
 import com.ractoc.eve.domain.universe.ConstellationModel;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.UniverseApi;
@@ -22,9 +23,7 @@ public class ConstellationItemProcessor implements ItemProcessor<Integer, Conste
     private ConstellationModel fetchConstellationFromAPI(Integer constellationId) {
         try {
             GetUniverseConstellationsConstellationIdOk result = uApi.getUniverseConstellationsConstellationId(constellationId, "en-us", null, null, "en-us");
-            ConstellationModel model = new ConstellationModel(result.getConstellationId(), result.getName(), result.getRegionId());
-            System.out.println("constellation: " + model);
-            return model;
+            return ConstellationMapper.INSTANCE.uApiToModel(result);
         } catch (ApiException e) {
             e.printStackTrace();
             return null;

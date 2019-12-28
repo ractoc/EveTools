@@ -2,8 +2,9 @@ package com.ractoc.eve.universe.config;
 
 import com.ractoc.eve.universe.db.UniverseApplication;
 import com.ractoc.eve.universe.db.UniverseApplicationBuilder;
-import com.ractoc.eve.universe.db.universe.eve_universe.region.RegionManager;
 import com.ractoc.eve.universe.db.universe.eve_universe.constellation.ConstellationManager;
+import com.ractoc.eve.universe.db.universe.eve_universe.region.RegionManager;
+import com.ractoc.eve.universe.db.universe.eve_universe.solarsystem.SolarsystemManager;
 import com.speedment.runtime.core.component.transaction.TransactionComponent;
 import com.speedment.runtime.core.component.transaction.TransactionHandler;
 import org.slf4j.Logger;
@@ -82,6 +83,11 @@ public class SpeedmentConfiguration {
     @Bean
     public ConstellationManager getConstellationManager(UniverseApplication app) {
         return app.getOrThrow(ConstellationManager.class);
+    }
+
+    @Bean
+    public SolarsystemManager getSolarsystemManager(UniverseApplication app) {
+        return app.getOrThrow(SolarsystemManager.class);
     }
 
     @Bean

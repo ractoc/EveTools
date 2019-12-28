@@ -1,5 +1,6 @@
 package com.ractoc.eve.crawler.processor;
 
+import com.ractoc.eve.crawler.mapper.RegionMapper;
 import com.ractoc.eve.domain.universe.RegionModel;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.UniverseApi;
@@ -22,7 +23,7 @@ public class RegionItemProcessor implements ItemProcessor<Integer, RegionModel> 
     private RegionModel fetchRegionFromAPI(Integer regionId) {
         try {
             GetUniverseRegionsRegionIdOk result = uApi.getUniverseRegionsRegionId(regionId, "en-us", null, null, "en-us");
-            return new RegionModel(result.getRegionId(), result.getName());
+            return RegionMapper.INSTANCE.uApiToModel(result);
         } catch (ApiException e) {
             e.printStackTrace();
             return null;
