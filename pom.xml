@@ -15,6 +15,7 @@
         <module>universe</module>
         <module>domain</module>
         <module>universe-client</module>
+        <module>angular</module>
     </modules>
 
     <properties>

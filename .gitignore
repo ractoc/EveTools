@@ -1,6 +1,8 @@
 # Project exclude paths
 target/
 /universe/src/main/json/
+dist/
+node_modules/
 
 # IDE exclude paths
 /.idea/
