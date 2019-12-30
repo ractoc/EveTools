@@ -14,43 +14,26 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>com.github.eirslett</groupId>
-        <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.8.0</version>
-        <configuration>
-          <installDirectory>target</installDirectory>
-          <workingDirectory>MineBuildSell</workingDirectory>
-        </configuration>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
         <executions>
           <execution>
-            <id>install node and npm</id>
+            <phase>initialize</phase>
             <goals>
-              <goal>install-node-and-npm</goal>
+              <goal>exec</goal>
             </goals>
             <configuration>
-              <nodeVersion>v12.13.0</nodeVersion>
-              <npmVersion>6.13.0</npmVersion>
-            </configuration>
-          </execution>
-          <execution>
-            <id>npm install</id>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <arguments>install</arguments>
-            </configuration>
-          </execution>
-          <execution>
-            <id>npm run build</id>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <arguments>run build</arguments>
+              <arguments>
+                <argument>install</argument>
+              </arguments>
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <executable>npm</executable>
+          <workingDirectory>MineBuildSell</workingDirectory>
+        </configuration>
       </plugin>
     </plugins>
   </build>
