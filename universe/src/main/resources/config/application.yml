@@ -1,0 +1,28 @@
+# Speedment Settings
+dbms:
+  host: localhost
+  port: 9876
+  schema: eve_universe
+  username: eve
+  password: eve
+  collation: utf8mb4_general_ci
+  collation.binary: utf8mb4_bin
+
+# Server Settings
+server:
+  port: 8585
+  servlet:
+    contextPath: /universe
+
+# enable debug mode
+debug: true
+
+# security setup for EVE SSO
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          eve:
+            client-id: cf33fd256e884c81b634bf74ca21612a
+            client-secret: SEmd2uiGUpW0Flvxaqe1XiTV6M6Ii8GvFd4dyyZy
