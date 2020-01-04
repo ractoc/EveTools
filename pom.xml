@@ -54,6 +54,18 @@
     </properties>
 
     <dependencies>
+        <!-- common dependecies -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator-annotation-processor</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
+
         <!-- compile dependencies -->
         <dependency>
             <groupId>org.projectlombok</groupId>
