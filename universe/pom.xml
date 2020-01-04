@@ -12,6 +12,17 @@
     <artifactId>universe</artifactId>
 
     <dependencies>
+        <!-- common dependecies -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator-annotation-processor</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
 
         <!-- Project dependencies -->
         <dependency>

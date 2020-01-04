@@ -16,6 +16,7 @@
         <module>domain</module>
         <module>universe-client</module>
         <module>angular</module>
+        <module>user</module>
     </modules>
 
     <properties>
@@ -53,18 +54,6 @@
     </properties>
 
     <dependencies>
-        <!-- common dependecies -->
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate-validator.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator-annotation-processor</artifactId>
-            <version>${hibernate-validator.version}</version>
-        </dependency>
-
         <!-- compile dependencies -->
         <dependency>
             <groupId>org.projectlombok</groupId>
