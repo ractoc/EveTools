@@ -1,86 +1,102 @@
 package com.ractoc.eve.user.controller;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jwt.SignedJWT;
-import com.ractoc.eve.user.model.AccessToken;
-import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.glassfish.jersey.moxy.json.MoxyJsonConfig;
+import com.ractoc.eve.user.handler.UserHandler;
+import com.ractoc.eve.user.model.OAuthToken;
+import com.ractoc.eve.user.validator.AccessValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.*;
-import javax.ws.rs.ext.ContextResolver;
-import java.io.IOException;
-import java.net.URL;
-import java.text.ParseException;
-import java.util.UUID;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+import java.nio.file.AccessDeniedException;
 
 @Controller
 public class UserWebController {
+
+    public static final String REDIRECT = "redirect:";
+
+    @Autowired
+    private UserHandler handler;
+    @Autowired
+    private AccessValidator accessValidator;
+    @Autowired
+    private Client client;
+
+    @Value("${sso.frontend-url}")
+    private String frontendUrl;
     @Value("${sso.client-url}")
     private String clientUrl;
     @Value("${sso.client-id}")
     private String clientId;
-    @Value("${sso.client-secret}")
-    private String clientSecret;
     @Value("${sso.client-scopes}")
     private String clientScopes;
 
-    @GetMapping(value="/launchSignOn")
-    public String launchSignOn() {
+    @GetMapping(value = "/launchSignOn")
+    public String launchSignOn(HttpServletRequest request, @CookieValue(value = "eve-state", defaultValue = "") String eveState) throws AccessDeniedException {
+        if (eveState.isEmpty()) {
+            return initiateLogin(request);
+        }
+        return refreshToken(request, eveState);
+    }
+
+    @GetMapping(value = "/eveCallBack")
+    public String eveCallBack(HttpServletRequest request, HttpServletResponse response, @RequestParam String code, @RequestParam(name = "state") String eveState) throws AccessDeniedException {
+        accessValidator.currentState(eveState);
+        accessValidator.validatedIP(eveState, RequestUtils.getRemoteIP(request));
+        MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
+        formData.add("grant_type", "authorization_code");
+        formData.add("code", code);
+        OAuthToken accessToken = client.target("https://login.eveonline.com/v2/oauth/token")
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.form(formData), new GenericType<OAuthToken>() {
+                });
+
+        handler.storeEveUserRegistration(eveState, accessToken, RequestUtils.getRemoteIP(request));
+
+        response.addCookie(new Cookie("eve-state", eveState));
+
+        return REDIRECT + frontendUrl;
+    }
+
+    private String initiateLogin(HttpServletRequest request) {
+        String eveState = handler.initiateLogin(RequestUtils.getRemoteIP(request));
         return "redirect:https://login.eveonline.com/v2/oauth/authorize/"
                 + "?response_type=code"
                 + "&redirect_uri=" + clientUrl
                 + "&client_id=" + clientId
                 + "&scope=" + clientScopes
-                + "&state=" + UUID.randomUUID().toString();
+                + "&state=" + eveState;
     }
 
-    @GetMapping(value="/eveCallBack")
-    public String eveCallBack(@RequestParam String code, @RequestParam String state) {
-        // TODO: verify state
-        MoxyJsonConfig moxyJsonConfig = new MoxyJsonConfig();
-        ContextResolver<MoxyJsonConfig> jsonConfigResolver = moxyJsonConfig.resolver();
-        Feature basicAuth = HttpAuthenticationFeature.basic(clientId, clientSecret);
-        Client client = ClientBuilder.newBuilder()
-                .register(basicAuth)
-                .register(jsonConfigResolver)
-                .build();
-        MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
-        formData.add("grant_type", "authorization_code");
-        formData.add("code", code);
-        AccessToken accessToken = client.target("https://login.eveonline.com/v2/oauth/token")
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.form(formData), new GenericType<AccessToken>(){});
-
-        // TODO: actually do something with the decoded JWT
-        decodeJwt(accessToken.getAccess_token());
-
-        String token = UUID.randomUUID().toString();
-        return "redirect:http://localhost/?token=" + token;
-    }
-
-    // TODO: introduce proper error handling
-    public void decodeJwt(String jwtToken) {
+    private String refreshToken(HttpServletRequest request, String eveState) throws AccessDeniedException {
         try {
-            JWKSet publicKeys = JWKSet.load(new URL("https://login.eveonline.com/oauth/jwks "));
-            RSAKey rsaPublicJWK = (RSAKey) publicKeys.getKeyByKeyId("JWT-Signature-Key").toPublicJWK();
-            SignedJWT signedJWT = SignedJWT.parse(jwtToken);
-            JWSVerifier verifier = new RSASSAVerifier(rsaPublicJWK);
-            if (!signedJWT.verify(verifier)) {
-                throw new IOException("JWT verification failure");
-            }
-        } catch (ParseException | IOException | JOSEException e) {
-            e.printStackTrace();
+            accessValidator.validatedIP(eveState, RequestUtils.getRemoteIP(request));
+        } catch (AccessDeniedException e) {
+            return initiateLogin(request);
         }
+        String refreshToken = handler.getRefreshTokenForState(eveState);
+        MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
+        formData.add("grant_type", "refresh_token");
+        formData.add("refresh_token", refreshToken);
+        OAuthToken oAuthToken = client.target("https://login.eveonline.com/v2/oauth/token")
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.form(formData), new GenericType<OAuthToken>() {
+                });
+
+        handler.storeEveUserRegistration(eveState, oAuthToken, RequestUtils.getRemoteIP(request));
+
+        return REDIRECT + frontendUrl;
     }
+
 }
