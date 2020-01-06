@@ -1,6 +1,7 @@
 # Project exclude paths
 target/
 /universe/src/main/json/
+/user/src/main/json
 dist/
 node_modules/
 
