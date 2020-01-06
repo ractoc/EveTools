@@ -1,0 +1,123 @@
+{
+  "config" : {
+    "speedmentVersion" : "Speedment:3.1.15",
+    "companyName" : "ractoc.com",
+    "appId" : "8443134a-d352-4183-b553-6861ff2b645f",
+    "name" : "user",
+    "packageLocation" : "target/generated-sources/java",
+    "packageName" : "com.ractoc.eve.user.db",
+    "id" : "user",
+    "enabled" : true,
+    "dbmses" : [
+      {
+        "port" : 9876,
+        "schemas" : [
+          {
+            "tables" : [
+              {
+                "primaryKeyColumns" : [
+                  {
+                    "name" : "eve_state",
+                    "id" : "eve_state",
+                    "ordinalPosition" : 1
+                  }
+                ],
+                "indexes" : [
+                  {
+                    "unique" : true,
+                    "name" : "name_UNIQUE",
+                    "indexColumns" : [
+                      {
+                        "orderType" : "ASC",
+                        "name" : "name",
+                        "id" : "name",
+                        "ordinalPosition" : 1
+                      }
+                    ],
+                    "id" : "name_UNIQUE"
+                  },
+                  {
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
+                      {
+                        "orderType" : "ASC",
+                        "name" : "eve_state",
+                        "id" : "eve_state",
+                        "ordinalPosition" : 1
+                      }
+                    ],
+                    "id" : "PRIMARY"
+                  }
+                ],
+                "isView" : false,
+                "columns" : [
+                  {
+                    "databaseType" : "java.lang.String",
+                    "nullable" : false,
+                    "name" : "eve_state",
+                    "id" : "eve_state",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "databaseType" : "java.lang.String",
+                    "nullable" : false,
+                    "name" : "ip_address",
+                    "id" : "ip_address",
+                    "ordinalPosition" : 2
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "nullable" : true,
+                    "name" : "characterId",
+                    "id" : "characterId",
+                    "ordinalPosition" : 3
+                  },
+                  {
+                    "databaseType" : "java.lang.String",
+                    "nullable" : true,
+                    "name" : "name",
+                    "id" : "name",
+                    "ordinalPosition" : 4
+                  },
+                  {
+                    "databaseType" : "java.lang.String",
+                    "nullable" : true,
+                    "name" : "refresh_token",
+                    "id" : "refresh_token",
+                    "ordinalPosition" : 5
+                  },
+                  {
+                    "databaseType" : "java.sql.Timestamp",
+                    "nullable" : true,
+                    "name" : "last_refresh",
+                    "id" : "last_refresh",
+                    "ordinalPosition" : 6,
+                    "typeMapper" : "com.speedment.runtime.typemapper.time.TimestampToLocalDateTimeMapper"
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "nullable" : true,
+                    "name" : "expires_in",
+                    "id" : "expires_in",
+                    "ordinalPosition" : 7
+                  }
+                ],
+                "name" : "user",
+                "id" : "user"
+              }
+            ],
+            "name" : "eve_user",
+            "id" : "eve_user",
+            "enabled" : true
+          }
+        ],
+        "name" : "user",
+        "typeName" : "MySQL",
+        "id" : "user",
+        "enabled" : true,
+        "username" : "eve"
+      }
+    ]
+  }
+}

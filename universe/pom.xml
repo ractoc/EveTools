@@ -54,7 +54,6 @@
             <version>5.2.1.RELEASE</version>
         </dependency>
 
-
         <!-- database dependencies -->
         <dependency>
             <groupId>com.speedment</groupId>

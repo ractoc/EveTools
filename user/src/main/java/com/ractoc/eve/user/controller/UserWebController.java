@@ -1,8 +1,8 @@
 package com.ractoc.eve.user.controller;
 
 import com.ractoc.eve.user.handler.UserHandler;
+import com.ractoc.eve.user.model.AccessDeniedException;
 import com.ractoc.eve.user.model.OAuthToken;
-import com.ractoc.eve.user.validator.AccessValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -19,19 +19,14 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
-import java.nio.file.AccessDeniedException;
 
 @Controller
 public class UserWebController {
 
     public static final String REDIRECT = "redirect:";
 
-    @Autowired
-    private UserHandler handler;
-    @Autowired
-    private AccessValidator accessValidator;
-    @Autowired
-    private Client client;
+    private final UserHandler handler;
+    private final Client client;
 
     @Value("${sso.frontend-url}")
     private String frontendUrl;
@@ -42,8 +37,14 @@ public class UserWebController {
     @Value("${sso.client-scopes}")
     private String clientScopes;
 
+    @Autowired
+    public UserWebController(UserHandler handler, Client client) {
+        this.handler = handler;
+        this.client = client;
+    }
+
     @GetMapping(value = "/launchSignOn")
-    public String launchSignOn(HttpServletRequest request, @CookieValue(value = "eve-state", defaultValue = "") String eveState) throws AccessDeniedException {
+    public String launchSignOn(HttpServletRequest request, @CookieValue(value = "eve-state", defaultValue = "") String eveState) {
         if (eveState.isEmpty()) {
             return initiateLogin(request);
         }
@@ -51,9 +52,9 @@ public class UserWebController {
     }
 
     @GetMapping(value = "/eveCallBack")
-    public String eveCallBack(HttpServletRequest request, HttpServletResponse response, @RequestParam String code, @RequestParam(name = "state") String eveState) throws AccessDeniedException {
-        accessValidator.currentState(eveState);
-        accessValidator.validatedIP(eveState, RequestUtils.getRemoteIP(request));
+    public String eveCallBack(HttpServletRequest request, HttpServletResponse response, @RequestParam String code, @RequestParam(name = "state") String eveState) {
+        validatedIP(eveState, RequestUtils.getRemoteIP(request));
+
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
         formData.add("grant_type", "authorization_code");
         formData.add("code", code);
@@ -79,9 +80,9 @@ public class UserWebController {
                 + "&state=" + eveState;
     }
 
-    private String refreshToken(HttpServletRequest request, String eveState) throws AccessDeniedException {
+    private String refreshToken(HttpServletRequest request, String eveState) {
         try {
-            accessValidator.validatedIP(eveState, RequestUtils.getRemoteIP(request));
+            validatedIP(eveState, RequestUtils.getRemoteIP(request));
         } catch (AccessDeniedException e) {
             return initiateLogin(request);
         }
@@ -97,6 +98,12 @@ public class UserWebController {
         handler.storeEveUserRegistration(eveState, oAuthToken, RequestUtils.getRemoteIP(request));
 
         return REDIRECT + frontendUrl;
+    }
+
+    private void validatedIP(String eveState, String remoteIP) {
+        if (!handler.getValidIpByState(eveState).equals(remoteIP)) {
+            throw new AccessDeniedException("Unvalidated IP-Address");
+        }
     }
 
 }

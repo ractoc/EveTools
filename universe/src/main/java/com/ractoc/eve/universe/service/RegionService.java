@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 
 import static com.ractoc.eve.universe.db.universe.eve_universe.region.generated.GeneratedRegion.ID;
 
-
 @Service
 public class RegionService {
 

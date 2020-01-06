@@ -7,67 +7,91 @@ import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.SignedJWT;
+import com.ractoc.eve.domain.user.UserModel;
+import com.ractoc.eve.user.db.user.eve_user.user.User;
+import com.ractoc.eve.user.db.user.eve_user.user.UserImpl;
+import com.ractoc.eve.user.model.AccessDeniedException;
 import com.ractoc.eve.user.model.EveJwtContent;
-import com.ractoc.eve.user.model.EveUserRegistration;
 import com.ractoc.eve.user.model.OAuthToken;
+import com.ractoc.eve.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.AccessDeniedException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Optional;
 
 @Component
 public class UserHandler {
 
-    // TODO: save in database via Service
-    private EveUserRegistration userRegistration;
-    public EveUserRegistration getEveUserRegistration(String eveState) {
-        return userRegistration;
+    private final UserService service;
+
+    @Autowired
+    public UserHandler(UserService service) {
+        this.service = service;
     }
 
     public String initiateLogin(String remoteIP) {
-        System.out.println("request coming from: " + remoteIP);
-        userRegistration = new EveUserRegistration();
-        userRegistration.setEveState(UUID.randomUUID().toString());
-        userRegistration.setIpAddress(remoteIP);
-        // TODO: Save userRegistration
-        return userRegistration.getEveState();
+        return service.initializeUser(remoteIP);
     }
 
     public String getRefreshTokenForState(String eveState) {
-        return getEveUserRegistration(eveState).getRefreshToken();
+        return getUser(eveState)
+                .map(User::getRefreshToken)
+                .orElseThrow(() -> new AccessDeniedException(eveState))
+                .orElseThrow(() -> new AccessDeniedException(eveState));
     }
 
-    public void storeEveUserRegistration(String eveState, OAuthToken oAuthToken, String remoteIp) throws AccessDeniedException {
-        userRegistration = convertOAuthTokenToEveUserRegistration(eveState, oAuthToken, remoteIp);
-        // TODO: Update userRegistration
+    public void storeEveUserRegistration(String eveState, OAuthToken oAuthToken, String remoteIp) {
+        service.updateUser(convertOAuthTokenToUser(eveState, oAuthToken, remoteIp));
+    }
+
+    public String getValidIpByState(String eveState) {
+        return getUser(eveState)
+                .map(User::getIpAddress)
+                .orElseThrow(() -> new AccessDeniedException(eveState));
+    }
+
+    public UserModel getUserByState(String eveState) {
+        return getUser(eveState)
+                .map(user ->
+                        UserModel.builder()
+                                .charId(user.getCharacterId().orElseThrow(() -> new AccessDeniedException(eveState)))
+                                .characterName(user.getName().orElseThrow(() -> new AccessDeniedException(eveState)))
+                                .eveState(eveState)
+                                .ipAddress(user.getIpAddress())
+                                .expiresAt(user.getLastRefresh().orElseThrow(() -> new AccessDeniedException(eveState))
+                                        .plusSeconds(user.getExpiresIn().orElseThrow(() -> new AccessDeniedException(eveState))))
+                                .build())
+                .orElseThrow(() -> new AccessDeniedException(eveState));
+    }
+
+    private Optional<User> getUser(String eveState) {
+        return service.getUser(eveState);
     }
 
     private int extractCharacterIdFromSub(String sub) {
         String charId = sub.split(":")[2];
-        System.out.println("charId: " + charId);
         return Integer.parseInt(charId);
     }
 
-    private EveUserRegistration convertOAuthTokenToEveUserRegistration(String eveState, OAuthToken oAuthToken, String remoteIp) throws AccessDeniedException {
+    private User convertOAuthTokenToUser(String eveState, OAuthToken oAuthToken, String remoteIp) {
         EveJwtContent jwtContent = decodeJwt(oAuthToken.getAccess_token());
-        EveUserRegistration userReg = new EveUserRegistration();
-        userReg.setCharacterId(extractCharacterIdFromSub(jwtContent.getSub()));
-        userReg.setName(jwtContent.getName());
-        userReg.setIpAddress(remoteIp);
-        userReg.setEveState(eveState);
-        userReg.setRefreshToken(oAuthToken.getRefresh_token());
-        userReg.setLastrefresh(LocalDateTime.now());
-        userReg.setExpiresIn(oAuthToken.getExpires_in());
-        System.out.println("userRegistration: " + userReg);
-        return userReg;
+        User user = new UserImpl();
+        user.setCharacterId(extractCharacterIdFromSub(jwtContent.getSub()));
+        user.setName(jwtContent.getName());
+        user.setIpAddress(remoteIp);
+        user.setEveState(eveState);
+        user.setRefreshToken(oAuthToken.getRefresh_token());
+        user.setLastRefresh(LocalDateTime.now());
+        user.setExpiresIn(oAuthToken.getExpires_in());
+        return user;
     }
 
 
-    private EveJwtContent decodeJwt(String jwtToken) throws AccessDeniedException {
+    private EveJwtContent decodeJwt(String jwtToken) {
         try {
             JWKSet publicKeys = JWKSet.load(new URL("https://login.eveonline.com/oauth/jwks "));
             RSAKey rsaPublicJWK = (RSAKey) publicKeys.getKeyByKeyId("JWT-Signature-Key").toPublicJWK();
@@ -78,7 +102,6 @@ public class UserHandler {
             }
             return new ObjectMapper().readValue(signedJWT.getJWTClaimsSet().toJSONObject().toJSONString(), EveJwtContent.class);
         } catch (ParseException | IOException | JOSEException e) {
-            e.printStackTrace();
             throw new AccessDeniedException("Invalid JWT token");
         }
     }

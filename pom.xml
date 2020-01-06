@@ -17,6 +17,7 @@
         <module>universe-client</module>
         <module>angular</module>
         <module>user</module>
+        <module>user-client</module>
     </modules>
 
     <properties>
