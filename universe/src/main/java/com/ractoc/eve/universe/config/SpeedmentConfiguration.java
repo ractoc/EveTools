@@ -1,5 +1,7 @@
 package com.ractoc.eve.universe.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.ractoc.eve.universe.db.UniverseApplication;
 import com.ractoc.eve.universe.db.UniverseApplicationBuilder;
 import com.ractoc.eve.universe.db.universe.eve_universe.constellation.ConstellationManager;
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 @Configuration
@@ -90,8 +93,16 @@ public class SpeedmentConfiguration {
         return app.getOrThrow(SolarsystemManager.class);
     }
 
+//    @Bean
+//    public Jackson2ObjectMapperBuilder jacksonBuilder() {
+//        return new Jackson2ObjectMapperBuilder().modulesToInstall(new JavaTimeModule()).indentOutput(true);
+//    }
+
     @Bean
-    public Jackson2ObjectMapperBuilder jacksonBuilder() {
-        return new Jackson2ObjectMapperBuilder().indentOutput(true);
+    @Primary
+    public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
+        ObjectMapper objectMapper = builder.build();
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        return objectMapper;
     }
 }

@@ -3,8 +3,6 @@ package com.ractoc.eve.domain.user;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,7 +15,7 @@ public class UserModel {
     private int charId;
     private String characterName;
     private String eveState;
-    private LocalDateTime expiresAt;
+    private long expiresAt;
     private String ipAddress;
 
 }

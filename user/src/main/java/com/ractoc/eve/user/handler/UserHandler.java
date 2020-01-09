@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 @Component
@@ -55,7 +56,7 @@ public class UserHandler {
     }
 
     public UserModel getUserByState(String eveState) {
-        return getUser(eveState)
+        UserModel userModel = getUser(eveState)
                 .map(user ->
                         UserModel.builder()
                                 .charId(user.getCharacterId().orElseThrow(() -> new AccessDeniedException(eveState)))
@@ -63,9 +64,12 @@ public class UserHandler {
                                 .eveState(eveState)
                                 .ipAddress(user.getIpAddress())
                                 .expiresAt(user.getLastRefresh().orElseThrow(() -> new AccessDeniedException(eveState))
-                                        .plusSeconds(user.getExpiresIn().orElseThrow(() -> new AccessDeniedException(eveState))))
+                                        .toInstant(ZoneOffset.UTC).toEpochMilli() +
+                                        user.getExpiresIn().orElseThrow(() -> new AccessDeniedException(eveState)))
                                 .build())
                 .orElseThrow(() -> new AccessDeniedException(eveState));
+        System.out.println("user: " + userModel);
+        return userModel;
     }
 
     private Optional<User> getUser(String eveState) {
