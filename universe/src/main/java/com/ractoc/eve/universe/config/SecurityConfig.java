@@ -19,7 +19,7 @@ import org.springframework.security.web.util.matcher.*;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class OAuth2LoginSecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final RequestMatcher PROTECTED_URLS = new AndRequestMatcher(
             new AntPathRequestMatcher("/**"),
@@ -28,7 +28,7 @@ public class OAuth2LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserAuthenticationProvider provider;
 
-    public OAuth2LoginSecurityConfig(final UserAuthenticationProvider authenticationProvider) {
+    public SecurityConfig(final UserAuthenticationProvider authenticationProvider) {
         this.provider = authenticationProvider;
     }
 

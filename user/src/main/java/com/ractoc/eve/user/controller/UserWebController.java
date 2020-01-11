@@ -67,7 +67,7 @@ public class UserWebController {
 
         response.addCookie(new Cookie("eve-state", eveState));
 
-        return REDIRECT + frontendUrl;
+        return REDIRECT + frontendUrl + "/" + eveState;
     }
 
     private String initiateLogin(HttpServletRequest request) {
@@ -81,11 +81,6 @@ public class UserWebController {
     }
 
     private String refreshToken(HttpServletRequest request, String eveState) {
-        try {
-            validatedIP(eveState, RequestUtils.getRemoteIP(request));
-        } catch (AccessDeniedException e) {
-            return initiateLogin(request);
-        }
         String refreshToken = handler.getRefreshTokenForState(eveState);
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
         formData.add("grant_type", "refresh_token");
@@ -97,7 +92,7 @@ public class UserWebController {
 
         handler.storeEveUserRegistration(eveState, oAuthToken, RequestUtils.getRemoteIP(request));
 
-        return REDIRECT + frontendUrl;
+        return REDIRECT + frontendUrl + "/" + eveState;
     }
 
     private void validatedIP(String eveState, String remoteIP) {

@@ -42,7 +42,7 @@ public class UserAuthenticationProvider extends AbstractUserDetailsAuthenticatio
 
     private UserModel getUserFromApi(String eveState) {
         try {
-            return userResourceApi.getUser(eveState).getUser();
+            return userResourceApi.getUserDetails(eveState);
         } catch (ApiException e) {
             throw new UsernameNotFoundException("Cannot find user with authentication eveState=" + eveState);
         }

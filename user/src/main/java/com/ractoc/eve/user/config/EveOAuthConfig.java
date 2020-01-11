@@ -12,7 +12,7 @@ import javax.ws.rs.core.Feature;
 import javax.ws.rs.ext.ContextResolver;
 
 @Configuration
-public class OAuthConfig {
+public class EveOAuthConfig {
 
     @Value("${sso.client-id}")
     private String clientId;

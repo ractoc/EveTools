@@ -56,7 +56,7 @@ public class UserHandler {
     }
 
     public UserModel getUserByState(String eveState) {
-        UserModel userModel = getUser(eveState)
+        return getUser(eveState)
                 .map(user ->
                         UserModel.builder()
                                 .charId(user.getCharacterId().orElseThrow(() -> new AccessDeniedException(eveState)))
@@ -68,8 +68,17 @@ public class UserHandler {
                                         user.getExpiresIn().orElseThrow(() -> new AccessDeniedException(eveState)))
                                 .build())
                 .orElseThrow(() -> new AccessDeniedException(eveState));
-        System.out.println("user: " + userModel);
-        return userModel;
+    }
+
+    public UserModel getUserNameByState(String eveState) {
+        return getUser(eveState)
+                .map(user ->
+                        UserModel.builder()
+                                .characterName(user.getName().orElseThrow(() -> new AccessDeniedException(eveState)))
+                                .eveState(eveState)
+                                .build())
+                .orElseThrow(() -> new AccessDeniedException(eveState));
+
     }
 
     private Optional<User> getUser(String eveState) {

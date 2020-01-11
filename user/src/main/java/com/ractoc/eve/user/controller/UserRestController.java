@@ -1,7 +1,7 @@
 package com.ractoc.eve.user.controller;
 
+import com.ractoc.eve.domain.user.UserModel;
 import com.ractoc.eve.user.handler.UserHandler;
-import com.ractoc.eve.user.response.BaseResponse;
 import com.ractoc.eve.user.response.UserResponse;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +34,24 @@ public class UserRestController {
 
     @ApiOperation(value = "Get user by EVE state", response = UserResponse.class, produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = UserResponse.class),
+            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = UserModel.class),
             @ApiResponse(code = 403, message = "The user does not exist"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    @GetMapping(value = "/{eveState}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> getUser(@PathVariable String eveState) {
-        return new ResponseEntity<>(
-                new UserResponse(OK, handler.getUserByState(eveState)), OK);
+    @GetMapping(value = "/userdetails/{eveState}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserModel> getUserDetails(@PathVariable String eveState) {
+        return new ResponseEntity<>(handler.getUserByState(eveState), OK);
+    }
+
+    @ApiOperation(value = "Get user by EVE state", response = UserResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = UserModel.class),
+            @ApiResponse(code = 403, message = "The user does not exist"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
+    @GetMapping(value = "/username/{eveState}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserModel> getUserName(@PathVariable String eveState) {
+        return new ResponseEntity<>(handler.getUserNameByState(eveState), OK);
     }
 
 }
