@@ -1,4 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+import {Subject} from "rxjs";
+import {UserService} from "../service/user.service";
 
 @Component({
   selector: 'app-main',
@@ -8,11 +10,21 @@ import {Component, OnInit} from '@angular/core';
 export class MainComponent implements OnInit {
 
   private userName: string;
+  private usernameMonitor: Subject<string>;
 
-  constructor() {
+  constructor(private userService: UserService) {
   }
 
   ngOnInit() {
+    this.usernameMonitor = this.userService.monitorUsername();
+    this.usernameMonitor
+      .subscribe((un: string) => {
+        console.log("username", un);
+        this.userName = un;
+      });
   }
 
+  logout() {
+    this.userService.logout();
+  }
 }

@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, map} from 'rxjs/operators';
 
 import {User} from "../shared/model/user.model";
-import {Observable, of} from "rxjs";
+import {Observable, of, Subject} from "rxjs";
 
 const USER_URI = "http://localhost:8484/user/api/username";
 
@@ -12,6 +12,7 @@ const USER_URI = "http://localhost:8484/user/api/username";
 })
 export class UserService {
 
+  private username$: Subject<string>  = new Subject<string>();
   private user: User;
   private observable: Observable<User>;
 
@@ -20,6 +21,7 @@ export class UserService {
 
   getUsername(eveState: string): Observable<User> {
     if (this.user) {
+      this.username$.next(this.user.name);
       return of(this.user);
     } else if (this.observable) {
       return this.observable;
@@ -29,14 +31,23 @@ export class UserService {
             console.log("result", result);
             this.observable = null;
             this.user = new User(result.eveState, result.characterName);
+            this.username$.next(this.user.name);
             return this.user;
           }),
           catchError((error: any) => {
-            //  3c. Error handling here, omdat we nu async-pipe gebruiken.
             console.log('Error while fetching cities: ', error);
             return of(null);
           }));
       return this.observable;
     }
+  }
+
+  monitorUsername() {
+    return this.username$;
+  }
+
+  logout() {
+    this.user = undefined;
+    this.username$.next(null);
   }
 }
