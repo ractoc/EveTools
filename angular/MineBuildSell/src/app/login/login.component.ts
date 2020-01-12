@@ -21,16 +21,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.routeListener$ = this.route.params
       .subscribe((params: any) => {
-        console.log("eveState", params.eveState);
         if (params.eveState) {
           this.userService.getUsername(params.eveState)
             .subscribe(
               un => {
-                console.log("response", un);
                 this.userName = un.name;
               });
         } else {
-          console.log("to launch signon");
           this.document.location.href = "http://localhost:8484/user/launchSignOn";
         }
       });

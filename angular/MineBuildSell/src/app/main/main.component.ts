@@ -19,7 +19,6 @@ export class MainComponent implements OnInit {
     this.usernameMonitor = this.userService.monitorUsername();
     this.usernameMonitor
       .subscribe((un: string) => {
-        console.log("username", un);
         this.userName = un;
       });
   }

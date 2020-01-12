@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {catchError, map} from 'rxjs/operators';
 
 import {User} from "../shared/model/user.model";
-import {Observable, of, Subject} from "rxjs";
+import {Observable, of, BehaviorSubject} from "rxjs";
 
 const USER_URI = "http://localhost:8484/user/api/username";
 
@@ -12,27 +12,22 @@ const USER_URI = "http://localhost:8484/user/api/username";
 })
 export class UserService {
 
-  private username$: Subject<string>  = new Subject<string>();
-  private user: User;
+  private username$: BehaviorSubject<string>  = new BehaviorSubject<string>(null);
   private observable: Observable<User>;
 
   constructor(private http: HttpClient) {
   }
 
   getUsername(eveState: string): Observable<User> {
-    if (this.user) {
-      this.username$.next(this.user.name);
-      return of(this.user);
-    } else if (this.observable) {
+    if (this.observable) {
       return this.observable;
     } else {
       this.observable = this.http.get<any>(USER_URI + '/' + eveState)
         .pipe(map(result => {
-            console.log("result", result);
             this.observable = null;
-            this.user = new User(result.eveState, result.characterName);
-            this.username$.next(this.user.name);
-            return this.user;
+            const user = new User(result.eveState, result.characterName);
+            this.username$.next(user.name);
+            return user;
           }),
           catchError((error: any) => {
             console.log('Error while fetching cities: ', error);
@@ -47,7 +42,6 @@ export class UserService {
   }
 
   logout() {
-    this.user = undefined;
     this.username$.next(null);
   }
 }
