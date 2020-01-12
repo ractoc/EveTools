@@ -1,1 +1,6 @@
-<p>login works!</p>
+<div *ngIf="userName; else login">
+  Hello and welcome {{userName}}
+</div>
+<ng-template #login>
+  login to EVE-MBS using your registered EVE-login
+</ng-template>

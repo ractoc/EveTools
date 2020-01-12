@@ -1,5 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {DOCUMENT} from "@angular/common";
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-main',
@@ -8,7 +7,9 @@ import {DOCUMENT} from "@angular/common";
 })
 export class MainComponent implements OnInit {
 
-  constructor(@Inject(DOCUMENT) private document: Document) {
+  private userName: string;
+
+  constructor() {
   }
 
   ngOnInit() {

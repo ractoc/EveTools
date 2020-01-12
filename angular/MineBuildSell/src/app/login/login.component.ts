@@ -2,6 +2,7 @@ import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DOCUMENT} from "@angular/common";
+import {UserService} from "../service/user.service";
 
 @Component({
   selector: 'app-login',
@@ -12,18 +13,24 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private routeListener$: Subscription;
 
-  constructor(private route: ActivatedRoute, private router: Router, @Inject(DOCUMENT) private document: Document) {
+  private userName:string;
+
+  constructor(private userService: UserService, private route: ActivatedRoute, private router: Router, @Inject(DOCUMENT) private document: Document) {
   }
 
   ngOnInit() {
     this.routeListener$ = this.route.params
       .subscribe((params: any) => {
-        console.log("params", params);
+        console.log("eveState", params.eveState);
         if (params.eveState) {
-          console.log("eveState: " + params.eveState);
-          this.router.navigate(['/home']);
+          this.userService.getUsername(params.eveState)
+            .subscribe(
+              un => {
+                console.log("response", un);
+                this.userName = un.name;
+              });
         } else {
-          console.log("no eve-state, redirecting to signon");
+          console.log("to launch signon");
           this.document.location.href = "http://localhost:8484/user/launchSignOn";
         }
       });
