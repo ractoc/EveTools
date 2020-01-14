@@ -49,7 +49,12 @@ public class UserAuthenticationProvider extends AbstractUserDetailsAuthenticatio
     }
 
     private EveUserDetails convertToEveUserDetails(UserModel user) {
-        return new EveUserDetails(user.getCharacterName(), user.getEveState(),
-                AuthorityUtils.createAuthorityList("USER"), user.getCharId(), user.getExpiresAt(), user.getIpAddress());
+        return new EveUserDetails(user.getCharacterName(),
+                user.getEveState(),
+                AuthorityUtils.createAuthorityList("USER"),
+                user.getCharId(),
+                user.getExpiresAt(),
+                user.getIpAddress(),
+                user.getAccessToken());
     }
 }

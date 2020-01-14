@@ -66,6 +66,7 @@ public class UserHandler {
                                 .expiresAt(user.getLastRefresh().orElseThrow(() -> new AccessDeniedException(eveState))
                                         .toInstant(ZoneOffset.UTC).toEpochMilli() +
                                         user.getExpiresIn().orElseThrow(() -> new AccessDeniedException(eveState)))
+                                .accessToken(user.getAccessToken().orElseThrow(() -> new AccessDeniedException(eveState)))
                                 .build())
                 .orElseThrow(() -> new AccessDeniedException(eveState));
     }
@@ -100,6 +101,10 @@ public class UserHandler {
         user.setRefreshToken(oAuthToken.getRefresh_token());
         user.setLastRefresh(LocalDateTime.now());
         user.setExpiresIn(oAuthToken.getExpires_in());
+        System.out.println("access token size: " + oAuthToken.getAccess_token().length());
+        System.out.println("access token: " + oAuthToken.getAccess_token());
+        System.out.println("scp: " + jwtContent.getScp());
+        user.setAccessToken(oAuthToken.getAccess_token());
         return user;
     }
 
@@ -113,8 +118,10 @@ public class UserHandler {
             if (!signedJWT.verify(verifier)) {
                 throw new IOException("JWT verification failure");
             }
+            System.out.println("jwt content: " + signedJWT.getJWTClaimsSet().toJSONObject().toJSONString());
             return new ObjectMapper().readValue(signedJWT.getJWTClaimsSet().toJSONObject().toJSONString(), EveJwtContent.class);
         } catch (ParseException | IOException | JOSEException e) {
+            e.printStackTrace();
             throw new AccessDeniedException("Invalid JWT token");
         }
     }

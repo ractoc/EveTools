@@ -18,6 +18,7 @@
         <module>angular</module>
         <module>user</module>
         <module>user-client</module>
+        <module>character</module>
     </modules>
 
     <properties>

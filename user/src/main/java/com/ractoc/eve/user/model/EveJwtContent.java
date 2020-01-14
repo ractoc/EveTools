@@ -13,4 +13,5 @@ public class EveJwtContent {
     private String sub;
     private String name;
     private Long exp;
+    private String[] scp;
 }

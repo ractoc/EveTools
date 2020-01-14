@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Subject} from "rxjs";
 import {UserService} from "../service/user.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-main',
@@ -12,7 +13,7 @@ export class MainComponent implements OnInit {
   private userName: string;
   private usernameMonitor: Subject<string>;
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private router: Router) {
   }
 
   ngOnInit() {
@@ -25,5 +26,6 @@ export class MainComponent implements OnInit {
 
   logout() {
     this.userService.logout();
+    this.router.navigate(["home"]);
   }
 }

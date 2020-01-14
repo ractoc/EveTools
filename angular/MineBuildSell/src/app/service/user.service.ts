@@ -14,11 +14,13 @@ export class UserService {
 
   private username$: BehaviorSubject<string>  = new BehaviorSubject<string>(null);
   private observable: Observable<User>;
+  private eveState: string;
 
   constructor(private http: HttpClient) {
   }
 
   getUsername(eveState: string): Observable<User> {
+    this.eveState = eveState;
     if (this.observable) {
       return this.observable;
     } else {
@@ -43,5 +45,9 @@ export class UserService {
 
   logout() {
     this.username$.next(null);
+  }
+
+  getEveState() {
+    return this.eveState;
   }
 }

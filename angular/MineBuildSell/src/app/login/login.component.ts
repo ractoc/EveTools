@@ -26,6 +26,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             .subscribe(
               un => {
                 this.userName = un.name;
+                this.router.navigate(["home"]);
               });
         } else {
           this.document.location.href = "http://localhost:8484/user/launchSignOn";

@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS  eve_user.user (
   refresh_token varchar(100) NULL,
   last_refresh TIMESTAMP NULL,
   expires_in int(11) NULL,
+  access_token tinytext NULL,
   PRIMARY KEY (eve_state),
   UNIQUE KEY name_UNIQUE (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

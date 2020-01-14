@@ -17,5 +17,6 @@ public class UserModel {
     private String eveState;
     private long expiresAt;
     private String ipAddress;
+    private String accessToken;
 
 }

@@ -8,12 +8,14 @@ import { MainComponent } from './main/main.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import {HttpClientModule} from "@angular/common/http";
+import { BlueprintListComponent } from './blueprint-list/blueprint-list.component';
 
 @NgModule({
   declarations: [
     MainComponent,
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    BlueprintListComponent
   ],
   imports: [
     BrowserModule,
