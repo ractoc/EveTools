@@ -9,18 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>universe</artifactId>
-
+    <artifactId>assets</artifactId>
     <dependencies>
         <!-- Project dependencies -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>domain</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>user-client</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -39,23 +33,6 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
             <version>${jackson-datatype.version}</version>
-        </dependency>
-
-        <!-- security dependencies -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-client</artifactId>
-            <version>5.2.1.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-jose</artifactId>
-            <version>5.2.1.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-resource-server</artifactId>
-            <version>5.2.1.RELEASE</version>
         </dependency>
 
         <!-- database dependencies -->
@@ -105,49 +82,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.github.kongchen</groupId>
-                <artifactId>swagger-maven-plugin</artifactId>
-                <version>${swagger-maven-plugin-version}</version>
-                <configuration>
-                    <apiSources>
-                        <apiSource>
-                            <springmvc>true</springmvc>
-                            <locations>com.ractoc.eve.universe.controller</locations>
-                            <schemes>http</schemes>
-                            <host>localhost:8585</host>
-                            <basePath>/universe</basePath>
-                            <info>
-                                <title>EVE-Universe Rest APIs</title>
-                                <version>1.0.0</version>
-                                <!-- use markdown here because I'm using markdown for output,
-                                if you need to use html or other markup language, you need to use your target language,
-                                 and note escape your description for xml -->
-                                <description>
-                                    This page lists all the rest apis for EVE-Universe endpoint.
-                                </description>
-                            </info>
-                            <outputFormats>json</outputFormats>
-                            <swaggerDirectory>${build.directory}/generated/swagger</swaggerDirectory>
-                        </apiSource>
-                    </apiSources>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>javax.xml.bind</groupId>
-                        <artifactId>jaxb-api</artifactId>
-                        <version>2.3.1</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
         </plugins>
     </build>
 
@@ -171,7 +105,7 @@
                             <dbmsUsername>eve</dbmsUsername>
                             <dbmsPassword>eve</dbmsPassword>
                             <dbmsPort>9876</dbmsPort>
-                            <dbmsSchemas>eve_universe</dbmsSchemas>
+                            <dbmsSchemas>eve_assets</dbmsSchemas>
                             <companyName>ractoc.com</companyName>
                             <configFile>${project.basedir}/src/main/resources/json/speedment.json</configFile>
                         </configuration>
@@ -194,5 +128,6 @@
             </build>
         </profile>
     </profiles>
+
 
 </project>

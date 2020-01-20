@@ -1,25 +1,31 @@
 package com.ractoc.eve.domain.assets;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.ractoc.eve.domain.deserializers.BlueprintDeserializer;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @ToString
 @ApiModel(value = "Blueprint Model", description = "Contains the Blueprint model information")
+@JsonDeserialize(using = BlueprintDeserializer.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BlueprintModel {
+    private int id;
+    private int maxProductionLimit;
+    private int copyingTime;
+    private int inventionTime;
+    private int manufacturingTime;
+    private int researchMaterialTime;
+    private int researchTimeTime;
 
-    private Long itemId;
-    private Integer materialEfficiency;
-    private Integer quantity;
-    private Integer runs;
-    private Integer timeEfficiency;
-
-    /**
-     * References a solar system, station or item_id if this blueprint is located within a container. If the return value is an item_id, then the Character AssetList API must be queried to find the container using the given item_id to determine the correct location of the Blueprint.
-     **/
-    private Long locationId;
+    private List<BlueprintMaterialModel> inventionMaterials = new ArrayList<>();
 }
