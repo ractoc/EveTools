@@ -6,7 +6,7 @@ import com.ractoc.eve.domain.assets.BlueprintModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = {BlueprintInventionMaterialMapper.class})
+@Mapper
 public interface BlueprintMapper {
     BlueprintMapper INSTANCE = Mappers.getMapper(BlueprintMapper.class);
 

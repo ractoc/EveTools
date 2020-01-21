@@ -7,6 +7,11 @@ import com.ractoc.eve.assets.db.AssetsApplication;
 import com.ractoc.eve.assets.db.AssetsApplicationBuilder;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint.BlueprintManager;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_invention_materials.BlueprintInventionMaterialsManager;
+import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_invention_products.BlueprintInventionProductsManager;
+import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_invention_skills.BlueprintInventionSkillsManager;
+import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_materials.BlueprintManufacturingMaterialsManager;
+import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_products.BlueprintManufacturingProductsManager;
+import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_skills.BlueprintManufacturingSkillsManager;
 import com.speedment.runtime.core.component.transaction.TransactionComponent;
 import com.speedment.runtime.core.component.transaction.TransactionHandler;
 import org.slf4j.Logger;
@@ -86,6 +91,31 @@ public class SpeedmentConfiguration {
     @Bean
     public BlueprintInventionMaterialsManager getBlueprintInventionMaterialsManager(AssetsApplication app) {
         return app.getOrThrow(BlueprintInventionMaterialsManager.class);
+    }
+
+    @Bean
+    public BlueprintInventionProductsManager getBlueprintInventionProductsManager(AssetsApplication app) {
+        return app.getOrThrow(BlueprintInventionProductsManager.class);
+    }
+
+    @Bean
+    public BlueprintInventionSkillsManager getBlueprintInventionSkillsManager(AssetsApplication app) {
+        return app.getOrThrow(BlueprintInventionSkillsManager.class);
+    }
+
+    @Bean
+    public BlueprintManufacturingMaterialsManager getBlueprintManufacturingMaterialsManager(AssetsApplication app) {
+        return app.getOrThrow(BlueprintManufacturingMaterialsManager.class);
+    }
+
+    @Bean
+    public BlueprintManufacturingProductsManager getBlueprintManufacturingProductsManager(AssetsApplication app) {
+        return app.getOrThrow(BlueprintManufacturingProductsManager.class);
+    }
+
+    @Bean
+    public BlueprintManufacturingSkillsManager getBlueprintManufacturingSkillsManager(AssetsApplication app) {
+        return app.getOrThrow(BlueprintManufacturingSkillsManager.class);
     }
 
     @Bean

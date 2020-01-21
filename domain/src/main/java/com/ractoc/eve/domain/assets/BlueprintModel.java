@@ -6,8 +6,8 @@ import com.ractoc.eve.domain.deserializers.BlueprintDeserializer;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -27,5 +27,11 @@ public class BlueprintModel {
     private int researchMaterialTime;
     private int researchTimeTime;
 
-    private List<BlueprintMaterialModel> inventionMaterials = new ArrayList<>();
+    private Set<BlueprintMaterialModel> inventionMaterials = new HashSet<>();
+    private Set<BlueprintProductModel> inventionProducts = new HashSet<>();
+    private Set<BlueprintSkillModel> inventionSkills = new HashSet<>();
+
+    private Set<BlueprintMaterialModel> manufacturingMaterials = new HashSet<>();
+    private Set<BlueprintProductModel> manufacturingProducts = new HashSet<>();
+    private Set<BlueprintSkillModel> manufacturingSkills = new HashSet<>();
 }

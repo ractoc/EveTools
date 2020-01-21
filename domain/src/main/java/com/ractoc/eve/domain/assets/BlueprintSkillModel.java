@@ -8,12 +8,11 @@ import lombok.*;
 @Builder
 @ToString
 @EqualsAndHashCode
-@ApiModel(value = "Blueprint Material Model", description = "Contains the Blueprint Material model information")
-public class BlueprintMaterialModel {
+@ApiModel(value = "Blueprint Skill Model", description = "Contains the Blueprint Skill model information")
+public class BlueprintSkillModel {
     @EqualsAndHashCode.Include
     private int blueprintId;
     @EqualsAndHashCode.Include
     private int typeId;
-    private int quantity;
-
+    private int level;
 }
