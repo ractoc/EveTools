@@ -10,15 +10,16 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>J-ESI</module>
-        <module>crawler</module>
-        <module>universe</module>
-        <module>domain</module>
-        <module>universe-client</module>
         <module>angular</module>
+        <module>assets</module>
+        <module>character</module>
+        <module>crawler</module>
+        <module>domain</module>
+        <module>J-ESI</module>
+        <module>universe</module>
+        <module>universe-client</module>
         <module>user</module>
         <module>user-client</module>
-        <module>assets</module>
     </modules>
 
     <properties>
