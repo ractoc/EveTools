@@ -6,6 +6,7 @@ import com.ractoc.eve.character.response.BlueprintListResponse;
 import com.ractoc.eve.character.response.ErrorResponse;
 import com.ractoc.eve.character.service.ServiceException;
 import com.ractoc.eve.user.filter.EveUserDetails;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

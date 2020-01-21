@@ -64,6 +64,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public UserAuthenticationProvider authenticationProvider() {
+        return new UserAuthenticationProvider();
+    }
+
+    @Bean
     public AuthenticationEntryPoint forbiddenEntryPoint() {
         return new HttpStatusEntryPoint(HttpStatus.FORBIDDEN);
     }

@@ -32,9 +32,12 @@ public class BlueprintDeserializer extends StdDeserializer<BlueprintModel> {
     public static final String SKILLS = "skills";
     public static final String LEVEL = "level";
 
+
+    @SuppressWarnings("unused")
     public BlueprintDeserializer() {
         this(null);
     }
+
     public BlueprintDeserializer(Class<?> vc) {
         super(vc);
     }

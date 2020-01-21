@@ -2,6 +2,7 @@ package com.ractoc.eve.character.filters;
 
 import org.springframework.stereotype.Component;
 
+import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 

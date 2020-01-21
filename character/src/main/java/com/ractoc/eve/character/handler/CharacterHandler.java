@@ -24,8 +24,8 @@ public class CharacterHandler {
     }
 
     public List<BlueprintModel> getBlueprintsForCharacter(EveUserDetails eveUserDetails) {
-        System.out.println(eveUserDetails);
         return characterService.getBlueprintsForCharacter(eveUserDetails.getCharId(), eveUserDetails.getAccessToken())
+                .peek(System.out::println)
                 .map(INSTANCE::esiToModel)
                 .collect(Collectors.toList());
     }

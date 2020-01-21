@@ -58,21 +58,21 @@ public class BlueprintService {
 
     public void clearAllBlueprints() {
         List<BlueprintInventionMaterials> bims = bimManager.stream().collect(Collectors.toList());
-        bims.stream().forEach(bimManager.remover());
+        bims.forEach(bimManager.remover());
         List<BlueprintInventionProducts> bips = bipManager.stream().collect(Collectors.toList());
-        bips.stream().forEach(bipManager.remover());
+        bips.forEach(bipManager.remover());
         List<BlueprintInventionSkills> biss = bisManager.stream().collect(Collectors.toList());
-        biss.stream().forEach(bisManager.remover());
+        biss.forEach(bisManager.remover());
 
         List<BlueprintManufacturingMaterials> bmms = bmmManager.stream().collect(Collectors.toList());
-        bmms.stream().forEach(bmmManager.remover());
+        bmms.forEach(bmmManager.remover());
         List<BlueprintManufacturingProducts> bmps = bmpManager.stream().collect(Collectors.toList());
-        bmps.stream().forEach(bmpManager.remover());
+        bmps.forEach(bmpManager.remover());
         List<BlueprintManufacturingSkills> bmss = bmsManager.stream().collect(Collectors.toList());
-        bmss.stream().forEach(bmsManager.remover());
+        bmss.forEach(bmsManager.remover());
 
         List<Blueprint> bps = bpManager.stream().collect(Collectors.toList());
-        bps.stream().forEach(bpManager.remover());
+        bps.forEach(bpManager.remover());
     }
 
     public void saveInventionMaterial(BlueprintInventionMaterials bim) {
@@ -84,7 +84,6 @@ public class BlueprintService {
     }
 
     public void saveInventionSkill(BlueprintInventionSkills bis) {
-        System.out.println("saving: " + bis);
         bisManager.persist(bis);
     }
 

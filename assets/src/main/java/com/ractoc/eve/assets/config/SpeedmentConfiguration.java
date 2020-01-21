@@ -12,6 +12,7 @@ import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_invention_skills.Blu
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_materials.BlueprintManufacturingMaterialsManager;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_products.BlueprintManufacturingProductsManager;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_skills.BlueprintManufacturingSkillsManager;
+import com.ractoc.eve.assets.db.assets.eve_assets.type.TypeManager;
 import com.speedment.runtime.core.component.transaction.TransactionComponent;
 import com.speedment.runtime.core.component.transaction.TransactionHandler;
 import org.slf4j.Logger;
@@ -21,6 +22,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+
+import static com.speedment.runtime.core.ApplicationBuilder.LogType.*;
 
 @Configuration
 public class SpeedmentConfiguration {
@@ -61,10 +64,10 @@ public class SpeedmentConfiguration {
                     .withSchema(schema)
                     .withParam("db.mysql.collationName", collation)
                     .withParam("db.mysql.binaryCollationName", collationBinary)
-                    .withLogging(AssetsApplicationBuilder.LogType.STREAM)
-                    .withLogging(AssetsApplicationBuilder.LogType.REMOVE)
-                    .withLogging(AssetsApplicationBuilder.LogType.PERSIST)
-                    .withLogging(AssetsApplicationBuilder.LogType.UPDATE)
+                    .withLogging(STREAM)
+                    .withLogging(REMOVE)
+                    .withLogging(PERSIST)
+                    .withLogging(UPDATE)
                     .build();
         }
         return new AssetsApplicationBuilder()
@@ -119,6 +122,12 @@ public class SpeedmentConfiguration {
     }
 
     @Bean
+    public TypeManager getTypeManager(AssetsApplication app) {
+        return app.getOrThrow(TypeManager.class);
+    }
+
+    @Bean
+    @Primary
     public Jackson2ObjectMapperBuilder jacksonBuilder() {
         return new Jackson2ObjectMapperBuilder().modulesToInstall(new JavaTimeModule()).indentOutput(true);
     }

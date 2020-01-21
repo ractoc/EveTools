@@ -40,14 +40,15 @@ public class BlueprintItemReader implements ItemReader<BlueprintModel> {
     }
 
     private List<BlueprintModel> fetchBlueprintsFromYML() {
-        File file = new File("D:/tmp/sde/fsd/blueprints.yaml");
-        ObjectMapper om = new ObjectMapper(new YAMLFactory());
-        Map<Integer, BlueprintModel> bp = null;
         try {
-            bp = om.readValue(file, new TypeReference<Map<Integer, BlueprintModel>>(){});
+            // FIXME: retreive the filename from a commandline param
+            File file = new File("D:/tmp/sde/fsd/blueprints.yaml");
+            ObjectMapper om = new ObjectMapper(new YAMLFactory());
+            Map<Integer, BlueprintModel> bp = om.readValue(file, new TypeReference<Map<Integer, BlueprintModel>>() {
+            });
+            return new ArrayList<>(bp.values());
         } catch (IOException e) {
-            throw new RuntimeException("Unable to read YML file: " + "D:/tmp/sde/fsd/blueprints.yaml", e);
+            throw new SdeReaderException("Unable to read YML file: " + "D:/tmp/sde/fsd/blueprints.yaml", e);
         }
-        return new ArrayList<>(bp.values());
     }
 }

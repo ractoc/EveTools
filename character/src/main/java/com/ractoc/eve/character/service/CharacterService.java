@@ -16,11 +16,9 @@ public class CharacterService {
 
     public Stream<GetCharactersCharacterIdBlueprints200Ok> getBlueprintsForCharacter(Integer characterId, String accessToken) {
         try {
-            System.out.println("retreiving BPs with charid:" + characterId + " and token " + accessToken);
             return characterApi.getCharactersCharacterIdBlueprints(characterId, null, null, 1, accessToken).stream();
         } catch (ApiException e) {
-            e.printStackTrace();
+            throw new ServiceException("Unable to retrieve Character Blueprints for character ID " + characterId, e);
         }
-        return Stream.empty();
     }
 }

@@ -1,17 +1,17 @@
 {
   "config" : {
-    "speedmentVersion" : "Speedment:3.1.15",
-    "companyName" : "ractoc.com",
-    "appId" : "24972167-cafa-4c73-b277-320e478ffba6",
-    "name" : "assets",
-    "packageLocation" : "target/generated-sources/java",
-    "packageName" : "com.ractoc.eve.assets.db",
-    "id" : "assets",
-    "enabled" : true,
-    "dbmses" : [
+    "speedmentVersion": "Speedment:3.1.15",
+    "companyName": "ractoc.com",
+    "appId": "7531f3d6-5771-4069-b2b8-9df87fb4cbbc",
+    "name": "assets",
+    "packageLocation": "target/generated-sources/java",
+    "packageName": "com.ractoc.eve.assets.db",
+    "id": "assets",
+    "enabled": true,
+    "dbmses": [
       {
-        "port" : 9876,
-        "schemas" : [
+        "port": 9876,
+        "schemas": [
           {
             "tables" : [
               {
@@ -100,23 +100,6 @@
                 "id" : "blueprint"
               },
               {
-                "foreignKeys" : [
-                  {
-                    "foreignKeyColumns" : [
-                      {
-                        "foreignDatabaseName" : "assets",
-                        "foreignSchemaName" : "eve_assets",
-                        "name" : "blueprint_id",
-                        "foreignColumnName" : "id",
-                        "id" : "blueprint_id",
-                        "foreignTableName" : "blueprint",
-                        "ordinalPosition" : 1
-                      }
-                    ],
-                    "name" : "BPIM_BP_FK",
-                    "id" : "BPIM_BP_FK"
-                  }
-                ],
                 "primaryKeyColumns" : [
                   {
                     "name" : "blueprint_id",
@@ -497,16 +480,74 @@
                     "ordinalPosition" : 2
                   },
                   {
-                    "databaseType" : "java.lang.Integer",
-                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable" : false,
-                    "name" : "level",
-                    "id" : "level",
-                    "ordinalPosition" : 3
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "name": "level",
+                    "id": "level",
+                    "ordinalPosition": 3
                   }
                 ],
-                "name" : "blueprint_manufacturing_skills",
-                "id" : "blueprint_manufacturing_skills"
+                "name": "blueprint_manufacturing_skills",
+                "id": "blueprint_manufacturing_skills"
+              },
+              {
+                "primaryKeyColumns": [
+                  {
+                    "name": "id",
+                    "id": "id",
+                    "ordinalPosition": 1
+                  }
+                ],
+                "indexes": [
+                  {
+                    "unique": true,
+                    "name": "PRIMARY",
+                    "indexColumns": [
+                      {
+                        "orderType": "ASC",
+                        "name": "id",
+                        "id": "id",
+                        "ordinalPosition": 1
+                      }
+                    ],
+                    "id": "PRIMARY"
+                  }
+                ],
+                "isView": false,
+                "columns": [
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "name": "id",
+                    "id": "id",
+                    "ordinalPosition": 1
+                  },
+                  {
+                    "databaseType": "java.lang.String",
+                    "nullable": true,
+                    "name": "name",
+                    "id": "name",
+                    "ordinalPosition": 2
+                  },
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "nullable": true,
+                    "name": "group_id",
+                    "id": "group_id",
+                    "ordinalPosition": 3
+                  },
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "nullable": true,
+                    "name": "volume",
+                    "id": "volume",
+                    "ordinalPosition": 4
+                  }
+                ],
+                "name": "type",
+                "id": "type"
               }
             ],
             "name" : "eve_assets",

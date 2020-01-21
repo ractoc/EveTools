@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.util.matcher.*;
 
 @Configuration
 @EnableWebSecurity
@@ -60,6 +61,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         final UserAuthenticationFilter filter = new UserAuthenticationFilter(PROTECTED_URLS);
         filter.setAuthenticationManager(authenticationManager());
         return filter;
+    }
+
+    @Bean
+    public UserAuthenticationProvider authenticationProvider() {
+        return new UserAuthenticationProvider();
     }
 
     @Bean
