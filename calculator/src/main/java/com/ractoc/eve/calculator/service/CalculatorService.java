@@ -1,0 +1,68 @@
+package com.ractoc.eve.calculator.service;
+
+import com.ractoc.eve.domain.assets.BlueprintMaterialModel;
+import com.ractoc.eve.domain.assets.BlueprintModel;
+import com.ractoc.eve.jesi.ApiException;
+import com.ractoc.eve.jesi.api.MarketApi;
+import com.ractoc.eve.jesi.model.GetMarketsRegionIdOrders200Ok;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Service
+public class CalculatorService {
+
+    @Autowired
+    private MarketApi marketApi;
+
+    public void calculateMaterialCost(BlueprintModel bp, Integer regionId, Long locationId) {
+        Set<BlueprintMaterialModel> mats = bp.getManufacturingMaterials();
+        for (BlueprintMaterialModel mat : mats) {
+            getTotalPricesForMaterial(regionId, locationId, mat);
+        }
+    }
+
+    private void getTotalPricesForMaterial(Integer regionId, Long locationId, BlueprintMaterialModel mat) {
+        int pageNumber = 1;
+        do {
+            try {
+                List<GetMarketsRegionIdOrders200Ok> orders = marketApi.getMarketsRegionIdOrders("all", regionId, null, null, pageNumber, mat.getTypeId());
+                if (orders.isEmpty()) {
+                    throw new NoSuchElementException("No order found for material: " + mat + " at location " + locationId);
+                }
+                List<GetMarketsRegionIdOrders200Ok> locationOrder = findOrdersForLocation(orders, locationId);
+                // buy orders mean sell you minerals, which is done at the highest possible price
+                locationOrder.stream()
+                        .filter(GetMarketsRegionIdOrders200Ok::isIsBuyOrder)
+                        .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
+                        .max()
+                        .ifPresent(mat::setBuyPrice);
+                // sell orders means buy your minerals, which is done at the lowest possible price
+                locationOrder.stream()
+                        .filter(o -> !o.isIsBuyOrder())
+                        .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
+                        .min()
+                        .ifPresent(mat::setSellPrice);
+                if (mat.getSellPrice() != null && mat.getBuyPrice() != null) {
+                    return;
+                }
+                pageNumber++;
+            } catch (ApiException e) {
+                throw new ServiceException("Unable to retrieve orders for material " + mat, e);
+            }
+        } while (pageNumber < 10000);
+        throw new ServiceException("Maximum number of pages exceeded while requesting an order for material " + mat + " at location " + locationId);
+    }
+
+    private List<GetMarketsRegionIdOrders200Ok> findOrdersForLocation(List<GetMarketsRegionIdOrders200Ok> orders, Long locationId) {
+        System.out.println("locationId: " + locationId);
+        return orders.stream()
+                .peek(o -> System.out.println("systemId: " + o.getSystemId()))
+                .filter(o -> o.getSystemId().equals(locationId.intValue()))
+                .collect(Collectors.toList());
+    }
+}

@@ -9,3 +9,13 @@ debug: true
 
 # security setup for EVE SSO
 auth-header-name: eve-state
+
+# Speedment Settings
+dbms:
+  host: localhost
+  port: 9876
+  schema: eve_assets
+  username: eve
+  password: eve
+  collation: utf8mb4_general_ci
+  collation.binary: utf8mb4_bin

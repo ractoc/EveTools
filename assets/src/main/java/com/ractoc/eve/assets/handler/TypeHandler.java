@@ -22,9 +22,9 @@ public class TypeHandler {
         this.transactionHandler = transactionHandler;
     }
 
-    public void saveTypes(List<? extends TypeModel> bps) {
+    public void saveTypes(List<? extends TypeModel> types) {
         transactionHandler.createAndAccept(tx -> {
-            bps.stream()
+            types.stream()
                     .map(TypeMapper.INSTANCE::modelToDb)
                     .forEach(typeService::saveType);
             tx.commit();
@@ -36,5 +36,9 @@ public class TypeHandler {
             typeService.clearAllTypes();
             tx.commit();
         });
+    }
+
+    public String getItemName(int itemId) {
+        return typeService.getItemName(itemId);
     }
 }

@@ -26,6 +26,8 @@ public class BlueprintModel {
     private int manufacturingTime;
     private int researchMaterialTime;
     private int researchTimeTime;
+    private double buyPrice;
+    private double sellPrice;
 
     private Set<BlueprintMaterialModel> inventionMaterials = new HashSet<>();
     private Set<BlueprintProductModel> inventionProducts = new HashSet<>();

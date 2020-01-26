@@ -1,18 +1,18 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient} from '@angular/common/http';
 import {catchError, map} from 'rxjs/operators';
 
-import {User} from "../shared/model/user.model";
-import {Observable, of, BehaviorSubject} from "rxjs";
+import {User} from '../shared/model/user.model';
+import {BehaviorSubject, Observable, of} from 'rxjs';
 
-const USER_URI = "http://localhost:8484/user/api/username";
+const USER_URI = 'http://localhost:8484/user/api/username';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private username$: BehaviorSubject<string>  = new BehaviorSubject<string>(null);
+  private username$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   private observable: Observable<User>;
   private eveState: string;
 

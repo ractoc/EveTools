@@ -20,6 +20,8 @@
         <module>universe-client</module>
         <module>user</module>
         <module>user-client</module>
+        <module>assets-client</module>
+        <module>calculator</module>
     </modules>
 
     <properties>

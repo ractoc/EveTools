@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,5 +99,55 @@ public class BlueprintService {
 
     public void saveManufacturingSkill(BlueprintManufacturingSkills bms) {
         bmsManager.persist(bms);
+    }
+
+    public Blueprint getBlueprint(Integer bpId) {
+        return bpManager
+                .stream()
+                .filter(Blueprint.ID.equal(bpId))
+                .findAny()
+                .orElseThrow(() -> new NoSuchElementException("Unable to find blueprint with id " + bpId));
+    }
+
+    public Set<BlueprintInventionMaterials> getInventionMaterials(Integer bpId) {
+        return bimManager
+                .stream()
+                .filter(BlueprintInventionMaterials.BLUEPRINT_ID.equal(bpId))
+                .collect(Collectors.toSet());
+    }
+
+    public Set<BlueprintInventionProducts> getInventionProducts(Integer bpId) {
+        return bipManager
+                .stream()
+                .filter(BlueprintInventionProducts.BLUEPRINT_ID.equal(bpId))
+                .collect(Collectors.toSet());
+    }
+
+    public Set<BlueprintInventionSkills> getInventionSkills(Integer bpId) {
+        return bisManager
+                .stream()
+                .filter(BlueprintInventionSkills.BLUEPRINT_ID.equal(bpId))
+                .collect(Collectors.toSet());
+    }
+
+    public Set<BlueprintManufacturingMaterials> getManufacturingMaterials(Integer bpId) {
+        return bmmManager
+                .stream()
+                .filter(BlueprintManufacturingMaterials.BLUEPRINT_ID.equal(bpId))
+                .collect(Collectors.toSet());
+    }
+
+    public Set<BlueprintManufacturingProducts> getManufacturingProducts(Integer bpId) {
+        return bmpManager
+                .stream()
+                .filter(BlueprintManufacturingProducts.BLUEPRINT_ID.equal(bpId))
+                .collect(Collectors.toSet());
+    }
+
+    public Set<BlueprintManufacturingSkills> getManufacturingSkills(Integer bpId) {
+        return bmsManager
+                .stream()
+                .filter(BlueprintManufacturingSkills.BLUEPRINT_ID.equal(bpId))
+                .collect(Collectors.toSet());
     }
 }

@@ -16,4 +16,7 @@ public class BlueprintMaterialModel {
     private int typeId;
     private int quantity;
 
+    private Double buyPrice;
+    private Double sellPrice;
+
 }

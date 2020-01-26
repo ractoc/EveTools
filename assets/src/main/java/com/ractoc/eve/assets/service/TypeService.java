@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,5 +26,15 @@ public class TypeService {
     public void clearAllTypes() {
         List<Type> types = typeManager.stream().collect(Collectors.toList());
         types.forEach(typeManager.remover());
+    }
+
+    public String getItemName(int itemId) {
+        return typeManager
+                .stream()
+                .filter(Type.ID.equal(itemId))
+                .map(Type::getName)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Item not found, ID: " + itemId))
+                .orElseThrow(() -> new NoSuchElementException("Item not found, ID: " + itemId));
     }
 }

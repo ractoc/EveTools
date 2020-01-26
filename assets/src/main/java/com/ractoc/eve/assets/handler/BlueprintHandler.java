@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class BlueprintHandler {
@@ -70,5 +71,43 @@ public class BlueprintHandler {
             blueprintService.clearAllBlueprints();
             tx.commit();
         });
+    }
+
+    public BlueprintModel getBlueprint(Integer bpId) {
+        BlueprintModel bp = BlueprintMapper.INSTANCE.dbToModel(blueprintService.getBlueprint(bpId));
+
+        bp.setInventionMaterials(blueprintService
+                .getInventionMaterials(bpId)
+                .stream()
+                .map(BlueprintInventionMaterialMapper.INSTANCE::dbToModel)
+                .collect(Collectors.toSet()));
+        bp.setInventionProducts(blueprintService
+                .getInventionProducts(bpId)
+                .stream()
+                .map(BlueprintInventionProductMapper.INSTANCE::dbToModel)
+                .collect(Collectors.toSet()));
+        bp.setInventionSkills(blueprintService
+                .getInventionSkills(bpId)
+                .stream()
+                .map(BlueprintInventionSkillMapper.INSTANCE::dbToModel)
+                .collect(Collectors.toSet()));
+
+        bp.setManufacturingMaterials(blueprintService
+                .getManufacturingMaterials(bpId)
+                .stream()
+                .map(BlueprintManufacturingMaterialMapper.INSTANCE::dbToModel)
+                .collect(Collectors.toSet()));
+        bp.setManufacturingProducts(blueprintService
+                .getManufacturingProducts(bpId)
+                .stream()
+                .map(BlueprintManufacturingProductMapper.INSTANCE::dbToModel)
+                .collect(Collectors.toSet()));
+        bp.setManufacturingSkills(blueprintService
+                .getManufacturingSkills(bpId)
+                .stream()
+                .map(BlueprintManufacturingSkillMapper.INSTANCE::dbToModel)
+                .collect(Collectors.toSet()));
+
+        return bp;
     }
 }

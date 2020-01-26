@@ -28,6 +28,11 @@
             <artifactId>j-esi</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.ractoc.eve</groupId>
+            <artifactId>assets-client</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- microservice dependencies -->
         <dependency>
@@ -81,7 +86,7 @@
                             <springmvc>true</springmvc>
                             <locations>com.ractoc.eve.character.controller</locations>
                             <schemes>http</schemes>
-                            <host>localhost:8585</host>
+                            <host>localhost:8686</host>
                             <basePath>/character</basePath>
                             <info>
                                 <title>EVE-Character Rest APIs</title>
@@ -116,6 +121,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import {BlueprintModel} from "../shared/model/blueprint.model";
-import {CharacterService} from "../service/character.service";
+import {Component, OnInit} from '@angular/core';
+import {BlueprintModel} from '../shared/model/blueprint.model';
+import {CharacterService} from '../service/character.service';
 
 @Component({
   selector: 'app-blueprint-list',
@@ -12,12 +12,16 @@ export class BlueprintListComponent implements OnInit {
   blueprints: BlueprintModel[];
   errorMessage: string;
 
-  constructor(private characterService: CharacterService) { }
+  constructor(private characterService: CharacterService) {
+  }
 
   ngOnInit() {
     this.errorMessage = undefined;
     this.characterService.getBlueprints().subscribe(
-      (blueprintData: BlueprintModel[]) => blueprintData && blueprintData.length > 0 ? this.blueprints = blueprintData : this.errorMessage = 'No blueprints to display',
+      (blueprintData: BlueprintModel[]) =>
+        blueprintData && blueprintData.length > 0
+          ? this.blueprints = blueprintData
+          : this.errorMessage = 'No blueprints to display',
       err => this.errorMessage = err
     );
   }

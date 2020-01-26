@@ -110,10 +110,11 @@ public class BlueprintDeserializer extends StdDeserializer<BlueprintModel> {
         Optional<JsonNode> matOpt = getChildNode(node, MATERIALS);
         if (matOpt.isPresent()) {
             for (JsonNode matNode : matOpt.get()) {
-                BlueprintMaterialModel bpMat = BlueprintMaterialModel.builder()
-                        .blueprintId(bp.getId())
-                        .typeId(matNode.get(TYPE_ID).intValue())
-                        .quantity(matNode.get(QUANTITY).intValue())
+                BlueprintMaterialModel.BlueprintMaterialModelBuilder builder = BlueprintMaterialModel.builder();
+                builder.blueprintId(bp.getId());
+                builder.typeId(matNode.get(TYPE_ID).intValue());
+                builder.quantity(matNode.get(QUANTITY).intValue());
+                BlueprintMaterialModel bpMat = builder
                         .build();
                 mats.add(bpMat);
             }

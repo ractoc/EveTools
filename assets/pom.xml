@@ -17,6 +17,11 @@
             <artifactId>domain</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>user-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- microservice dependencies -->
         <dependency>
@@ -52,6 +57,23 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
         </dependency>
+
+        <!-- security dependencies -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
+            <version>5.2.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+            <version>5.2.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-resource-server</artifactId>
+            <version>5.2.1.RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -81,6 +103,49 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.kongchen</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <version>${swagger-maven-plugin-version}</version>
+                <configuration>
+                    <apiSources>
+                        <apiSource>
+                            <springmvc>true</springmvc>
+                            <locations>com.ractoc.eve.assets.controller</locations>
+                            <schemes>http</schemes>
+                            <host>localhost:8787</host>
+                            <basePath>/assets</basePath>
+                            <info>
+                                <title>EVE-Assets Rest APIs</title>
+                                <version>1.0.0</version>
+                                <!-- use markdown here because I'm using markdown for output,
+                                if you need to use html or other markup language, you need to use your target language,
+                                 and note escape your description for xml -->
+                                <description>
+                                    This page lists all the rest apis for EVE-Assets endpoint.
+                                </description>
+                            </info>
+                            <outputFormats>json</outputFormats>
+                            <swaggerDirectory>${build.directory}/generated/swagger</swaggerDirectory>
+                        </apiSource>
+                    </apiSources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.xml.bind</groupId>
+                        <artifactId>jaxb-api</artifactId>
+                        <version>2.3.1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

@@ -1,7 +1,7 @@
 package com.ractoc.eve.character.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.ractoc.eve.domain.assets.BlueprintModel;
+import com.ractoc.eve.domain.character.BlueprintListModel;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -13,9 +13,9 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_EMPTY)
 public class BlueprintListResponse extends BaseResponse {
 
-    private List<BlueprintModel> bluePrintList;
+    private List<BlueprintListModel> bluePrintList;
 
-    public BlueprintListResponse(HttpStatus responseCode, List<BlueprintModel> bluePrintList) {
+    public BlueprintListResponse(HttpStatus responseCode, List<BlueprintListModel> bluePrintList) {
         super(responseCode.value());
         this.bluePrintList = bluePrintList;
     }
