@@ -1,0 +1,11 @@
+# Server Settings
+server:
+  port: 8888
+  servlet:
+    contextPath: /calculator
+
+# enable debug mode
+debug: true
+
+# security setup for EVE SSO
+auth-header-name: eve-state
