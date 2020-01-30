@@ -16,10 +16,3 @@ jobs:
         java-package: jdk+fx # (jre, jdk, or jdk+fx) - defaults to jdk:  
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - name: Scope for Maven
-      uses: undefinedlabs/scope-for-maven-action@v1
-      with:
-        # Scope DSN
-        dsn: ${{secrets.SCOPE_DSN}}
-        run-tests: true # optional - default is 'true'
-        command: mvn verify # optional - default is 'mvn verify'
