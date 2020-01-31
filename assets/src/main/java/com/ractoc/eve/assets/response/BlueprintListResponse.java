@@ -1,4 +1,4 @@
-package com.ractoc.eve.character.response;
+package com.ractoc.eve.assets.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ractoc.eve.domain.character.BlueprintListModel;

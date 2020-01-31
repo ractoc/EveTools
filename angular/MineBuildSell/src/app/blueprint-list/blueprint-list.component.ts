@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {BlueprintModel} from '../shared/model/blueprint.model';
-import {CharacterService} from '../service/character.service';
+import {AssetsService} from '../service/assets.service';
 
 @Component({
   selector: 'app-blueprint-list',
@@ -12,12 +12,12 @@ export class BlueprintListComponent implements OnInit {
   blueprints: BlueprintModel[];
   errorMessage: string;
 
-  constructor(private characterService: CharacterService) {
+  constructor(private assetsService: AssetsService) {
   }
 
   ngOnInit() {
     this.errorMessage = undefined;
-    this.characterService.getBlueprints().subscribe(
+    this.assetsService.getBlueprints().subscribe(
       (blueprintData: BlueprintModel[]) =>
         blueprintData && blueprintData.length > 0
           ? this.blueprints = blueprintData
@@ -27,6 +27,7 @@ export class BlueprintListComponent implements OnInit {
   }
 
   blueprintClass(blueprint: BlueprintModel) {
+    console.log("blueprint", blueprint)
     return {
       'list-group-item': true,
       'list-group-item-action': true,

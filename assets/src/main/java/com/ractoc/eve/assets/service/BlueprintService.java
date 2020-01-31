@@ -14,6 +14,9 @@ import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_produc
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_products.BlueprintManufacturingProductsManager;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_skills.BlueprintManufacturingSkills;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_skills.BlueprintManufacturingSkillsManager;
+import com.ractoc.eve.jesi.ApiException;
+import com.ractoc.eve.jesi.api.CharacterApi;
+import com.ractoc.eve.jesi.model.GetCharactersCharacterIdBlueprints200Ok;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class BlueprintService {
@@ -35,6 +39,8 @@ public class BlueprintService {
     private BlueprintManufacturingProductsManager bmpManager;
     private BlueprintManufacturingSkillsManager bmsManager;
 
+    private CharacterApi characterApi;
+
     @Autowired
     public BlueprintService(BlueprintManager bpManager,
                             BlueprintInventionMaterialsManager bimManager,
@@ -42,7 +48,8 @@ public class BlueprintService {
                             BlueprintInventionSkillsManager bisManager,
                             BlueprintManufacturingMaterialsManager bmmManager,
                             BlueprintManufacturingProductsManager bmpManager,
-                            BlueprintManufacturingSkillsManager bmsManager) {
+                            BlueprintManufacturingSkillsManager bmsManager,
+                            CharacterApi characterApi) {
         this.bpManager = bpManager;
 
         this.bimManager = bimManager;
@@ -52,6 +59,7 @@ public class BlueprintService {
         this.bmmManager = bmmManager;
         this.bmpManager = bmpManager;
         this.bmsManager = bmsManager;
+        this.characterApi = characterApi;
     }
 
     public void saveBlueprint(Blueprint bp) {
@@ -149,5 +157,13 @@ public class BlueprintService {
                 .stream()
                 .filter(BlueprintManufacturingSkills.BLUEPRINT_ID.equal(bpId))
                 .collect(Collectors.toSet());
+    }
+
+    public Stream<GetCharactersCharacterIdBlueprints200Ok> getBlueprintsForCharacter(Integer characterId, String accessToken) {
+        try {
+            return characterApi.getCharactersCharacterIdBlueprints(characterId, null, null, 1, accessToken).stream();
+        } catch (ApiException e) {
+            throw new ServiceException("Unable to retrieve Character Blueprints for character ID " + characterId, e);
+        }
     }
 }

@@ -22,6 +22,11 @@
             <artifactId>user-client</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>j-esi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- microservice dependencies -->
         <dependency>

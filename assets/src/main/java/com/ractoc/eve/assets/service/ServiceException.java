@@ -1,4 +1,4 @@
-package com.ractoc.eve.character.service;
+package com.ractoc.eve.assets.service;
 
 public class ServiceException extends RuntimeException {
 	private static final long serialVersionUID = 1L;

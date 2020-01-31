@@ -2,7 +2,7 @@
 <div *ngIf="blueprints; else loading">
   <div class="list-group list-group-flush">
     <a *ngFor="let blueprint of blueprints" [ngClass]="blueprintClass(blueprint)">
-      {{blueprint.itemId}}
+      {{blueprint.name}}
     </a>
   </div>
 </div>

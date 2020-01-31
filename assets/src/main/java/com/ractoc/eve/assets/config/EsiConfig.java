@@ -1,4 +1,4 @@
-package com.ractoc.eve.character.config;
+package com.ractoc.eve.assets.config;
 
 import com.ractoc.eve.jesi.api.CharacterApi;
 import org.springframework.context.annotation.Bean;

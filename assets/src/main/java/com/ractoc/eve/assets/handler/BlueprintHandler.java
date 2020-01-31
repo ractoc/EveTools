@@ -2,7 +2,10 @@ package com.ractoc.eve.assets.handler;
 
 import com.ractoc.eve.assets.mapper.*;
 import com.ractoc.eve.assets.service.BlueprintService;
+import com.ractoc.eve.assets.service.TypeService;
 import com.ractoc.eve.domain.assets.BlueprintModel;
+import com.ractoc.eve.domain.character.BlueprintListModel;
+import com.ractoc.eve.user.filter.EveUserDetails;
 import com.speedment.runtime.core.component.transaction.TransactionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,13 +18,16 @@ import java.util.stream.Collectors;
 public class BlueprintHandler {
 
     private BlueprintService blueprintService;
+    private TypeService typeService;
     private TransactionHandler transactionHandler;
 
     @Autowired
     public BlueprintHandler(TransactionHandler transactionHandler,
-                            BlueprintService blueprintService) {
+                            BlueprintService blueprintService,
+                            TypeService typeService) {
         this.blueprintService = blueprintService;
         this.transactionHandler = transactionHandler;
+        this.typeService = typeService;
     }
 
     public void saveBlueprints(List<? extends BlueprintModel> bps) {
@@ -110,4 +116,18 @@ public class BlueprintHandler {
 
         return bp;
     }
+
+    public List<BlueprintListModel> getBlueprintsForCharacter(EveUserDetails eveUserDetails) {
+        return blueprintService.getBlueprintsForCharacter(eveUserDetails.getCharId(), eveUserDetails.getAccessToken())
+                .map(BlueprintMapper.INSTANCE::esiToModel)
+                .map(this::addNameToBlueprint)
+                .collect(Collectors.toList());
+    }
+
+    private BlueprintListModel addNameToBlueprint(BlueprintListModel blueprintListModel) {
+        blueprintListModel.setName(typeService.getItemName(blueprintListModel.getId()));
+        return blueprintListModel;
+    }
+
+
 }

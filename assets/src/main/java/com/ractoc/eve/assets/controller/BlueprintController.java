@@ -2,8 +2,11 @@ package com.ractoc.eve.assets.controller;
 
 import com.ractoc.eve.assets.handler.BlueprintHandler;
 import com.ractoc.eve.assets.response.BaseResponse;
+import com.ractoc.eve.assets.response.BlueprintListResponse;
 import com.ractoc.eve.assets.response.BlueprintResponse;
 import com.ractoc.eve.assets.response.ErrorResponse;
+import com.ractoc.eve.assets.service.ServiceException;
+import com.ractoc.eve.user.filter.EveUserDetails;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.NoSuchElementException;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Api(tags = {"Blueprint Resource"}, value = "/blueprint", produces = "application/json")
@@ -47,6 +49,24 @@ public class BlueprintController {
         } catch (NoSuchElementException e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);
+        }
+    }
+
+    @ApiOperation(value = "Get character owned blueprints by character by ID", response = BlueprintListResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = BlueprintListResponse.class),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
+    @GetMapping(value = "/character", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> getBlueprintsForCharacter(@AuthenticationPrincipal Authentication authentication) {
+        try {
+            return new ResponseEntity<>(
+                    new BlueprintListResponse(OK,
+                            blueprintHandler.getBlueprintsForCharacter((EveUserDetails) authentication.getPrincipal())
+                    )
+                    , OK);
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
     }
 }
