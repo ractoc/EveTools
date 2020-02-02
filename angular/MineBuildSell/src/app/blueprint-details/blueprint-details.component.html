@@ -1,0 +1,19 @@
+<div *ngIf="bp; else loading">
+  <h1>{{bp.name}} details</h1>
+  <table class="table">
+    <tbody>
+    <tr>
+      <th scope="row">Material Efficiency</th>
+      <td>{{bp.materialEfficiency}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Time Efficiency</th>
+      <td>{{bp.timeEfficiency}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #loading>
+  Loading blueprint...
+</ng-template>
