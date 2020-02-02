@@ -15,9 +15,9 @@ public class CalculatorHandler {
     @Autowired
     private CalculatorService calculatorService;
 
-    public BlueprintModel calculateBlueprintPrices(Integer bpId, Integer regionId, Long locationId) {
+    public BlueprintModel calculateBlueprintPrices(Integer bpId, Integer regionId, Long locationId, BlueprintModel blueprint) {
         BlueprintModel bp = BlueprintMapper.INSTANCE.apiToModel(blueprintService.getBlueprint(bpId));
-        calculatorService.calculateMaterialCost(bp, regionId, locationId);
+        calculatorService.calculateMaterialCost(bp, regionId, locationId, blueprint.getMaterialEfficiency());
         return bp;
     }
 

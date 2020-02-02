@@ -1,12 +1,13 @@
 <div *ngIf="errorMessage">{{errorMessage}}</div>
 <div *ngIf="blueprints; else loading">
   <div class="list-group list-group-flush">
-    <a *ngFor="let blueprint of blueprints" [ngClass]="blueprintClass(blueprint)">
+    <a *ngFor="let blueprint of blueprints" [ngClass]="blueprintClass(blueprint)"
+       [routerLink]="['/blueprint', blueprint.id]">
       {{blueprint.name}}
     </a>
   </div>
 </div>
 
 <ng-template #loading>
-  Loading items...
+  Loading blueprints...
 </ng-template>

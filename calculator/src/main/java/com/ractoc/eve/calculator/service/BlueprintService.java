@@ -14,7 +14,7 @@ public class BlueprintService {
 
     public BlueprintModel getBlueprint(Integer bpId) {
         try {
-            return blueprintResourceApi.getBlueprint(bpId).getBp();
+            return blueprintResourceApi.getBlueprint(bpId).getBlueprint();
         } catch (ApiException e) {
             throw new ServiceException("Unable to retrieve Blueprint: " + bpId, e);
         }

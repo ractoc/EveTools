@@ -20,12 +20,17 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BlueprintModel {
     private int id;
+    private String name;
     private int maxProductionLimit;
     private int copyingTime;
     private int inventionTime;
     private int manufacturingTime;
     private int researchMaterialTime;
     private int researchTimeTime;
+    private Integer materialEfficiency;
+    private Integer timeEfficiency;
+    private Integer runs;
+    private Integer quantity;
     private double buyPrice;
     private double sellPrice;
 

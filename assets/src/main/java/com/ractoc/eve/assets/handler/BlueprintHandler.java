@@ -4,7 +4,6 @@ import com.ractoc.eve.assets.mapper.*;
 import com.ractoc.eve.assets.service.BlueprintService;
 import com.ractoc.eve.assets.service.TypeService;
 import com.ractoc.eve.domain.assets.BlueprintModel;
-import com.ractoc.eve.domain.character.BlueprintListModel;
 import com.ractoc.eve.user.filter.EveUserDetails;
 import com.speedment.runtime.core.component.transaction.TransactionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +80,7 @@ public class BlueprintHandler {
 
     public BlueprintModel getBlueprint(Integer bpId) {
         BlueprintModel bp = BlueprintMapper.INSTANCE.dbToModel(blueprintService.getBlueprint(bpId));
+        addNameToBlueprint(bp);
 
         bp.setInventionMaterials(blueprintService
                 .getInventionMaterials(bpId)
@@ -117,16 +117,16 @@ public class BlueprintHandler {
         return bp;
     }
 
-    public List<BlueprintListModel> getBlueprintsForCharacter(EveUserDetails eveUserDetails) {
+    public List<BlueprintModel> getBlueprintsForCharacter(EveUserDetails eveUserDetails) {
         return blueprintService.getBlueprintsForCharacter(eveUserDetails.getCharId(), eveUserDetails.getAccessToken())
                 .map(BlueprintMapper.INSTANCE::esiToModel)
                 .map(this::addNameToBlueprint)
                 .collect(Collectors.toList());
     }
 
-    private BlueprintListModel addNameToBlueprint(BlueprintListModel blueprintListModel) {
-        blueprintListModel.setName(typeService.getItemName(blueprintListModel.getId()));
-        return blueprintListModel;
+    private BlueprintModel addNameToBlueprint(BlueprintModel blueprintModel) {
+        blueprintModel.setName(typeService.getItemName(blueprintModel.getId()));
+        return blueprintModel;
     }
 
 

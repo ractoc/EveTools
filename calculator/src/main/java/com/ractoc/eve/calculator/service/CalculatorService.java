@@ -5,6 +5,7 @@ import com.ractoc.eve.domain.assets.BlueprintModel;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.MarketApi;
 import com.ractoc.eve.jesi.model.GetMarketsRegionIdOrders200Ok;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +20,31 @@ public class CalculatorService {
     @Autowired
     private MarketApi marketApi;
 
-    public void calculateMaterialCost(BlueprintModel bp, Integer regionId, Long locationId) {
+    public void calculateMaterialCost(BlueprintModel bp, Integer regionId, Long locationId, Integer materialEfficiency) {
         Set<BlueprintMaterialModel> mats = bp.getManufacturingMaterials();
         for (BlueprintMaterialModel mat : mats) {
-            getTotalPricesForMaterial(regionId, locationId, mat);
+            getPricesForMaterial(regionId, locationId, mat);
+            // TODO: take the number of runs from the client
+            // TODO: determine the stationEfficiency instead of hard coding
+            int actualQuantity = calculateActualQuantity(100, mat.getQuantity(), materialEfficiency, 2);
+
         }
     }
 
-    private void getTotalPricesForMaterial(Integer regionId, Long locationId, BlueprintMaterialModel mat) {
+    public double calculateTotalMaterialCost(BlueprintModel bp, int materialEfficiency, int runs) {
+        double totalCost = 0.00;
+        Set<BlueprintMaterialModel> mats = bp.getManufacturingMaterials();
+        for (BlueprintMaterialModel mat : mats) {
+            int actualQuantity = calculateActualQuantity(100, mat.getQuantity(), materialEfficiency, 2);
+            totalCost += actualQuantity * mat.getBuyPrice();
+        }
+        return totalCost;
+
+        bp.getManufacturingMaterials().stream().map()
+
+    }
+
+    private void getPricesForMaterial(Integer regionId, Long locationId, BlueprintMaterialModel mat) {
         int pageNumber = 1;
         do {
             try {
@@ -59,10 +77,16 @@ public class CalculatorService {
     }
 
     private List<GetMarketsRegionIdOrders200Ok> findOrdersForLocation(List<GetMarketsRegionIdOrders200Ok> orders, Long locationId) {
-        System.out.println("locationId: " + locationId);
         return orders.stream()
-                .peek(o -> System.out.println("systemId: " + o.getSystemId()))
                 .filter(o -> o.getSystemId().equals(locationId.intValue()))
                 .collect(Collectors.toList());
+    }
+
+    private int calculateActualQuantity(int runs, int baseQuantity, int materialEfficiency, int stationEfficiency) {
+        return (int) Math.max(runs, Math.ceil(Precision.round(runs * baseQuantity * calculateMaterialModifier(materialEfficiency, stationEfficiency), 2)));
+    }
+
+    private double calculateMaterialModifier(double materialEfficiency, double stationEfficiency) {
+        return (100.00 - materialEfficiency) / 100.00 * (100.00 - stationEfficiency) / 100.00;
     }
 }

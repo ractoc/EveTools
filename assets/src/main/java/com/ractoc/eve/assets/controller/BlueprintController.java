@@ -66,6 +66,7 @@ public class BlueprintController {
                     )
                     , OK);
         } catch (ServiceException e) {
+            e.printStackTrace();
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
     }

@@ -2,7 +2,7 @@
   "config" : {
     "speedmentVersion": "Speedment:3.1.15",
     "companyName": "ractoc.com",
-    "appId": "6f3fa9ac-02c9-4b42-a4dd-ca0f49fde05c",
+    "appId": "aa5e467a-fbfd-4735-bc46-7df410b3d594",
     "name": "assets",
     "packageLocation": "target/generated-sources/java",
     "packageName": "com.ractoc.eve.assets.db",
@@ -24,14 +24,14 @@
                 ],
                 "indexes": [
                   {
-                    "unique" : true,
-                    "name" : "PRIMARY",
-                    "indexColumns" : [
+                    "unique": true,
+                    "name": "PRIMARY",
+                    "indexColumns": [
                       {
-                        "orderType" : "ASC",
-                        "name" : "id",
-                        "id" : "id",
-                        "ordinalPosition" : 1
+                        "orderType": "ASC",
+                        "name": "id",
+                        "id": "id",
+                        "ordinalPosition": 1
                       }
                     ],
                     "id" : "PRIMARY"

@@ -9,13 +9,15 @@ import {HomeComponent} from './home/home.component';
 import {LoginComponent} from './login/login.component';
 import {HttpClientModule} from '@angular/common/http';
 import {BlueprintListComponent} from './blueprint-list/blueprint-list.component';
+import {BlueprintDetailsComponent} from './blueprint-details/blueprint-details.component';
 
 @NgModule({
   declarations: [
     MainComponent,
     HomeComponent,
     LoginComponent,
-    BlueprintListComponent
+    BlueprintListComponent,
+    BlueprintDetailsComponent
   ],
   imports: [
     BrowserModule,

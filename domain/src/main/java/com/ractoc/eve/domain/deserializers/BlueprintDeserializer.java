@@ -31,6 +31,7 @@ public class BlueprintDeserializer extends StdDeserializer<BlueprintModel> {
     public static final String PROBABILITY = "probability";
     public static final String SKILLS = "skills";
     public static final String LEVEL = "level";
+    public static final String ID = "id";
 
 
     @SuppressWarnings("unused")
@@ -47,10 +48,19 @@ public class BlueprintDeserializer extends StdDeserializer<BlueprintModel> {
             throws IOException {
         JsonNode bpNode = jp.getCodec().readTree(jp);
         BlueprintModel bp = new BlueprintModel();
-        bp.setId(bpNode.get(BLUEPRINT_TYPE_ID).intValue());
+        bp.setId(getBlueprintId(bpNode));
         bp.setMaxProductionLimit(bpNode.get(MAX_PRODUCTION_LIMIT).intValue());
+        bp.setMaterialEfficiency(bpNode.get("materialEfficiency") != null ? bpNode.get("materialEfficiency").intValue() : 0);
         deserializeActivities(bp, bpNode);
         return bp;
+    }
+
+    private int getBlueprintId(JsonNode bpNode) {
+        JsonNode idNode = bpNode.get(BLUEPRINT_TYPE_ID);
+        if (idNode == null) {
+            idNode = bpNode.get(ID);
+        }
+        return idNode.asInt();
     }
 
     private void deserializeActivities(BlueprintModel bp, JsonNode bpNode) {
