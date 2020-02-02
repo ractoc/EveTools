@@ -12,7 +12,6 @@
     <modules>
         <module>angular</module>
         <module>assets</module>
-        <module>character</module>
         <module>crawler</module>
         <module>domain</module>
         <module>J-ESI</module>

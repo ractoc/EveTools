@@ -2,7 +2,7 @@
   "config" : {
     "speedmentVersion": "Speedment:3.1.15",
     "companyName": "ractoc.com",
-    "appId": "64af15a7-dc88-452c-9462-5e2f3a40442d",
+    "appId": "d4b93f75-81dd-46fc-9f51-770c0f37bb97",
     "name": "user",
     "packageLocation": "target/generated-sources/java",
     "packageName": "com.ractoc.eve.user.db",
@@ -24,14 +24,14 @@
                 ],
                 "indexes": [
                   {
-                    "unique" : true,
-                    "name" : "PRIMARY",
-                    "indexColumns" : [
+                    "unique": true,
+                    "name": "PRIMARY",
+                    "indexColumns": [
                       {
-                        "orderType" : "ASC",
-                        "name" : "eve_state",
-                        "id" : "eve_state",
-                        "ordinalPosition" : 1
+                        "orderType": "ASC",
+                        "name": "eve_state",
+                        "id": "eve_state",
+                        "ordinalPosition": 1
                       }
                     ],
                     "id" : "PRIMARY"
