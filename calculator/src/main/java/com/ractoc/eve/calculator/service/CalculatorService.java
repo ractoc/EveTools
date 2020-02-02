@@ -39,9 +39,6 @@ public class CalculatorService {
             totalCost += actualQuantity * mat.getBuyPrice();
         }
         return totalCost;
-
-        bp.getManufacturingMaterials().stream().map()
-
     }
 
     private void getPricesForMaterial(Integer regionId, Long locationId, BlueprintMaterialModel mat) {
