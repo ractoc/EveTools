@@ -10,10 +10,10 @@ import org.springframework.http.HttpStatus;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BlueprintResponse extends BaseResponse {
 
-    private BlueprintModel bp;
+    private BlueprintModel blueprint;
 
-    public BlueprintResponse(@NonNull HttpStatus responseCode, @NonNull BlueprintModel bp) {
+    public BlueprintResponse(@NonNull HttpStatus responseCode, @NonNull BlueprintModel blueprint) {
         super(responseCode.value());
-        this.bp = bp;
+        this.blueprint = blueprint;
     }
 }

@@ -7,7 +7,6 @@ import {UserService} from './user.service';
 
 const ASSETS_URI = 'http://localhost:8787/assets';
 
-
 @Injectable({
   providedIn: 'root'
 })

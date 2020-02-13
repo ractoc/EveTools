@@ -21,6 +21,7 @@ import java.util.Set;
 public class BlueprintModel {
     private int id;
     private String name;
+    private ItemModel item;
     private int maxProductionLimit;
     private int copyingTime;
     private int inventionTime;
@@ -31,8 +32,9 @@ public class BlueprintModel {
     private Integer timeEfficiency;
     private Integer runs;
     private Integer quantity;
-    private double buyPrice;
-    private double sellPrice;
+    private double mineralBuyPrice;
+    private double mineralSellPrice;
+    private double jobInstallationCosts;
 
     private Set<BlueprintMaterialModel> inventionMaterials = new HashSet<>();
     private Set<BlueprintProductModel> inventionProducts = new HashSet<>();

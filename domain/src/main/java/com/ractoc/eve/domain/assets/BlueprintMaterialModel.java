@@ -15,6 +15,7 @@ public class BlueprintMaterialModel {
     @EqualsAndHashCode.Include
     private int typeId;
     private int quantity;
+    private int calculatedTotalQuantity;
 
     private Double buyPrice;
     private Double sellPrice;

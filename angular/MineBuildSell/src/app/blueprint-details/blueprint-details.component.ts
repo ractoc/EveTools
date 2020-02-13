@@ -3,6 +3,7 @@ import {AssetsService} from "../service/assets.service";
 import {BlueprintModel} from "../shared/model/blueprint.model";
 import {Subscription} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
+import {CalculatorService} from "../service/calculator.service";
 
 @Component({
   selector: 'app-blueprint-details',
@@ -14,7 +15,7 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
   bp: BlueprintModel;
   private routeListener$: Subscription;
 
-  constructor(private assetsService: AssetsService, private route: ActivatedRoute) {
+  constructor(private assetsService: AssetsService, private calculatorService: CalculatorService, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -33,4 +34,11 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
     this.routeListener$.unsubscribe();
   }
 
+  calculate() {
+    this.calculatorService.calculateBlueprint(this.bp).subscribe(
+      (blueprintData: BlueprintModel) => {
+        this.bp = blueprintData;
+        console.log("calculated blueprint", blueprintData);
+      });
+  }
 }

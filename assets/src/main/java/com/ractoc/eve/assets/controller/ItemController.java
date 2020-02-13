@@ -4,6 +4,7 @@ import com.ractoc.eve.assets.handler.TypeHandler;
 import com.ractoc.eve.assets.response.BaseResponse;
 import com.ractoc.eve.assets.response.ErrorResponse;
 import com.ractoc.eve.assets.response.ItemNameResponse;
+import com.ractoc.eve.assets.response.ItemResponse;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,21 @@ public class ItemController {
     public ResponseEntity<BaseResponse> getItemName(@AuthenticationPrincipal Authentication authentication, @PathVariable("id") int itemId) {
         try {
             return new ResponseEntity<>(new ItemNameResponse(OK, typeHandler.getItemName(itemId)), OK);
+        } catch (NoSuchElementException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);
+        }
+    }
+
+    @ApiOperation(value = "Get item by ID", response = ItemResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = ItemResponse.class),
+            @ApiResponse(code = 404, message = "Item not found", response = ErrorResponse.class)
+    })
+    @GetMapping(value = "/blueprint/{id}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> getItemForBlueprint(@AuthenticationPrincipal Authentication authentication, @PathVariable("id") int blueprintId) {
+        try {
+            return new ResponseEntity<>(new ItemResponse(OK, typeHandler.getItemForBlueprint(blueprintId)), OK);
         } catch (NoSuchElementException e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);

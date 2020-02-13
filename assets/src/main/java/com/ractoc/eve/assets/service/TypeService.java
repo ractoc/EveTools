@@ -37,4 +37,14 @@ public class TypeService {
                 .orElseThrow(() -> new NoSuchElementException("Item not found, ID: " + itemId))
                 .orElseThrow(() -> new NoSuchElementException("Item not found, ID: " + itemId));
     }
+
+    public Type getItemblueprintId(int itemId) {
+        System.out.println("retrieving item: " + itemId);
+        return typeManager
+                .stream()
+                .peek(System.out::println)
+                .filter(Type.ID.equal(itemId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Item not found, ID: " + itemId));
+    }
 }

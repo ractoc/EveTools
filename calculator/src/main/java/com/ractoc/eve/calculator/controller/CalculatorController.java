@@ -41,19 +41,20 @@ public class CalculatorController {
             @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = BlueprintResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    @PostMapping(value = "/{bpId}/{regionId}/{locationId}", produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{regionId}/{locationId}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<BaseResponse> calculateBlueprintPizes(@AuthenticationPrincipal Authentication authentication
-            , @PathVariable("bpId") Integer bpId
             , @PathVariable("regionId") Integer regionId
             , @PathVariable("locationId") Long locationId
+            , @RequestParam(value = "runs", defaultValue = "1") Integer runs
             , @RequestBody BlueprintModel blueprint) {
         try {
             return new ResponseEntity<>(
                     new BlueprintResponse(OK,
-                            calculatorHandler.calculateBlueprintPrices(bpId, regionId, locationId, blueprint)
+                            calculatorHandler.calculateBlueprintPrices(regionId, locationId, blueprint, runs)
                     )
                     , OK);
         } catch (ServiceException e) {
+            e.printStackTrace();
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
     }
