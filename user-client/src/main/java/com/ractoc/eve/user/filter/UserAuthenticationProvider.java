@@ -4,7 +4,7 @@ import com.ractoc.eve.user_client.ApiException;
 import com.ractoc.eve.user_client.api.UserResourceApi;
 import com.ractoc.eve.user_client.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
@@ -25,8 +25,7 @@ public class UserAuthenticationProvider extends AbstractUserDetailsAuthenticatio
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
         if (Instant.ofEpochMilli(((EveUserDetails) userDetails).getExpiresAt()).isBefore(Instant.now())) {
-            System.out.println("EVE-State has expired and needs to be refreshed");
-            throw new DisabledException("EVE-State has expired and needs to be refreshed");
+            throw new CredentialsExpiredException("EVE-State has expired and needs to be refreshed");
         }
     }
 

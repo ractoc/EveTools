@@ -81,18 +81,22 @@ public class UserWebController {
     }
 
     private String refreshToken(HttpServletRequest request, String eveState) {
-        String refreshToken = handler.getRefreshTokenForState(eveState);
-        MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
-        formData.add("grant_type", "refresh_token");
-        formData.add("refresh_token", refreshToken);
-        OAuthToken oAuthToken = client.target("https://login.eveonline.com/v2/oauth/token")
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.form(formData), new GenericType<OAuthToken>() {
-                });
+        try {
+            String refreshToken = handler.getRefreshTokenForState(eveState);
+            MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
+            formData.add("grant_type", "refresh_token");
+            formData.add("refresh_token", refreshToken);
+            OAuthToken oAuthToken = client.target("https://login.eveonline.com/v2/oauth/token")
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .post(Entity.form(formData), new GenericType<OAuthToken>() {
+                    });
 
-        handler.storeEveUserRegistration(eveState, oAuthToken, RequestUtils.getRemoteIP(request));
+            handler.storeEveUserRegistration(eveState, oAuthToken, RequestUtils.getRemoteIP(request));
 
-        return REDIRECT + frontendUrl + "/" + eveState;
+            return REDIRECT + frontendUrl + "/" + eveState;
+        } catch (AccessDeniedException ade) {
+            return initiateLogin(request);
+        }
     }
 
     private void validatedIP(String eveState, String remoteIP) {

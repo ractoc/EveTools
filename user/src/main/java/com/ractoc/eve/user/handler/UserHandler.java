@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Component
@@ -64,7 +64,7 @@ public class UserHandler {
                                 .eveState(eveState)
                                 .ipAddress(user.getIpAddress())
                                 .expiresAt(user.getLastRefresh().orElseThrow(() -> new AccessDeniedException(eveState))
-                                        .toInstant(ZoneOffset.UTC).toEpochMilli() +
+                                        .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() +
                                         user.getExpiresIn().orElseThrow(() -> new AccessDeniedException(eveState)))
                                 .accessToken(user.getAccessToken().orElseThrow(() -> new AccessDeniedException(eveState)))
                                 .build())
