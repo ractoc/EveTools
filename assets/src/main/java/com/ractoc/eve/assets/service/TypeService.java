@@ -39,7 +39,6 @@ public class TypeService {
     }
 
     public Type getItemblueprintId(int itemId) {
-        System.out.println("retrieving item: " + itemId);
         return typeManager
                 .stream()
                 .peek(System.out::println)

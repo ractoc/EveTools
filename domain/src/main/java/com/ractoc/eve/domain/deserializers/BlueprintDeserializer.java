@@ -49,6 +49,7 @@ public class BlueprintDeserializer extends StdDeserializer<BlueprintModel> {
         JsonNode bpNode = jp.getCodec().readTree(jp);
         BlueprintModel bp = new BlueprintModel();
         bp.setId(getBlueprintId(bpNode));
+        bp.setLocationId(bpNode.get("locationId").longValue());
         bp.setMaxProductionLimit(bpNode.get(MAX_PRODUCTION_LIMIT).intValue());
         bp.setMaterialEfficiency(bpNode.get("materialEfficiency") != null ? bpNode.get("materialEfficiency").intValue() : 0);
         deserializeActivities(bp, bpNode);

@@ -18,6 +18,7 @@ import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.CharacterApi;
 import com.ractoc.eve.jesi.model.GetCharactersCharacterIdBlueprints200Ok;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -163,7 +164,11 @@ public class BlueprintService {
         try {
             return characterApi.getCharactersCharacterIdBlueprints(characterId, null, null, 1, accessToken).stream();
         } catch (ApiException e) {
-            throw new ServiceException("Unable to retrieve Character Blueprints for character ID " + characterId, e);
+            if (e.getCode() == 403) {
+                throw new AccessDeniedException("Access to the EVE SSO has been denied", e);
+            } else {
+                throw new ServiceException("Unable to retrieve Character Blueprints for character ID " + characterId, e);
+            }
         }
     }
 }

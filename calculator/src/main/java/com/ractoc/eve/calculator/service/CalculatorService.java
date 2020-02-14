@@ -6,16 +6,14 @@ import com.ractoc.eve.domain.assets.ItemModel;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.IndustryApi;
 import com.ractoc.eve.jesi.api.MarketApi;
-import com.ractoc.eve.jesi.model.GetIndustrySystems200Ok;
-import com.ractoc.eve.jesi.model.GetIndustrySystemsCostIndice;
-import com.ractoc.eve.jesi.model.GetMarketsRegionIdOrders200Ok;
+import com.ractoc.eve.jesi.api.SkillsApi;
+import com.ractoc.eve.jesi.api.UniverseApi;
+import com.ractoc.eve.jesi.model.*;
 import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,9 +21,12 @@ public class CalculatorService {
 
     @Autowired
     private MarketApi marketApi;
-
     @Autowired
     private IndustryApi industryApi;
+    @Autowired
+    private SkillsApi skillsApi;
+    @Autowired
+    private UniverseApi universeApi;
 
     public void calculateMaterialPrices(BlueprintModel bp, Integer regionId, Long locationId, Integer runs) {
         Set<BlueprintMaterialModel> mats = bp.getManufacturingMaterials();
@@ -45,22 +46,21 @@ public class CalculatorService {
         getPricesForItem(item, regionId, locationId, runs);
     }
 
-    public void calculateJobInstallationCosts(BlueprintModel blueprint, Long locationId) {
+    public void calculateJobInstallationCosts(BlueprintModel blueprint, String token) {
         try {
+            Integer systemId = getSystemFromStructure(blueprint.getLocationId(), token);
             List<GetIndustrySystems200Ok> systems = industryApi.getIndustrySystems(null, null);
-            Float costIndex = systems.stream()
-                    .filter(system -> system.getSolarSystemId().intValue() == locationId.intValue())
-                    .findAny()
-                    .orElseThrow(() -> new ServiceException("Unable to determine Job Fee"))
-                    .getCostIndices().stream()
-                    .filter(index -> index.getActivity() == GetIndustrySystemsCostIndice.ActivityEnum.MANUFACTURING)
-                    .findAny()
-                    .orElseThrow(() -> new ServiceException("Unable to determine Job Fee"))
-                    .getCostIndex();
-            blueprint.setJobInstallationCosts(blueprint.getMineralBuyPrice() * costIndex);
+            Optional<GetIndustrySystems200Ok> system = systems.stream()
+                    .filter(s -> s.getSolarSystemId() == systemId)
+                    .findAny();
+            blueprint.setJobInstallationCosts(calculateJobInitializationCost(blueprint.getMineralBuyPrice(), system));
         } catch (ApiException e) {
             throw new ServiceException("Unable to determine Job Fee", e);
         }
+    }
+
+    private Integer getSystemFromStructure(Long locationId, String token) throws ApiException {
+        return universeApi.getUniverseStructuresStructureId(locationId, null, null, token).getSolarSystemId();
     }
 
     private void getPricesForMaterial(Integer regionId, Long locationId, BlueprintMaterialModel mat) {
@@ -143,5 +143,56 @@ public class CalculatorService {
 
     private double calculateMaterialModifier(double materialEfficiency, double stationEfficiency) {
         return (100.00 - materialEfficiency) / 100.00 * (100.00 - stationEfficiency) / 100.00;
+    }
+
+    private double calculateJobInitializationCost(double mineralBuyPrice, Optional<GetIndustrySystems200Ok> system) {
+        Float costIndex = system
+                .orElseThrow(() -> new ServiceException("Unable to determine Job Fee"))
+                .getCostIndices().stream()
+                .filter(index -> index.getActivity() == GetIndustrySystemsCostIndice.ActivityEnum.MANUFACTURING)
+                .findAny()
+                .orElseThrow(() -> new ServiceException("Unable to determine Job Fee"))
+                .getCostIndex();
+        return mineralBuyPrice * costIndex;
+    }
+
+    public void calculateSalesTax(ItemModel item, Integer charId, String token) {
+        Map<Skill, Integer> skillLevels = getSkillsForCharacter(charId, token, Skill.ACCOUNTING);
+        double salesTax = 0.05 * (1.0 - skillLevels.get(Skill.ACCOUNTING).doubleValue() * 0.11);
+        item.setSalesTax(item.getSellPrice() * salesTax);
+    }
+
+    private Map<Skill, Integer> getSkillsForCharacter(Integer charId, String token, Skill... skills) {
+        Map<Skill, Integer> skillLevels = new HashMap<>();
+        try {
+            GetCharactersCharacterIdSkillsOk charSkills = skillsApi.getCharactersCharacterIdSkills(charId, null, null, token);
+            for (Skill skill : skills) {
+                int skillLevel = charSkills.getSkills()
+                        .stream()
+                        .filter(s -> s.getSkillId() == skill.getSkillId())
+                        .mapToInt(GetCharactersCharacterIdSkillsSkill::getActiveSkillLevel)
+                        .findFirst()
+                        .orElse(0);
+                skillLevels.put(skill, skillLevel);
+            }
+        } catch (ApiException e) {
+            throw new ServiceException("Unable to skills for character " + charId, e);
+        }
+        return skillLevels;
+    }
+
+    private enum Skill {
+        ACCOUNTING(16622),
+        BROKER_RELATIONS(3446);
+
+        private final int skillId;
+
+        Skill(int skillId) {
+            this.skillId = skillId;
+        }
+
+        public int getSkillId() {
+            return skillId;
+        }
     }
 }

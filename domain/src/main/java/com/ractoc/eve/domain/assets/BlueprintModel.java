@@ -22,6 +22,7 @@ public class BlueprintModel {
     private int id;
     private String name;
     private ItemModel item;
+    private Long locationId;
     private int maxProductionLimit;
     private int copyingTime;
     private int inventionTime;

@@ -40,7 +40,7 @@ public class ItemController {
         this.typeHandler = typeHandler;
     }
 
-    @ApiOperation(value = "Get item by ID", response = ItemNameResponse.class, produces = "application/json")
+    @ApiOperation(value = "Get item name by item ID", response = ItemNameResponse.class, produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = ItemNameResponse.class),
             @ApiResponse(code = 404, message = "Item not found", response = ErrorResponse.class)
@@ -55,7 +55,7 @@ public class ItemController {
         }
     }
 
-    @ApiOperation(value = "Get item by ID", response = ItemResponse.class, produces = "application/json")
+    @ApiOperation(value = "Get item by blueprint ID", response = ItemResponse.class, produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = ItemResponse.class),
             @ApiResponse(code = 404, message = "Item not found", response = ErrorResponse.class)

@@ -17,4 +17,5 @@ public class ItemModel {
     private String name;
     private Double buyPrice;
     private Double sellPrice;
+    private Double salesTax;
 }

@@ -10,6 +10,7 @@ import com.ractoc.eve.user.filter.EveUserDetails;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -65,6 +66,9 @@ public class BlueprintController {
                             blueprintHandler.getBlueprintsForCharacter((EveUserDetails) authentication.getPrincipal())
                     )
                     , OK);
+        } catch (AccessDeniedException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ErrorResponse(UNAUTHORIZED, e.getMessage()), UNAUTHORIZED);
         } catch (ServiceException e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);

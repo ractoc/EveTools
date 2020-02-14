@@ -6,6 +6,7 @@ import com.ractoc.eve.calculator.response.BlueprintResponse;
 import com.ractoc.eve.calculator.response.ErrorResponse;
 import com.ractoc.eve.calculator.service.ServiceException;
 import com.ractoc.eve.domain.assets.BlueprintModel;
+import com.ractoc.eve.user.filter.EveUserDetails;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +51,7 @@ public class CalculatorController {
         try {
             return new ResponseEntity<>(
                     new BlueprintResponse(OK,
-                            calculatorHandler.calculateBlueprintPrices(regionId, locationId, blueprint, runs)
+                            calculatorHandler.calculateBlueprintPrices(regionId, locationId, blueprint, runs, (EveUserDetails) authentication.getPrincipal())
                     )
                     , OK);
         } catch (ServiceException e) {

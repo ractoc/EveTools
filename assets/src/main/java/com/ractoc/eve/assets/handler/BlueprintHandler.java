@@ -119,8 +119,11 @@ public class BlueprintHandler {
 
     public List<BlueprintModel> getBlueprintsForCharacter(EveUserDetails eveUserDetails) {
         return blueprintService.getBlueprintsForCharacter(eveUserDetails.getCharId(), eveUserDetails.getAccessToken())
+                .peek(System.out::println)
                 .map(BlueprintMapper.INSTANCE::esiToModel)
+                .peek(System.out::println)
                 .map(this::addNameToBlueprint)
+                .peek(System.out::println)
                 .collect(Collectors.toList());
     }
 

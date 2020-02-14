@@ -19,6 +19,6 @@ sso:
   client-url: http://localhost:8484/user/eveCallBack
   client-id: cf33fd256e884c81b634bf74ca21612a
   client-secret: SEmd2uiGUpW0Flvxaqe1XiTV6M6Ii8GvFd4dyyZy
-  client-scopes: esi-assets.read_assets.v1 esi-characters.read_blueprints.v1
+  client-scopes: esi-assets.read_assets.v1 esi-characters.read_blueprints.v1 esi-skills.read_skills.v1 esi-universe.read_structures.v1
 
 debug: true
