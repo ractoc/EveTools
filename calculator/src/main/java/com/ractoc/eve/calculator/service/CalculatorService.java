@@ -4,10 +4,7 @@ import com.ractoc.eve.domain.assets.BlueprintMaterialModel;
 import com.ractoc.eve.domain.assets.BlueprintModel;
 import com.ractoc.eve.domain.assets.ItemModel;
 import com.ractoc.eve.jesi.ApiException;
-import com.ractoc.eve.jesi.api.IndustryApi;
-import com.ractoc.eve.jesi.api.MarketApi;
-import com.ractoc.eve.jesi.api.SkillsApi;
-import com.ractoc.eve.jesi.api.UniverseApi;
+import com.ractoc.eve.jesi.api.*;
 import com.ractoc.eve.jesi.model.*;
 import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +18,8 @@ public class CalculatorService {
 
     @Autowired
     private MarketApi marketApi;
+    @Autowired
+    private AssetsApi assetsApi;
     @Autowired
     private IndustryApi industryApi;
     @Autowired
@@ -46,12 +45,12 @@ public class CalculatorService {
         getPricesForItem(item, regionId, locationId, runs);
     }
 
-    public void calculateJobInstallationCosts(BlueprintModel blueprint, String token) {
+    public void calculateJobInstallationCosts(BlueprintModel blueprint, Integer charId, String token) {
         try {
-            Integer systemId = getSystemFromStructure(blueprint.getLocationId(), token);
+            Integer systemId = getSystemFromLocation(charId, blueprint.getLocationId(), token);
             List<GetIndustrySystems200Ok> systems = industryApi.getIndustrySystems(null, null);
             Optional<GetIndustrySystems200Ok> system = systems.stream()
-                    .filter(s -> s.getSolarSystemId() == systemId)
+                    .filter(s -> s.getSolarSystemId().intValue() == systemId.intValue())
                     .findAny();
             blueprint.setJobInstallationCosts(calculateJobInitializationCost(blueprint.getMineralBuyPrice(), system));
         } catch (ApiException e) {
@@ -59,8 +58,24 @@ public class CalculatorService {
         }
     }
 
-    private Integer getSystemFromStructure(Long locationId, String token) throws ApiException {
-        return universeApi.getUniverseStructuresStructureId(locationId, null, null, token).getSolarSystemId();
+    private Integer getSystemFromLocation(Integer charId, Long locationId, String token) {
+        int pageNumber = 1;
+        do {
+            try {
+                List<GetCharactersCharacterIdAssets200Ok> assets = assetsApi.getCharactersCharacterIdAssets(charId, null, null, 1, token);
+                if (assets.isEmpty()) {
+                    throw new NoSuchElementException("No asset found for location: " + locationId);
+                }
+                OptionalLong assetLocation = assets.stream().filter(a -> a.getItemId().longValue() == locationId.longValue()).mapToLong(a -> a.getLocationId()).findFirst();
+                if (assetLocation.isPresent()) {
+                    return universeApi.getUniverseStructuresStructureId(assetLocation.getAsLong(), null, null, token).getSolarSystemId();
+                }
+                pageNumber++;
+            } catch (ApiException e) {
+                throw new ServiceException("Unable to retrieve System from item location " + locationId, e);
+            }
+        } while (pageNumber < 10000);
+        throw new ServiceException("Maximum number of pages exceeded while requesting a System from item location " + locationId);
     }
 
     private void getPricesForMaterial(Integer regionId, Long locationId, BlueprintMaterialModel mat) {

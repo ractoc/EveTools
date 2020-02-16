@@ -30,7 +30,7 @@ public class CalculatorHandler {
         calculatorService.calculateItemPrices(item, regionId, locationId, runs);
         calculatorService.calculateSalesTax(item, userDetails.getCharId(), userDetails.getAccessToken());
         blueprint.setItem(item);
-        calculatorService.calculateJobInstallationCosts(blueprint, userDetails.getAccessToken());
+        calculatorService.calculateJobInstallationCosts(blueprint, userDetails.getCharId(), userDetails.getAccessToken());
         // profitability:
         // totalMineralSellPrice > totalMineralBuyPrice = just sell the minerals
         // itemBuyPrice < itemSellPrice = just buy and sell the item

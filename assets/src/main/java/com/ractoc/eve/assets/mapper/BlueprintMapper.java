@@ -18,5 +18,6 @@ public interface BlueprintMapper extends BaseMapper {
     BlueprintModel dbToModel(Blueprint bp);
 
     @Mapping(source = "typeId", target = "id")
+    @Mapping(source = "locationFlag.value", target = "locationFlag")
     BlueprintModel esiToModel(GetCharactersCharacterIdBlueprints200Ok esiModel);
 }
