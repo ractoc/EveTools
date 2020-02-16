@@ -18,4 +18,5 @@ public class ItemModel {
     private Double buyPrice;
     private Double sellPrice;
     private Double salesTax;
+    private Double brokerFee;
 }

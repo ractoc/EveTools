@@ -58,6 +58,19 @@ public class CalculatorService {
         }
     }
 
+    public void calculateSalesTax(ItemModel item, Integer charId, String token) {
+        Map<Skill, Integer> skillLevels = getSkillsForCharacter(charId, token, Skill.ACCOUNTING);
+        double salesTax = 0.05 * (1.0 - skillLevels.get(Skill.ACCOUNTING).doubleValue() * 0.11);
+        item.setSalesTax(item.getSellPrice() * salesTax);
+    }
+
+    public void calculateBrokerFee(ItemModel item, int charId, String token) {
+        Map<Skill, Integer> skillLevels = getSkillsForCharacter(charId, token, Skill.BROKER_RELATIONS);
+        // TODO: Standings are skipped for now since the amount to only 0.5% in total
+        double brokerFee = 0.05 - (0.003 * skillLevels.get(Skill.BROKER_RELATIONS).doubleValue());
+        item.setBrokerFee(item.getSellPrice() * brokerFee);
+    }
+
     private Integer getSystemFromLocation(Integer charId, Long locationId, String token) {
         int pageNumber = 1;
         do {
@@ -169,12 +182,6 @@ public class CalculatorService {
                 .orElseThrow(() -> new ServiceException("Unable to determine Job Fee"))
                 .getCostIndex();
         return mineralBuyPrice * costIndex;
-    }
-
-    public void calculateSalesTax(ItemModel item, Integer charId, String token) {
-        Map<Skill, Integer> skillLevels = getSkillsForCharacter(charId, token, Skill.ACCOUNTING);
-        double salesTax = 0.05 * (1.0 - skillLevels.get(Skill.ACCOUNTING).doubleValue() * 0.11);
-        item.setSalesTax(item.getSellPrice() * salesTax);
     }
 
     private Map<Skill, Integer> getSkillsForCharacter(Integer charId, String token, Skill... skills) {

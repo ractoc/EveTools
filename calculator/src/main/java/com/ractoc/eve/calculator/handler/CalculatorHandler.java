@@ -29,6 +29,7 @@ public class CalculatorHandler {
         ItemModel item = ItemMapper.INSTANCE.apiToModel(itemService.getItemForBlueprint(blueprint.getId()));
         calculatorService.calculateItemPrices(item, regionId, locationId, runs);
         calculatorService.calculateSalesTax(item, userDetails.getCharId(), userDetails.getAccessToken());
+        calculatorService.calculateBrokerFee(item, userDetails.getCharId(), userDetails.getAccessToken());
         blueprint.setItem(item);
         calculatorService.calculateJobInstallationCosts(blueprint, userDetails.getCharId(), userDetails.getAccessToken());
         // profitability:
