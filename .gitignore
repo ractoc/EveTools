@@ -5,6 +5,7 @@ target/
 /assets/src/main/json/
 dist/
 node_modules/
+node/
 
 # IDE exclude paths
 /.idea/
