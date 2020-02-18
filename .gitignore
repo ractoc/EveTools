@@ -10,3 +10,4 @@ node/
 # IDE exclude paths
 /.idea/
 .iml
+/angular/angular.iml

@@ -12,7 +12,6 @@
     <artifactId>angular</artifactId>
 
     <dependencies>
-
         <!-- microservice dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -3,6 +3,7 @@ package com.ractoc.eve.universe.handler;
 import com.ractoc.eve.domain.universe.SolarsystemModel;
 import com.ractoc.eve.universe.mapper.SolarsystemMapper;
 import com.ractoc.eve.universe.service.SolarsystemService;
+import com.speedment.runtime.core.component.transaction.TransactionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -15,10 +16,13 @@ import java.util.stream.Collectors;
 public class SolarsystemHandler {
 
     private final SolarsystemService solarsystemService;
+    private TransactionHandler transactionHandler;
 
     @Autowired
-    public SolarsystemHandler(SolarsystemService solarsystemService) {
+    public SolarsystemHandler(TransactionHandler transactionHandler,
+                              SolarsystemService solarsystemService) {
         this.solarsystemService = solarsystemService;
+        this.transactionHandler = transactionHandler;
     }
 
     public List<SolarsystemModel> getSolarsystemList() {
@@ -29,7 +33,13 @@ public class SolarsystemHandler {
         return SolarsystemMapper.INSTANCE.dbToModel(solarsystemService.getSolarsystemById(id));
     }
 
-    public SolarsystemModel saveSolarsystem(SolarsystemModel solarsystem) {
-        return SolarsystemMapper.INSTANCE.dbToModel(solarsystemService.saveSolarsystem(SolarsystemMapper.INSTANCE.modelToDb(solarsystem)));
+    public void saveSolarsystems(List<SolarsystemModel> solarsystems) {
+        transactionHandler.createAndAccept(tx -> {
+            solarsystemService.clearAllSolarSystems();
+            solarsystems.stream()
+                    .map(SolarsystemMapper.INSTANCE::modelToDb)
+                    .forEach(solarsystemService::saveSolarsystem);
+            tx.commit();
+        });
     }
 }

@@ -20,6 +20,7 @@ public class TypeService {
     }
 
     public void saveType(Type type) {
+        System.out.println("persisting:" + type);
         typeManager.persist(type);
     }
 

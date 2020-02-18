@@ -1,40 +1,40 @@
 {
   "config" : {
-    "speedmentVersion": "Speedment:3.1.15",
-    "companyName": "ractoc.com",
-    "appId": "d4b93f75-81dd-46fc-9f51-770c0f37bb97",
-    "name": "user",
-    "packageLocation": "target/generated-sources/java",
-    "packageName": "com.ractoc.eve.user.db",
-    "id": "user",
-    "enabled": true,
-    "dbmses": [
+    "speedmentVersion" : "Speedment:3.1.15",
+    "companyName" : "ractoc.com",
+    "appId" : "b08e3a8d-cc99-478e-a43b-db4c9b4bdd8c",
+    "name" : "user",
+    "packageLocation" : "target/generated-sources/java",
+    "packageName" : "com.ractoc.eve.user.db",
+    "id" : "user",
+    "enabled" : true,
+    "dbmses" : [
       {
-        "port": 9876,
-        "schemas": [
+        "port" : 9876,
+        "schemas" : [
           {
-            "tables": [
+            "tables" : [
               {
-                "primaryKeyColumns": [
+                "primaryKeyColumns" : [
                   {
-                    "name": "eve_state",
-                    "id": "eve_state",
-                    "ordinalPosition": 1
+                    "name" : "eve_state",
+                    "id" : "eve_state",
+                    "ordinalPosition" : 1
                   }
                 ],
-                "indexes": [
+                "indexes" : [
                   {
-                    "unique": true,
-                    "name": "PRIMARY",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "eve_state",
-                        "id": "eve_state",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "eve_state",
+                        "id" : "eve_state",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "id": "PRIMARY"
+                    "id" : "PRIMARY"
                   }
                 ],
                 "isView" : false,

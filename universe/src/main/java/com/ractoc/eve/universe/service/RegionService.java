@@ -6,7 +6,9 @@ import com.speedment.runtime.core.exception.SpeedmentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.ractoc.eve.universe.db.universe.eve_universe.region.generated.GeneratedRegion.ID;
@@ -32,22 +34,16 @@ public class RegionService {
         return region.orElseThrow(() -> new NoSuchEntryException(String.format(REGION_NOT_FOUND, "id", id)));
     }
 
-    public Region saveRegion(Region region) {
+    public void saveRegion(Region region) {
         try {
-            return insertOrUpdateRegion(region);
+            regionManager.persist(region);
         } catch (SpeedmentException e) {
             throw new ServiceException("Unable to save region " + region.getName(), e);
         }
     }
 
-    private Region insertOrUpdateRegion(Region region) {
-        try {
-            getRegionById(region.getId());
-            // if a region is found, update
-            return regionManager.update(region);
-        } catch (NoSuchEntryException nse) {
-            // if no region is found, persist
-            return regionManager.persist(region);
-        }
+    public void clearAllRegions() {
+        List<Region> constellations = regionManager.stream().collect(Collectors.toList());
+        constellations.forEach(regionManager.remover());
     }
 }

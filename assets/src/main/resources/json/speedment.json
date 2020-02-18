@@ -1,40 +1,40 @@
 {
   "config" : {
-    "speedmentVersion": "Speedment:3.1.15",
-    "companyName": "ractoc.com",
-    "appId": "7829bc1d-d779-4430-818f-d24417942f92",
-    "name": "assets",
-    "packageLocation": "target/generated-sources/java",
-    "packageName": "com.ractoc.eve.assets.db",
-    "id": "assets",
-    "enabled": true,
-    "dbmses": [
+    "speedmentVersion" : "Speedment:3.1.15",
+    "companyName" : "ractoc.com",
+    "appId" : "9368acb0-f36f-40ad-b24a-3f31602a9e04",
+    "name" : "assets",
+    "packageLocation" : "target/generated-sources/java",
+    "packageName" : "com.ractoc.eve.assets.db",
+    "id" : "assets",
+    "enabled" : true,
+    "dbmses" : [
       {
-        "port": 9876,
-        "schemas": [
+        "port" : 9876,
+        "schemas" : [
           {
-            "tables": [
+            "tables" : [
               {
-                "primaryKeyColumns": [
+                "primaryKeyColumns" : [
                   {
-                    "name": "id",
-                    "id": "id",
-                    "ordinalPosition": 1
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
                   }
                 ],
-                "indexes": [
+                "indexes" : [
                   {
-                    "unique": true,
-                    "name": "PRIMARY",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "id",
-                        "id": "id",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "id",
+                        "id" : "id",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "id": "PRIMARY"
+                    "id" : "PRIMARY"
                   }
                 ],
                 "isView" : false,
@@ -480,74 +480,74 @@
                     "ordinalPosition" : 2
                   },
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "name": "level",
-                    "id": "level",
-                    "ordinalPosition": 3
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "level",
+                    "id" : "level",
+                    "ordinalPosition" : 3
                   }
                 ],
-                "name": "blueprint_manufacturing_skills",
-                "id": "blueprint_manufacturing_skills"
+                "name" : "blueprint_manufacturing_skills",
+                "id" : "blueprint_manufacturing_skills"
               },
               {
-                "primaryKeyColumns": [
+                "primaryKeyColumns" : [
                   {
-                    "name": "id",
-                    "id": "id",
-                    "ordinalPosition": 1
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
                   }
                 ],
-                "indexes": [
+                "indexes" : [
                   {
-                    "unique": true,
-                    "name": "PRIMARY",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "id",
-                        "id": "id",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "id",
+                        "id" : "id",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "id": "PRIMARY"
+                    "id" : "PRIMARY"
                   }
                 ],
-                "isView": false,
-                "columns": [
+                "isView" : false,
+                "columns" : [
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "name": "id",
-                    "id": "id",
-                    "ordinalPosition": 1
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": true,
-                    "name": "name",
-                    "id": "name",
-                    "ordinalPosition": 2
+                    "databaseType" : "java.lang.String",
+                    "nullable" : true,
+                    "name" : "name",
+                    "id" : "name",
+                    "ordinalPosition" : 2
                   },
                   {
-                    "databaseType": "java.lang.Integer",
-                    "nullable": true,
-                    "name": "group_id",
-                    "id": "group_id",
-                    "ordinalPosition": 3
+                    "databaseType" : "java.lang.Integer",
+                    "nullable" : true,
+                    "name" : "group_id",
+                    "id" : "group_id",
+                    "ordinalPosition" : 3
                   },
                   {
-                    "databaseType": "java.lang.Integer",
-                    "nullable": true,
-                    "name": "volume",
-                    "id": "volume",
-                    "ordinalPosition": 4
+                    "databaseType" : "java.math.BigDecimal",
+                    "nullable" : true,
+                    "name" : "volume",
+                    "id" : "volume",
+                    "ordinalPosition" : 4
                   }
                 ],
-                "name": "type",
-                "id": "type"
+                "name" : "type",
+                "id" : "type"
               }
             ],
             "name" : "eve_assets",

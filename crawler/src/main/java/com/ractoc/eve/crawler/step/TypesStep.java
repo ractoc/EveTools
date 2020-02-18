@@ -6,6 +6,7 @@ import com.ractoc.eve.domain.assets.TypeModel;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 public class TypesStep {
 
@@ -16,9 +17,12 @@ public class TypesStep {
     @Autowired
     private TypeItemWriter writer;
 
+    @Value("${spring.batch.size}")
+    private int batchSize;
+
     public Step getStep() {
         return stepBuilderFactory.get("import Types step")
-                .<TypeModel, TypeModel>chunk(10)
+                .<TypeModel, TypeModel>chunk(batchSize)
                 .reader(reader)
                 .writer(writer)
                 .build();

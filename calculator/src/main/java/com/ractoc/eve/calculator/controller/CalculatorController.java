@@ -43,7 +43,7 @@ public class CalculatorController {
             @ApiResponse(code = 500, message = "Internal server error")
     })
     @PostMapping(value = "/{regionId}/{locationId}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> calculateBlueprintPizes(@AuthenticationPrincipal Authentication authentication
+    public ResponseEntity<BaseResponse> calculateBlueprintPrizes(@AuthenticationPrincipal Authentication authentication
             , @PathVariable("regionId") Integer regionId
             , @PathVariable("locationId") Long locationId
             , @RequestParam(value = "runs", defaultValue = "1") Integer runs

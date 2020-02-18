@@ -3,10 +3,8 @@ package com.ractoc.eve.crawler.reader;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.ractoc.eve.assets.handler.BlueprintHandler;
 import com.ractoc.eve.domain.assets.BlueprintModel;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,12 +17,9 @@ public class BlueprintItemReader implements ItemReader<BlueprintModel> {
     private int nextBlueprintIndex = 0;
     private List<BlueprintModel> blueprints;
 
-    @Autowired
-    private BlueprintHandler handler;
-
     public BlueprintModel read() {
         if (blueprints == null) {
-            init();
+            blueprints = fetchBlueprintsFromYML();
         }
         BlueprintModel blueprint = null;
         if (nextBlueprintIndex < blueprints.size()) {
@@ -32,11 +27,6 @@ public class BlueprintItemReader implements ItemReader<BlueprintModel> {
             nextBlueprintIndex++;
         }
         return blueprint;
-    }
-
-    private void init() {
-        blueprints = fetchBlueprintsFromYML();
-        handler.clearAllBlueprints();
     }
 
     private List<BlueprintModel> fetchBlueprintsFromYML() {

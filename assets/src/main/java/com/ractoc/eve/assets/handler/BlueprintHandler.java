@@ -31,6 +31,7 @@ public class BlueprintHandler {
 
     public void saveBlueprints(List<? extends BlueprintModel> bps) {
         transactionHandler.createAndAccept(tx -> {
+            blueprintService.clearAllBlueprints();
             bps.stream()
                     .map(BlueprintMapper.INSTANCE::modelToDb)
                     .forEach(blueprintService::saveBlueprint);
@@ -67,13 +68,6 @@ public class BlueprintHandler {
                     .map(BlueprintManufacturingSkillMapper.INSTANCE::modelToDb)
                     .forEach(blueprintService::saveManufacturingSkill);
 
-            tx.commit();
-        });
-    }
-
-    public void clearAllBlueprints() {
-        transactionHandler.createAndAccept(tx -> {
-            blueprintService.clearAllBlueprints();
             tx.commit();
         });
     }
@@ -119,11 +113,8 @@ public class BlueprintHandler {
 
     public List<BlueprintModel> getBlueprintsForCharacter(EveUserDetails eveUserDetails) {
         return blueprintService.getBlueprintsForCharacter(eveUserDetails.getCharId(), eveUserDetails.getAccessToken())
-                .peek(System.out::println)
                 .map(BlueprintMapper.INSTANCE::esiToModel)
-                .peek(System.out::println)
                 .map(this::addNameToBlueprint)
-                .peek(System.out::println)
                 .collect(Collectors.toList());
     }
 

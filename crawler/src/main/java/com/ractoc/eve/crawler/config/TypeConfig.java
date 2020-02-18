@@ -1,5 +1,6 @@
 package com.ractoc.eve.crawler.config;
 
+import com.ractoc.eve.assets_client.api.ItemResourceApi;
 import com.ractoc.eve.crawler.reader.TypeItemReader;
 import com.ractoc.eve.crawler.step.TypesStep;
 import com.ractoc.eve.crawler.writer.TypeItemWriter;
@@ -22,5 +23,10 @@ public class TypeConfig {
     @Bean
     TypesStep typeStep() {
         return new TypesStep();
+    }
+
+    @Bean
+    ItemResourceApi itemResourceApi() {
+        return new ItemResourceApi();
     }
 }

@@ -1,7 +1,8 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-
 import {RouterModule} from '@angular/router';
+
+import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 
 import {APP_ROUTES} from './app-routes';
 import {MainComponent} from './main/main.component';
@@ -20,6 +21,7 @@ import {BlueprintDetailsComponent} from './blueprint-details/blueprint-details.c
     BlueprintDetailsComponent
   ],
   imports: [
+    NgbModule,
     BrowserModule,
     HttpClientModule,
     RouterModule,

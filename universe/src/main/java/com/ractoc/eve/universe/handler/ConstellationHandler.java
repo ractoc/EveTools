@@ -3,6 +3,7 @@ package com.ractoc.eve.universe.handler;
 import com.ractoc.eve.domain.universe.ConstellationModel;
 import com.ractoc.eve.universe.mapper.ConstellationMapper;
 import com.ractoc.eve.universe.service.ConstellationService;
+import com.speedment.runtime.core.component.transaction.TransactionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -15,10 +16,13 @@ import java.util.stream.Collectors;
 public class ConstellationHandler {
 
     private final ConstellationService constellationService;
+    private TransactionHandler transactionHandler;
 
     @Autowired
-    public ConstellationHandler(ConstellationService constellationService) {
+    public ConstellationHandler(TransactionHandler transactionHandler,
+                                ConstellationService constellationService) {
         this.constellationService = constellationService;
+        this.transactionHandler = transactionHandler;
     }
 
     public List<ConstellationModel> getConstellationList() {
@@ -29,7 +33,13 @@ public class ConstellationHandler {
         return ConstellationMapper.INSTANCE.dbToModel(constellationService.getConstellationById(id));
     }
 
-    public ConstellationModel saveConstellation(ConstellationModel constellation) {
-        return ConstellationMapper.INSTANCE.dbToModel(constellationService.saveConstellation(ConstellationMapper.INSTANCE.modelToDb(constellation)));
+    public void saveConstellations(List<ConstellationModel> constellations) {
+        transactionHandler.createAndAccept(tx -> {
+            constellationService.clearAllConstellations();
+            constellations.stream()
+                    .map(ConstellationMapper.INSTANCE::modelToDb)
+                    .forEach(constellationService::saveConstellation);
+            tx.commit();
+        });
     }
 }

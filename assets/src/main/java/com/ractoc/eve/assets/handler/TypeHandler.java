@@ -31,18 +31,12 @@ public class TypeHandler {
         this.transactionHandler = transactionHandler;
     }
 
-    public void saveTypes(List<? extends TypeModel> types) {
+    public void saveTypes(List<TypeModel> types) {
         transactionHandler.createAndAccept(tx -> {
+            typeService.clearAllTypes();
             types.stream()
                     .map(TypeMapper.INSTANCE::modelToDb)
                     .forEach(typeService::saveType);
-            tx.commit();
-        });
-    }
-
-    public void clearAllTypes() {
-        transactionHandler.createAndAccept(tx -> {
-            typeService.clearAllTypes();
             tx.commit();
         });
     }

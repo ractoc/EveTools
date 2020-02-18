@@ -10,7 +10,6 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>angular</module>
         <module>assets</module>
         <module>crawler</module>
         <module>domain</module>
@@ -131,5 +130,24 @@
             </plugins>
         </pluginManagement>
     </build>
+
+
+    <profiles>
+        <profile>
+            <id>production</id>
+            <!--
+            only make a production build on the build server
+            it is never used locally and takes forever
+            -->
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <modules>
+                <module>angular</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

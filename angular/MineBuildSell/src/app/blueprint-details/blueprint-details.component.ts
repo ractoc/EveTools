@@ -12,8 +12,10 @@ import {CalculatorService} from "../service/calculator.service";
 })
 export class BlueprintDetailsComponent implements OnInit, OnDestroy {
 
-  bp: BlueprintModel;
+  public bp: BlueprintModel;
   private routeListener$: Subscription;
+  public isCalculateCollapsed = true;
+  public isCalculating = false;
 
   constructor(private assetsService: AssetsService, private calculatorService: CalculatorService, private route: ActivatedRoute) {
   }
@@ -35,10 +37,26 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
   }
 
   calculate() {
+    this.isCalculating = true;
     this.calculatorService.calculateBlueprint(this.bp).subscribe(
       (blueprintData: BlueprintModel) => {
         this.bp = blueprintData;
         console.log("calculated blueprint", blueprintData);
+        this.isCalculating = false;
       });
+  }
+
+  calculateClass() {
+    return {
+      'btn': true,
+      'btn-outline-info': true,
+    };
+  }
+
+  calculateButtonText() {
+    if (this.isCalculating) {
+      return 'Calculating...';
+    }
+    return 'Calculate';
   }
 }

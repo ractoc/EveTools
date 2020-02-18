@@ -27,7 +27,6 @@ export class BlueprintListComponent implements OnInit {
   }
 
   blueprintClass(blueprint: BlueprintModel) {
-    console.log("blueprint", blueprint)
     return {
       'list-group-item': true,
       'list-group-item-action': true,

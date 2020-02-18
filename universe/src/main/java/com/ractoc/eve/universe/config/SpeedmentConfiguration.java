@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.ractoc.eve.universe.db.UniverseApplication;
 import com.ractoc.eve.universe.db.UniverseApplicationBuilder;
 import com.ractoc.eve.universe.db.universe.eve_universe.constellation.ConstellationManager;
+import com.ractoc.eve.universe.db.universe.eve_universe.market_hubs.MarketHubsManager;
 import com.ractoc.eve.universe.db.universe.eve_universe.region.RegionManager;
 import com.ractoc.eve.universe.db.universe.eve_universe.solarsystem.SolarsystemManager;
 import com.speedment.runtime.core.component.transaction.TransactionComponent;
@@ -91,6 +92,11 @@ public class SpeedmentConfiguration {
     @Bean
     public SolarsystemManager getSolarsystemManager(UniverseApplication app) {
         return app.getOrThrow(SolarsystemManager.class);
+    }
+
+    @Bean
+    public MarketHubsManager getMarketHubsManager(UniverseApplication app) {
+        return app.getOrThrow(MarketHubsManager.class);
     }
 
 //    @Bean

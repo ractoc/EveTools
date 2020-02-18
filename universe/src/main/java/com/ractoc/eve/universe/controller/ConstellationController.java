@@ -6,7 +6,6 @@ import com.ractoc.eve.universe.response.BaseResponse;
 import com.ractoc.eve.universe.response.ConstellationListResponse;
 import com.ractoc.eve.universe.response.ConstellationResponse;
 import com.ractoc.eve.universe.response.ErrorResponse;
-import com.ractoc.eve.universe.service.DuplicateEntryException;
 import com.ractoc.eve.universe.service.NoSuchEntryException;
 import com.ractoc.eve.universe.service.ServiceException;
 import io.swagger.annotations.*;
@@ -16,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -66,18 +66,16 @@ public class ConstellationController {
         }
     }
 
-    @ApiOperation(value = "Save a constellation. This can result in a new constellation being created or an existing constellation being updated.", response = ConstellationResponse.class, consumes = "application/json", produces = "application/json")
+    @ApiOperation(value = "Save ass constellations. This can result in a new constellation being created or an existing constellation being updated.", response = BaseResponse.class, consumes = "application/json", produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "The constellation was successfully created", response = ConstellationResponse.class),
-            @ApiResponse(code = 400, message = "Unable to create constellation, see body for more information", response = ErrorResponse.class),
+            @ApiResponse(code = 201, message = "The constellation was successfully created", response = BaseResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
     @PostMapping(value = "/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> createConstellation(@Valid @RequestBody ConstellationModel constellation) {
+    public ResponseEntity<BaseResponse> saveConstellation(@Valid @RequestBody List<ConstellationModel> constellations) {
         try {
-            return new ResponseEntity<>(new ConstellationResponse(CREATED, constellationHandler.saveConstellation(constellation)), OK);
-        } catch (DuplicateEntryException e) {
-            return new ResponseEntity<>(new ErrorResponse(CONFLICT, e.getMessage()), BAD_REQUEST);
+            constellationHandler.saveConstellations(constellations);
+            return new ResponseEntity<>(new BaseResponse(CREATED.value()), OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
         }

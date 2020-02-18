@@ -1,25 +1,27 @@
 package com.ractoc.eve.assets.controller;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.ractoc.eve.assets.handler.TypeHandler;
 import com.ractoc.eve.assets.response.BaseResponse;
 import com.ractoc.eve.assets.response.ErrorResponse;
 import com.ractoc.eve.assets.response.ItemNameResponse;
 import com.ractoc.eve.assets.response.ItemResponse;
+import com.ractoc.eve.assets.service.ServiceException;
+import com.ractoc.eve.domain.assets.TypeModel;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.List;
 import java.util.NoSuchElementException;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Api(tags = {"Item Resource"}, value = "/item", produces = "application/json")
@@ -68,5 +70,31 @@ public class ItemController {
             e.printStackTrace();
             return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);
         }
+    }
+
+    @ApiOperation(value = "Save all items.", response = BaseResponse.class, consumes = "application/json", produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "The items were successfully created", response = BaseResponse.class),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
+    @PostMapping(value = "/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> saveItems(@Valid @RequestBody List<TypeModel> items) {
+        try {
+            typeHandler.saveTypes(items);
+            return new ResponseEntity<>(new BaseResponse(CREATED.value()), OK);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseBody
+    public String handleHttpMessageNotReadableException(HttpMessageNotReadableException ex)
+    {
+        JsonMappingException jme = (JsonMappingException) ex.getCause();
+        jme.printStackTrace();
+        return jme.getPath().get(0).getFieldName() + " invalid";
     }
 }

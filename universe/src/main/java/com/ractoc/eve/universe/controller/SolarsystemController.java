@@ -3,10 +3,9 @@ package com.ractoc.eve.universe.controller;
 import com.ractoc.eve.domain.universe.SolarsystemModel;
 import com.ractoc.eve.universe.handler.SolarsystemHandler;
 import com.ractoc.eve.universe.response.BaseResponse;
+import com.ractoc.eve.universe.response.ErrorResponse;
 import com.ractoc.eve.universe.response.SolarsystemListResponse;
 import com.ractoc.eve.universe.response.SolarsystemResponse;
-import com.ractoc.eve.universe.response.ErrorResponse;
-import com.ractoc.eve.universe.service.DuplicateEntryException;
 import com.ractoc.eve.universe.service.NoSuchEntryException;
 import com.ractoc.eve.universe.service.ServiceException;
 import io.swagger.annotations.*;
@@ -16,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -66,18 +66,16 @@ public class SolarsystemController {
         }
     }
 
-    @ApiOperation(value = "Save a solarsystem. This can result in a new solarsystem being created or an existing solarsystem being updated.", response = SolarsystemResponse.class, consumes = "application/json", produces = "application/json")
+    @ApiOperation(value = "Save a solarsystem. This can result in a new solarsystem being created or an existing solarsystem being updated.", response = BaseResponse.class, consumes = "application/json", produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "The solarsystem was successfully created", response = SolarsystemResponse.class),
-            @ApiResponse(code = 400, message = "Unable to create solarsystem, see body for more information", response = ErrorResponse.class),
+            @ApiResponse(code = 201, message = "The solarsystem was successfully created", response = BaseResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
     @PostMapping(value = "/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> createSolarsystem(@Valid @RequestBody SolarsystemModel solarsystem) {
+    public ResponseEntity<BaseResponse> saveSolarsystems(@Valid @RequestBody List<SolarsystemModel> solarsystems) {
         try {
-            return new ResponseEntity<>(new SolarsystemResponse(CREATED, solarsystemHandler.saveSolarsystem(solarsystem)), OK);
-        } catch (DuplicateEntryException e) {
-            return new ResponseEntity<>(new ErrorResponse(CONFLICT, e.getMessage()), BAD_REQUEST);
+            solarsystemHandler.saveSolarsystems(solarsystems);
+            return new ResponseEntity<>(new BaseResponse(CREATED.value()), OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
         }

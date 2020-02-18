@@ -6,7 +6,9 @@ import com.speedment.runtime.core.exception.SpeedmentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.ractoc.eve.universe.db.universe.eve_universe.constellation.generated.GeneratedConstellation.ID;
@@ -33,22 +35,16 @@ public class ConstellationService {
         return constellation.orElseThrow(() -> new NoSuchEntryException(String.format(CONSTELLATION_NOT_FOUND, "id", id)));
     }
 
-    public Constellation saveConstellation(Constellation constellation) {
+    public void saveConstellation(Constellation constellation) {
         try {
-            return insertOrUpdateConstellation(constellation);
+            constellationManager.persist(constellation);
         } catch (SpeedmentException e) {
             throw new ServiceException("Unable to save constellation " + constellation.getName(), e);
         }
     }
 
-    private Constellation insertOrUpdateConstellation(Constellation constellation) {
-        try {
-            getConstellationById(constellation.getId());
-            // if a constellation is found, update
-            return constellationManager.update(constellation);
-        } catch (NoSuchEntryException nse) {
-            // if no constellation is found, persist
-            return constellationManager.persist(constellation);
-        }
+    public void clearAllConstellations() {
+        List<Constellation> constellations = constellationManager.stream().collect(Collectors.toList());
+        constellations.forEach(constellationManager.remover());
     }
 }
