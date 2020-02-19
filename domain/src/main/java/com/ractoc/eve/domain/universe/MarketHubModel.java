@@ -17,5 +17,5 @@ public class MarketHubModel {
     private Integer regionId;
     private String regionName;
     private Integer solarSystemId;
-    private Integer solarSystemName;
+    private String solarSystemName;
 }

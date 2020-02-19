@@ -1,17 +1,17 @@
 {
   "config" : {
-    "speedmentVersion" : "Speedment:3.1.15",
-    "companyName" : "ractoc.com",
-    "appId" : "3748c719-d1dc-4f7d-8884-e1e69db8a48c",
-    "name" : "universe",
-    "packageLocation" : "target/generated-sources/java",
-    "packageName" : "com.ractoc.eve.universe.db",
-    "id" : "universe",
-    "enabled" : true,
-    "dbmses" : [
+    "speedmentVersion": "Speedment:3.1.15",
+    "companyName": "ractoc.com",
+    "appId": "e4bc55b4-7a42-4416-9fd0-9a5904213fd4",
+    "name": "universe",
+    "packageLocation": "target/generated-sources/java",
+    "packageName": "com.ractoc.eve.universe.db",
+    "id": "universe",
+    "enabled": true,
+    "dbmses": [
       {
-        "port" : 9876,
-        "schemas" : [
+        "port": 9876,
+        "schemas": [
           {
             "tables" : [
               {

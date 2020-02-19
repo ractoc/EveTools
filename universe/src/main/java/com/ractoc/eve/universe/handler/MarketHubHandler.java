@@ -26,7 +26,7 @@ public class MarketHubHandler {
     }
 
     public List<MarketHubModel> getMarketHubList() {
-        return marketHubService.getMarketHubList().map(MarketHubMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+        return marketHubService.getMarketHubList().map(MarketHubMapper.INSTANCE::joinToModel).collect(Collectors.toList());
     }
 
     public void saveMarketHubs(List<MarketHubModel> marketHubs) {
