@@ -1,7 +1,9 @@
-package com.ractoc.eve.domain.assets;
+package com.ractoc.eve.crawler.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.ractoc.eve.crawler.model.deserializers.BlueprintDeserializer;
+import com.ractoc.eve.domain.assets.ItemModel;
 import lombok.*;
 
 import java.util.HashSet;
@@ -13,9 +15,9 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @ToString
-@ApiModel(value = "Blueprint Model", description = "Contains the Blueprint model information")
+@JsonDeserialize(using = BlueprintDeserializer.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BlueprintModel {
+public class YamlBlueprintModel {
     private int id;
     private String name;
     private ItemModel item;
@@ -35,11 +37,11 @@ public class BlueprintModel {
     private double mineralSellPrice;
     private double jobInstallationCosts;
 
-    private Set<BlueprintMaterialModel> inventionMaterials = new HashSet<>();
-    private Set<BlueprintProductModel> inventionProducts = new HashSet<>();
-    private Set<BlueprintSkillModel> inventionSkills = new HashSet<>();
+    private Set<YamlBlueprintMaterialModel> inventionMaterials = new HashSet<>();
+    private Set<YamlBlueprintProductModel> inventionProducts = new HashSet<>();
+    private Set<YamlBlueprintSkillModel> inventionSkills = new HashSet<>();
 
-    private Set<BlueprintMaterialModel> manufacturingMaterials = new HashSet<>();
-    private Set<BlueprintProductModel> manufacturingProducts = new HashSet<>();
-    private Set<BlueprintSkillModel> manufacturingSkills = new HashSet<>();
+    private Set<YamlBlueprintMaterialModel> manufacturingMaterials = new HashSet<>();
+    private Set<YamlBlueprintProductModel> manufacturingProducts = new HashSet<>();
+    private Set<YamlBlueprintSkillModel> manufacturingSkills = new HashSet<>();
 }

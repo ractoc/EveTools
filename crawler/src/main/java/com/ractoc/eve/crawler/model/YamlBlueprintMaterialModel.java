@@ -1,17 +1,13 @@
-package com.ractoc.eve.domain.assets;
+package com.ractoc.eve.crawler.model;
 
-import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @ToString
 @EqualsAndHashCode
-@ApiModel(value = "Blueprint Material Model", description = "Contains the Blueprint Material model information")
-public class BlueprintMaterialModel {
+public class YamlBlueprintMaterialModel {
     @EqualsAndHashCode.Include
     private int blueprintId;
     @EqualsAndHashCode.Include

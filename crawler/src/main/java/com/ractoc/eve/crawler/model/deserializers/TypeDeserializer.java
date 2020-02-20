@@ -1,20 +1,19 @@
-package com.ractoc.eve.domain.deserializers;
+package com.ractoc.eve.crawler.model.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.ractoc.eve.domain.assets.TypeModel;
+import com.ractoc.eve.crawler.model.YamlTypeModel;
 
 import java.io.IOException;
 
-public class TypeDeserializer extends StdDeserializer<TypeModel> {
+public class TypeDeserializer extends StdDeserializer<YamlTypeModel> {
 
     public static final String TYPE_ID = "id";
     public static final String NAME = "name";
     public static final String EN = "en";
     public static final String GROUP_ID = "groupID";
-    public static final String GROUP_ID_V2 = "groupId";
     public static final String VOLUME = "volume";
     public static final String PUBLISHED = "published";
 
@@ -29,10 +28,10 @@ public class TypeDeserializer extends StdDeserializer<TypeModel> {
     }
 
     @Override
-    public TypeModel deserialize(JsonParser jp, DeserializationContext ctxt)
+    public YamlTypeModel deserialize(JsonParser jp, DeserializationContext ctxt)
             throws IOException {
         JsonNode typeNode = jp.getCodec().readTree(jp);
-        TypeModel type = new TypeModel();
+        YamlTypeModel type = new YamlTypeModel();
         try {
             type.setId(getId(typeNode));
             type.setName(getName(typeNode));
@@ -55,21 +54,13 @@ public class TypeDeserializer extends StdDeserializer<TypeModel> {
     }
 
     private int getGroupId(JsonNode typeNode) {
-        if (typeNode.get(GROUP_ID) != null) {
             return typeNode.get(GROUP_ID).intValue();
-        }
-        return typeNode.get(GROUP_ID_V2).intValue();
     }
 
     private String getName(JsonNode typeNode) {
-        String name = null;
-        if (typeNode.get(NAME) != null) {
-            if (typeNode.get(NAME).isTextual()) {
-                name = typeNode.get(NAME).textValue();
-            } else if (typeNode.get(NAME).get(EN) != null) {
-                name = typeNode.get(NAME).get(EN).textValue();
-            }
+        if (typeNode.get(NAME).get(EN) != null) {
+            return typeNode.get(NAME).get(EN).textValue();
         }
-        return name;
+        return null;
     }
 }

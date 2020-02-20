@@ -1,7 +1,8 @@
-package com.ractoc.eve.domain.assets;
+package com.ractoc.eve.crawler.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.ractoc.eve.crawler.model.deserializers.TypeDeserializer;
 import lombok.*;
 
 @Getter
@@ -10,9 +11,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @ToString
-@ApiModel(value = "Type Model", description = "Contains the Type model information")
+@JsonDeserialize(using = TypeDeserializer.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TypeModel {
+public class YamlTypeModel {
     private int id;
     private String name;
     private int groupId;
