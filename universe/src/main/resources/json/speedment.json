@@ -2,7 +2,7 @@
   "config" : {
     "speedmentVersion": "Speedment:3.1.15",
     "companyName": "ractoc.com",
-    "appId": "e4bc55b4-7a42-4416-9fd0-9a5904213fd4",
+    "appId": "4e893577-a91a-4b7d-989e-c2e2a2acf82a",
     "name": "universe",
     "packageLocation": "target/generated-sources/java",
     "packageName": "com.ractoc.eve.universe.db",
@@ -13,13 +13,13 @@
         "port": 9876,
         "schemas": [
           {
-            "tables" : [
+            "tables": [
               {
-                "primaryKeyColumns" : [
+                "primaryKeyColumns": [
                   {
-                    "name" : "id",
-                    "id" : "id",
-                    "ordinalPosition" : 1
+                    "name": "id",
+                    "id": "id",
+                    "ordinalPosition": 1
                   }
                 ],
                 "indexes" : [

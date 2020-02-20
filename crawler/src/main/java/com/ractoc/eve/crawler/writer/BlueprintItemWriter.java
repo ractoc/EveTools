@@ -17,6 +17,8 @@ public class BlueprintItemWriter implements ItemWriter<BlueprintModel> {
     private BlueprintResourceApi api;
 
     public void write(@NonNull List<? extends BlueprintModel> blueprints) throws ApiException {
-        api.saveBlueprints(blueprints.stream().map(BlueprintMapper.INSTANCE::modelToAssetApi).collect(Collectors.toList()));
+        api.saveBlueprints(blueprints.stream()
+                .map(BlueprintMapper.INSTANCE::modelToAssetApi)
+                .collect(Collectors.toList()));
     }
 }

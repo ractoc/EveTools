@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class TypeItemReader implements ItemReader<TypeModel> {
 
@@ -39,8 +38,6 @@ public class TypeItemReader implements ItemReader<TypeModel> {
             ObjectMapper om = new ObjectMapper(new YAMLFactory());
             Map<Integer, TypeModel> bp = om.readValue(file, new TypeReference<Map<Integer, TypeModel>>() {
             });
-            bp.values().removeIf(Objects::isNull);
-            System.out.println("types: " + bp);
             bp.forEach((key, value) -> value.setId(key));
             return new ArrayList<>(bp.values());
         } catch (IOException e) {

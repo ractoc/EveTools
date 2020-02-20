@@ -16,6 +16,7 @@ import java.util.Set;
 public class BlueprintDeserializer extends StdDeserializer<BlueprintModel> {
 
     public static final String TYPE_ID = "typeID";
+    public static final String TYPE_ID_V2 = "typeId";
     public static final String QUANTITY = "quantity";
     public static final String MATERIALS = "materials";
     public static final String BLUEPRINT_TYPE_ID = "blueprintTypeID";
@@ -46,20 +47,26 @@ public class BlueprintDeserializer extends StdDeserializer<BlueprintModel> {
     @Override
     public BlueprintModel deserialize(JsonParser jp, DeserializationContext ctxt)
             throws IOException {
-        JsonNode bpNode = jp.getCodec().readTree(jp);
-        BlueprintModel bp = new BlueprintModel();
-        bp.setId(getBlueprintId(bpNode));
-        if (bpNode.get("name") != null) {
-            bp.setName(bpNode.get("name").asText());
+        try {
+            JsonNode bpNode = jp.getCodec().readTree(jp);
+            BlueprintModel bp = new BlueprintModel();
+            bp.setId(getBlueprintId(bpNode));
+            if (bpNode.get("name") != null) {
+                bp.setName(bpNode.get("name").asText());
+            }
+            if (bpNode.get("locationId") != null) {
+                bp.setLocationId(bpNode.get("locationId").longValue());
+            }
+            bp.setMaxProductionLimit(bpNode.get(MAX_PRODUCTION_LIMIT).intValue());
+            bp.setMaterialEfficiency(bpNode.get("materialEfficiency") != null ? bpNode.get("materialEfficiency").intValue() : 0);
+            bp.setTimeEfficiency(bpNode.get("timeEfficiency") != null ? bpNode.get("timeEfficiency").intValue() : 0);
+            deserializeActivities(bp, bpNode);
+            return bp;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
-        if (bpNode.get("locationId") != null) {
-            bp.setLocationId(bpNode.get("locationId").longValue());
-        }
-        bp.setMaxProductionLimit(bpNode.get(MAX_PRODUCTION_LIMIT).intValue());
-        bp.setMaterialEfficiency(bpNode.get("materialEfficiency") != null ? bpNode.get("materialEfficiency").intValue() : 0);
-        bp.setTimeEfficiency(bpNode.get("timeEfficiency") != null ? bpNode.get("timeEfficiency").intValue() : 0);
-        deserializeActivities(bp, bpNode);
-        return bp;
+
     }
 
     private int getBlueprintId(JsonNode bpNode) {
@@ -72,14 +79,15 @@ public class BlueprintDeserializer extends StdDeserializer<BlueprintModel> {
 
     private void deserializeActivities(BlueprintModel bp, JsonNode bpNode) {
         Optional<JsonNode> actOpt = getChildNode(bpNode, ACTIVITIES);
+        JsonNode actNode = bpNode;
         if (actOpt.isPresent()) {
-            JsonNode actNode = actOpt.get();
-            deserializeCopying(bp, actNode);
-            deserializeInvention(bp, actNode);
-            deserializeManufacturing(bp, actNode);
-            deserializeResearchMaterialTime(bp, actNode);
-            deserializeResearchTimeTime(bp, actNode);
+            actNode = actOpt.get();
         }
+        deserializeCopying(bp, actNode);
+        deserializeInvention(bp, actNode);
+        deserializeManufacturing(bp, actNode);
+        deserializeResearchMaterialTime(bp, actNode);
+        deserializeResearchTimeTime(bp, actNode);
     }
 
     private void deserializeCopying(BlueprintModel bp, JsonNode actNode) {
@@ -89,24 +97,27 @@ public class BlueprintDeserializer extends StdDeserializer<BlueprintModel> {
 
     private void deserializeInvention(BlueprintModel bp, JsonNode actNode) {
         Optional<JsonNode> opt = getChildNode(actNode, INVENTION);
+        JsonNode invNode = actNode;
         if (opt.isPresent()) {
-            JsonNode node = opt.get();
-            bp.setInventionTime(node.get(TIME).intValue());
-            deserializeMaterials(bp, node, bp.getInventionMaterials());
-            deserializeProducts(bp, node, bp.getInventionProducts());
-            deserializeSkills(bp, node, bp.getInventionSkills());
+            invNode = opt.get();
         }
+        bp.setInventionTime(deserializeTime(invNode, INVENTION));
+        deserializeMaterials(bp, invNode, bp.getInventionMaterials(), INVENTION);
+        deserializeMaterials(bp, invNode, bp.getInventionMaterials(), INVENTION);
+        deserializeProducts(bp, invNode, bp.getInventionProducts(), INVENTION);
+        deserializeSkills(bp, invNode, bp.getInventionSkills(), INVENTION);
     }
 
     private void deserializeManufacturing(BlueprintModel bp, JsonNode actNode) {
         Optional<JsonNode> opt = getChildNode(actNode, MANUFACTURING);
+        JsonNode manNode = actNode;
         if (opt.isPresent()) {
-            JsonNode node = opt.get();
-            bp.setManufacturingTime(node.get(TIME).intValue());
-            deserializeMaterials(bp, node, bp.getManufacturingMaterials());
-            deserializeProducts(bp, node, bp.getManufacturingProducts());
-            deserializeSkills(bp, node, bp.getManufacturingSkills());
+            manNode = opt.get();
         }
+        bp.setManufacturingTime(deserializeTime(manNode, MANUFACTURING));
+        deserializeMaterials(bp, manNode, bp.getManufacturingMaterials(), MANUFACTURING);
+        deserializeProducts(bp, manNode, bp.getManufacturingProducts(), MANUFACTURING);
+        deserializeSkills(bp, manNode, bp.getManufacturingSkills(), MANUFACTURING);
     }
 
     private void deserializeResearchMaterialTime(BlueprintModel bp, JsonNode actNode) {
@@ -123,13 +134,29 @@ public class BlueprintDeserializer extends StdDeserializer<BlueprintModel> {
         return Optional.ofNullable(node.get(child));
     }
 
-    private void deserializeMaterials(BlueprintModel bp, JsonNode node, Set<BlueprintMaterialModel> mats) {
+    private int deserializeTime(JsonNode actNode, String context) {
+        int time = 0;
+        if (actNode.get(TIME) != null) {
+            time = actNode.get(TIME).intValue();
+        } else if (actNode.get(context + TIME.replaceFirst("t", "T")) != null) {
+            time = actNode.get(context + TIME.replaceFirst("t", "T")).intValue();
+        }
+        return time;
+    }
+
+    private void deserializeMaterials(BlueprintModel bp, JsonNode node, Set<BlueprintMaterialModel> mats, String context) {
         Optional<JsonNode> matOpt = getChildNode(node, MATERIALS);
+        JsonNode matNodes = null;
         if (matOpt.isPresent()) {
-            for (JsonNode matNode : matOpt.get()) {
+            matNodes = matOpt.get();
+        } else {
+            matNodes = node.get(context + MATERIALS.replaceFirst("m", "M"));
+        }
+        if (matNodes != null) {
+            for (JsonNode matNode : matNodes) {
                 BlueprintMaterialModel.BlueprintMaterialModelBuilder builder = BlueprintMaterialModel.builder();
                 builder.blueprintId(bp.getId());
-                builder.typeId(matNode.get(TYPE_ID).intValue());
+                builder.typeId(getTypeId(matNode));
                 builder.quantity(matNode.get(QUANTITY).intValue());
                 BlueprintMaterialModel bpMat = builder
                         .build();
@@ -138,13 +165,19 @@ public class BlueprintDeserializer extends StdDeserializer<BlueprintModel> {
         }
     }
 
-    private void deserializeProducts(BlueprintModel bp, JsonNode node, Set<BlueprintProductModel> prods) {
+    private void deserializeProducts(BlueprintModel bp, JsonNode node, Set<BlueprintProductModel> prods, String context) {
         Optional<JsonNode> prodOpt = getChildNode(node, PRODUCTS);
+        JsonNode prodNodes = null;
         if (prodOpt.isPresent()) {
-            for (JsonNode prodNode : prodOpt.get()) {
+            prodNodes = prodOpt.get();
+        } else {
+            prodNodes = node.get(context + MATERIALS.replaceFirst("p", "P"));
+        }
+        if (prodNodes != null) {
+            for (JsonNode prodNode : prodNodes) {
                 BlueprintProductModel bpProd = BlueprintProductModel.builder()
                         .blueprintId(bp.getId())
-                        .typeId(prodNode.get(TYPE_ID).intValue())
+                        .typeId(getTypeId(prodNode))
                         .probability(prodNode.get(PROBABILITY) != null ? prodNode.get(PROBABILITY).floatValue() : 0.0f)
                         .quantity(prodNode.get(QUANTITY).intValue())
                         .build();
@@ -153,17 +186,30 @@ public class BlueprintDeserializer extends StdDeserializer<BlueprintModel> {
         }
     }
 
-    private void deserializeSkills(BlueprintModel bp, JsonNode node, Set<BlueprintSkillModel> skills) {
+    private void deserializeSkills(BlueprintModel bp, JsonNode node, Set<BlueprintSkillModel> skills, String context) {
         Optional<JsonNode> skillOpt = getChildNode(node, SKILLS);
+        JsonNode skillNodes = null;
         if (skillOpt.isPresent()) {
-            for (JsonNode skillNode : skillOpt.get()) {
+            skillNodes = skillOpt.get();
+        } else {
+            skillNodes = node.get(context + MATERIALS.replaceFirst("p", "P"));
+        }
+        if (skillNodes != null) {
+            for (JsonNode skillNode : skillNodes) {
                 BlueprintSkillModel bpSkill = BlueprintSkillModel.builder()
                         .blueprintId(bp.getId())
-                        .typeId(skillNode.get(TYPE_ID).intValue())
+                        .typeId(getTypeId(skillNode))
                         .level(skillNode.get(LEVEL).intValue())
                         .build();
                 skills.add(bpSkill);
             }
         }
+    }
+
+    private int getTypeId(JsonNode typeNode) {
+        if (typeNode.get(TYPE_ID) != null) {
+            return typeNode.get(TYPE_ID).intValue();
+        }
+        return typeNode.get(TYPE_ID_V2).intValue();
     }
 }
