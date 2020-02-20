@@ -1,9 +1,15 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AssetsService} from "../service/assets.service";
-import {BlueprintModel} from "../shared/model/blueprint.model";
-import {Subscription} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
+import {FormBuilder, FormGroup} from '@angular/forms';
+
+import {Subscription} from "rxjs";
+
+import {AssetsService} from "../service/assets.service";
 import {CalculatorService} from "../service/calculator.service";
+import {UniverseService} from "../service/universe.service";
+
+import {BlueprintModel} from "../shared/model/blueprint.model";
+import {MarketHubModel} from "../shared/model/markethub.model";
 
 @Component({
   selector: 'app-blueprint-details',
@@ -17,7 +23,20 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
   public isCalculateCollapsed = true;
   public isCalculating = false;
 
-  constructor(private assetsService: AssetsService, private calculatorService: CalculatorService, private route: ActivatedRoute) {
+  public form: FormGroup;
+  public marketHubs: MarketHubModel[];
+  public errorMessage: string;
+
+  constructor(private assetsService: AssetsService,
+              private universeService: UniverseService,
+              private calculatorService: CalculatorService,
+              private route: ActivatedRoute,
+              private formBuilder: FormBuilder
+  ) {
+    this.form = this.formBuilder.group({
+      marketHubs: [''],
+      nrRuns: 1
+    });
   }
 
   ngOnInit() {
@@ -30,15 +49,31 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
           }
         }
       );
+    this.errorMessage = undefined;
+    this.universeService.getMarketHubs().subscribe(
+      (marketHubData: MarketHubModel[]) => {
+        if (marketHubData && marketHubData.length > 0) {
+          this.marketHubs = marketHubData
+          this.form.controls.marketHubs.patchValue(this.marketHubs[0].id);
+        } else {
+          this.errorMessage = 'No market hubs to display'
+        }
+      },
+      err => this.errorMessage = err
+    );
   }
 
   ngOnDestroy(): void {
     this.routeListener$.unsubscribe();
   }
 
-  calculate() {
+  calculate(blueprint: BlueprintModel) {
+    const marketHub: MarketHubModel = this.marketHubs.find((mh) => mh.id == this.form.value.marketHubs);
+    console.log("marketHub:", marketHub);
+    const nrRuns: number = this.form.value.nrRuns;
+
     this.isCalculating = true;
-    this.calculatorService.calculateBlueprint(this.bp).subscribe(
+    this.calculatorService.calculateBlueprint(this.bp, marketHub, nrRuns).subscribe(
       (blueprintData: BlueprintModel) => {
         this.bp = blueprintData;
         console.log("calculated blueprint", blueprintData);

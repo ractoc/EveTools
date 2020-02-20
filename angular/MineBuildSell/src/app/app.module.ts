@@ -1,6 +1,7 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
+import {ReactiveFormsModule} from '@angular/forms';
 
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 
@@ -24,6 +25,7 @@ import {BlueprintDetailsComponent} from './blueprint-details/blueprint-details.c
     NgbModule,
     BrowserModule,
     HttpClientModule,
+    ReactiveFormsModule,
     RouterModule,
     RouterModule.forRoot(APP_ROUTES)
   ],

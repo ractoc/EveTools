@@ -23,7 +23,6 @@ export class AssetsService {
         'Authorization': 'Bearer ' + this.userService.getEveState()
       })
     };
-    console.log('headers: ' + httpOptions);
     return this.http.get<any>(ASSETS_URI + '/blueprint/character', httpOptions)
       .pipe(
         map(result => {
