@@ -37,8 +37,8 @@ public class CalculatorService {
             totalMineralSellPrice += mat.getSellPrice() * mat.getCalculatedTotalQuantity();
             totalMineralBuyPrice += mat.getBuyPrice() * mat.getCalculatedTotalQuantity();
         }
-        bp.setMineralSellPrice(totalMineralSellPrice);
-        bp.setMineralBuyPrice(totalMineralBuyPrice);
+        bp.setMineralSellPrice(Precision.round(totalMineralSellPrice, 2));
+        bp.setMineralBuyPrice(Precision.round(totalMineralBuyPrice, 2));
     }
 
     public void calculateItemPrices(ItemModel item, Integer regionId, Long locationId, Integer runs) {
@@ -61,14 +61,14 @@ public class CalculatorService {
     public void calculateSalesTax(ItemModel item, Integer charId, String token) {
         Map<Skill, Integer> skillLevels = getSkillsForCharacter(charId, token, Skill.ACCOUNTING);
         double salesTax = 0.05 * (1.0 - skillLevels.get(Skill.ACCOUNTING).doubleValue() * 0.11);
-        item.setSalesTax(item.getSellPrice() * salesTax);
+        item.setSalesTax(Precision.round(item.getSellPrice() * salesTax, 2));
     }
 
     public void calculateBrokerFee(ItemModel item, int charId, String token) {
         Map<Skill, Integer> skillLevels = getSkillsForCharacter(charId, token, Skill.BROKER_RELATIONS);
         // TODO: Standings are skipped for now since the amount to only 0.5% in total
         double brokerFee = 0.05 - (0.003 * skillLevels.get(Skill.BROKER_RELATIONS).doubleValue());
-        item.setBrokerFee(item.getSellPrice() * brokerFee);
+        item.setBrokerFee(Precision.round(item.getSellPrice() * brokerFee, 2));
     }
 
     private Integer getSystemFromLocation(Integer charId, Long locationId, String token) {
@@ -139,6 +139,7 @@ public class CalculatorService {
                 locationOrder.stream()
                         .filter(GetMarketsRegionIdOrders200Ok::isIsBuyOrder)
                         .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
+                        .map(v -> Precision.round(v, 2))
                         .max()
                         .ifPresent(price -> item.setSellPrice(price * runs));
                 // sell orders means buy your minerals, which is done at the lowest possible price
@@ -146,6 +147,7 @@ public class CalculatorService {
                 locationOrder.stream()
                         .filter(o -> !o.isIsBuyOrder())
                         .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
+                        .map(v -> Precision.round(v, 2))
                         .min()
                         .ifPresent(price -> item.setBuyPrice(price * runs));
                 if (item.getSellPrice() != null && item.getBuyPrice() != null) {
@@ -181,7 +183,7 @@ public class CalculatorService {
                 .findAny()
                 .orElseThrow(() -> new ServiceException("Unable to determine Job Fee"))
                 .getCostIndex();
-        return mineralBuyPrice * costIndex;
+        return Precision.round(mineralBuyPrice * costIndex, 2);
     }
 
     private Map<Skill, Integer> getSkillsForCharacter(Integer charId, String token, Skill... skills) {
