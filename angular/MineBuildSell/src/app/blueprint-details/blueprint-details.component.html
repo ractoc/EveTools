@@ -36,7 +36,43 @@
           </div>
         </div>
       </form>
-      <button type="button" (click)="calculate()" [disabled]="isCalculating" [ngClass]="calculateClass()">{{calculateButtonText()}}</button>
+      <button type="button" (click)="calculate()" [disabled]="isCalculating"
+              [ngClass]="calculateClass()">{{calculateButtonText()}}</button>
+    </div>
+    <div class="card-body" *ngIf="isCalculated">
+      <h5>Calculation Results for {{bp.item.name}}</h5>
+      <table class="table">
+        <tbody>
+        <tr>
+          <th scope="row">Material Cost</th>
+          <td>{{bp.mineralBuyPrice}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Material Profit</th>
+          <td>{{bp.mineralSellPrice}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Item Costs</th>
+          <td>{{bp.item.buyPrice}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Item Profit</th>
+          <td>{{bp.item.sellPrice}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Job Installation Costs</th>
+          <td>{{bp.jobInstallationCosts}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Broker Fee</th>
+          <td>{{bp.item.brokerFee}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Sales Tax</th>
+          <td>{{bp.item.salesTax}}</td>
+        </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

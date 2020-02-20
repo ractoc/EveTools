@@ -22,6 +22,7 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
   private routeListener$: Subscription;
   public isCalculateCollapsed = true;
   public isCalculating = false;
+  public isCalculated = false;
 
   public form: FormGroup;
   public marketHubs: MarketHubModel[];
@@ -40,6 +41,8 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.errorMessage = undefined;
+    this.isCalculated = false;
     this.routeListener$ = this.route.params
       .subscribe((params: any) => {
           if (params.id) {
@@ -49,7 +52,6 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
           }
         }
       );
-    this.errorMessage = undefined;
     this.universeService.getMarketHubs().subscribe(
       (marketHubData: MarketHubModel[]) => {
         if (marketHubData && marketHubData.length > 0) {
@@ -73,11 +75,13 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
     const nrRuns: number = this.form.value.nrRuns;
 
     this.isCalculating = true;
+    this.isCalculated = false;
     this.calculatorService.calculateBlueprint(this.bp, marketHub, nrRuns).subscribe(
       (blueprintData: BlueprintModel) => {
         this.bp = blueprintData;
         console.log("calculated blueprint", blueprintData);
         this.isCalculating = false;
+        this.isCalculated = true;
       });
   }
 
