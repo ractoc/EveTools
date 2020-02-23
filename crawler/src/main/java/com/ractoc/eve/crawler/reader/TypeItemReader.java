@@ -6,8 +6,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.ractoc.eve.crawler.model.YamlTypeModel;
 import org.springframework.batch.item.ItemReader;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,15 +31,14 @@ public class TypeItemReader implements ItemReader<YamlTypeModel> {
 
     private List<YamlTypeModel> fetchTypesFromYML() {
         try {
-            // FIXME: retreive the folder from a commandline param
-            File file = new File("D:/tmp/sde/fsd/typeIDs.yaml");
+            URL file = this.getClass().getClassLoader().getResource("typeIDs.yaml");
             ObjectMapper om = new ObjectMapper(new YAMLFactory());
             Map<Integer, YamlTypeModel> bp = om.readValue(file, new TypeReference<Map<Integer, YamlTypeModel>>() {
             });
             bp.forEach((key, value) -> value.setId(key));
             return new ArrayList<>(bp.values());
         } catch (IOException e) {
-            throw new SdeReaderException("Unable to read YML file: " + "D:/tmp/sde/fsd/typeIDs.yaml", e);
+            throw new SdeReaderException("Unable to read YML file: typeIDs.yaml", e);
         }
     }
 }

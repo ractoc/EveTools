@@ -1,11 +1,15 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {UserService} from "./user.service";
+
 import {Observable} from "rxjs";
-import {MarketHubModel} from "../shared/model/markethub.model";
 import {map} from "rxjs/operators";
 
-const UNIVERSE_URI = 'http://localhost:8585/universe';
+import {UserService} from "./user.service";
+import {MarketHubModel} from "../shared/model/markethub.model";
+
+import {environment} from "../../environments/environment";
+
+const UNIVERSE_URI = 'http://' + environment.apiHost + ':8585/universe';
 
 @Injectable({
   providedIn: 'root'

@@ -22,7 +22,7 @@
                     "ordinalPosition": 1
                   }
                 ],
-                "indexes" : [
+                "indexes": [
                   {
                     "unique" : true,
                     "name" : "PRIMARY",

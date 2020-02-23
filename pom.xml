@@ -33,8 +33,8 @@
         <commons-lang.version>3.9</commons-lang.version>
         <hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
 
-        <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
-        <jackson-datatype.version>2.9.9</jackson-datatype.version>
+        <spring-boot.version>2.2.4.RELEASE</spring-boot.version>
+        <jackson-datatype.version>2.10.2</jackson-datatype.version>
         <speedment.version>3.1.15</speedment.version>
         <mysql.version>8.0.17</mysql.version>
         <springfox-swagger.version>2.9.2</springfox-swagger.version>
@@ -42,7 +42,7 @@
         <jersey-version>2.29.1</jersey-version>
         <swagger-annotations-version>1.6.0</swagger-annotations-version>
         <swagger-maven-plugin-version>3.1.8</swagger-maven-plugin-version>
-        <jackson-version>2.10.1</jackson-version>
+        <jackson-version>2.10.2</jackson-version>
         <jackson-databind-nullable-version>0.2.1</jackson-databind-nullable-version>
         <junit-version>4.8.1</junit-version>
         <findbugs-version>3.0.2</findbugs-version>
@@ -54,6 +54,8 @@
         <mariadb-client.version>2.4.2</mariadb-client.version>
 
         <jaxb-substitute.api.version>1.0.4.Final</jaxb-substitute.api.version>
+
+        <environment>dev</environment>
 
     </properties>
 
@@ -147,6 +149,9 @@
             <modules>
                 <module>angular</module>
             </modules>
+            <properties>
+                <environment>prod</environment>
+            </properties>
         </profile>
     </profiles>
 

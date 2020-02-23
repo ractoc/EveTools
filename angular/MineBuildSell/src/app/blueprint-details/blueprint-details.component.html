@@ -18,7 +18,7 @@
     <div class="card-body" id="collapseCalculate" [ngbCollapse]="isCalculateCollapsed">
       <h5 class="card-title">Calculate prices</h5>
       <p class="card-text">Calculate the varios prices for the selected blueprint to determine profitability</p>
-      <form [formGroup]="form" (ngSubmit)="calculate()">
+      <form [formGroup]="form">
         <div class="form-group row">
           <label for="nrRuns" class="col-sm-2 col-form-label">Runs</label>
           <div class="col-sm-10">

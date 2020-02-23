@@ -1,11 +1,15 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
+
 import {BlueprintModel} from '../shared/model/blueprint.model';
 import {UserService} from './user.service';
 
-const ASSETS_URI = 'http://localhost:8787/assets';
+import {environment} from '../../environments/environment';
+
+const ASSETS_URI = 'http://' + environment.apiHost + ':8787/assets';
 
 @Injectable({
   providedIn: 'root'

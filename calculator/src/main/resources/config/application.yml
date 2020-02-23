@@ -1,11 +1,18 @@
-# Server Settings
 server:
   port: 8888
   servlet:
     contextPath: /calculator
 
-# enable debug mode
+auth-header-name: eve-state
+
+---
+spring:
+  profiles: default
+
 debug: true
 
-# security setup for EVE SSO
-auth-header-name: eve-state
+---
+spring:
+  profiles: prod
+
+debug: false

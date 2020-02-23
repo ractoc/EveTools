@@ -1,12 +1,16 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {UserService} from "./user.service";
-import {BlueprintModel} from "../shared/model/blueprint.model";
+
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
+
+import {UserService} from "./user.service";
+import {BlueprintModel} from "../shared/model/blueprint.model";
 import {MarketHubModel} from "../shared/model/markethub.model";
 
-const CALCULATOR_URI = 'http://localhost:8888/calculator';
+import {environment} from "../../environments/environment";
+
+const CALCULATOR_URI = 'http://' + environment.apiHost + ':8888/calculator';
 
 @Injectable({
   providedIn: 'root'

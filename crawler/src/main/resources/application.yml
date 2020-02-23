@@ -1,0 +1,30 @@
+# Platform configs
+spring:
+  application:
+    name: EVE-crawler
+  datasource:
+    platform: org.hibernate.dialect.MySQL5Dialect
+    url: jdbc:mysql://localhost:9876/batch_db?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+    username: eve_crawler
+    password: SuperSecurePasswordForCrawler
+  jpa:
+    show-sql: false
+  batch:
+    initialize-schema: always
+    size: 1000000
+
+esi:
+  retry:
+    timer: 10000
+
+---
+spring:
+  profiles: default
+
+debug: true
+
+---
+spring:
+  profiles: prod
+
+debug: false

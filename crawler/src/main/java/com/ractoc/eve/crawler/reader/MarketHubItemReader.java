@@ -47,7 +47,7 @@ public class MarketHubItemReader implements ItemReader<MarketHubModel> {
             bp.forEach((key, value) -> value.setId(key));
             return new ArrayList<>(bp.values());
         } catch (IOException e) {
-            throw new SdeReaderException("Unable to read YML file: " + "marketHubs.yaml", e);
+            throw new SdeReaderException("Unable to read YML file: marketHubs.yaml", e);
         }
     }
 }

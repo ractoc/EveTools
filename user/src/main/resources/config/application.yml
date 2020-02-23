@@ -1,24 +1,45 @@
-# Speedment Settings
 dbms:
   host: localhost
   port: 9876
   schema: eve_user
   username: eve
-  password: eve
   collation: utf8mb4_general_ci
   collation.binary: utf8mb4_bin
 
-# Server Settings
 server:
   port: 8484
   servlet:
     contextPath: /user
 
 sso:
+  client-scopes: esi-assets.read_assets.v1 esi-characters.read_blueprints.v1 esi-skills.read_skills.v1 esi-universe.read_structures.v1
+
+---
+spring:
+  profiles: default
+
+dbms:
+  password: eve
+
+sso:
   frontend-url: http://localhost:4200/login
   client-url: http://localhost:8484/user/eveCallBack
   client-id: cf33fd256e884c81b634bf74ca21612a
   client-secret: SEmd2uiGUpW0Flvxaqe1XiTV6M6Ii8GvFd4dyyZy
-  client-scopes: esi-assets.read_assets.v1 esi-characters.read_blueprints.v1 esi-skills.read_skills.v1 esi-universe.read_structures.v1
 
 debug: true
+
+---
+spring:
+  profiles: prod
+
+dbms:
+  password: Dr!lb00r
+
+sso:
+  frontend-url: http://31.21.178.162:8181/login
+  client-url: http://31.21.178.162:8484/user/eveCallBack
+  client-id: 081e55136fb54046976193f395e1aadb
+  client-secret: oCvUMSI8rykr0shRR41Y2DLVG50kG0bc1ahx2OXQ
+
+debug: false

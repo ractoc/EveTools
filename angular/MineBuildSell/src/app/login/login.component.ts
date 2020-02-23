@@ -3,6 +3,7 @@ import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DOCUMENT} from '@angular/common';
 import {UserService} from '../service/user.service';
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private routeListener$: Subscription;
 
-  private userName: string;
+  public userName: string;
 
   constructor(private userService: UserService,
               private route: ActivatedRoute,
@@ -32,7 +33,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                 this.router.navigate(['home']);
               });
         } else {
-          this.document.location.href = 'http://localhost:8484/user/launchSignOn';
+          this.document.location.href = 'http://' + environment.apiHost + ':8484/user/launchSignOn';
         }
       });
   }

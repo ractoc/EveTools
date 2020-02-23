@@ -6,8 +6,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.ractoc.eve.crawler.model.YamlBlueprintModel;
 import org.springframework.batch.item.ItemReader;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,14 +31,13 @@ public class BlueprintItemReader implements ItemReader<YamlBlueprintModel> {
 
     private List<YamlBlueprintModel> fetchBlueprintsFromYML() {
         try {
-            // FIXME: retreive the filename from a commandline param
-            File file = new File("D:/tmp/sde/fsd/blueprints.yaml");
+            URL file = this.getClass().getClassLoader().getResource("blueprints.yaml");
             ObjectMapper om = new ObjectMapper(new YAMLFactory());
             Map<Integer, YamlBlueprintModel> bp = om.readValue(file, new TypeReference<Map<Integer, YamlBlueprintModel>>() {
             });
             return new ArrayList<>(bp.values());
         } catch (IOException e) {
-            throw new SdeReaderException("Unable to read YML file: " + "D:/tmp/sde/fsd/blueprints.yaml", e);
+            throw new SdeReaderException("Unable to read YML file: blueprints.yaml", e);
         }
     }
 }

@@ -1,21 +1,32 @@
-# Speedment Settings
 dbms:
   host: localhost
   port: 9876
   schema: eve_universe
   username: eve
-  password: eve
   collation: utf8mb4_general_ci
   collation.binary: utf8mb4_bin
 
-# Server Settings
 server:
   port: 8585
   servlet:
     contextPath: /universe
 
-# enable debug mode
+auth-header-name: eve-state
+
+---
+spring:
+  profiles: default
+
+dbms:
+  password: eve
+
 debug: true
 
-# security setup for EVE SSO
-auth-header-name: eve-state
+---
+spring:
+  profiles: prod
+
+dbms:
+  password: Dr!lb00r
+
+debug: false

@@ -69,9 +69,8 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
     this.routeListener$.unsubscribe();
   }
 
-  calculate(blueprint: BlueprintModel) {
+  calculate() {
     const marketHub: MarketHubModel = this.marketHubs.find((mh) => mh.id == this.form.value.marketHubs);
-    console.log("marketHub:", marketHub);
     const nrRuns: number = this.form.value.nrRuns;
 
     this.isCalculating = true;

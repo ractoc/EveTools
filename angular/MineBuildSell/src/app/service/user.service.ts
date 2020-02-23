@@ -1,11 +1,13 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {catchError, map} from 'rxjs/operators';
 
-import {User} from '../shared/model/user.model';
+import {catchError, map} from 'rxjs/operators';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 
-const USER_URI = 'http://localhost:8484/user/api/username';
+import {User} from '../shared/model/user.model';
+import {environment} from "../../environments/environment";
+
+const USER_URI = 'http://' + environment.apiHost + ':8484/user/api/username';
 
 @Injectable({
   providedIn: 'root'

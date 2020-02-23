@@ -10,7 +10,7 @@ import {Router} from '@angular/router';
 })
 export class MainComponent implements OnInit {
 
-  private userName: string;
+  public userName: string;
   private usernameMonitor: Subject<string>;
 
   constructor(private userService: UserService, private router: Router) {

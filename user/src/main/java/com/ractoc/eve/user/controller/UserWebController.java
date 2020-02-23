@@ -3,6 +3,7 @@ package com.ractoc.eve.user.controller;
 import com.ractoc.eve.user.handler.UserHandler;
 import com.ractoc.eve.user.model.AccessDeniedException;
 import com.ractoc.eve.user.model.OAuthToken;
+import com.ractoc.eve.user.model.OAuthTokenRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -54,13 +55,14 @@ public class UserWebController {
     @GetMapping(value = "/eveCallBack")
     public String eveCallBack(HttpServletRequest request, HttpServletResponse response, @RequestParam String code, @RequestParam(name = "state") String eveState) {
         validatedIP(eveState, RequestUtils.getRemoteIP(request));
-
-        MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
-        formData.add("grant_type", "authorization_code");
-        formData.add("code", code);
+        OAuthTokenRequest tokenRequest = new OAuthTokenRequest();
+        tokenRequest.setCode(code);
+        tokenRequest.setGrant_type("authorization_code");
+        Entity e = Entity.json(tokenRequest);
+        System.out.println(e);
         OAuthToken accessToken = client.target("https://login.eveonline.com/v2/oauth/token")
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.form(formData), new GenericType<OAuthToken>() {
+                .post(e, new GenericType<OAuthToken>() {
                 });
 
         handler.storeEveUserRegistration(eveState, accessToken, RequestUtils.getRemoteIP(request));
