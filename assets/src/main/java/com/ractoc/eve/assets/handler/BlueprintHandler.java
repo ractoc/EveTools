@@ -115,6 +115,7 @@ public class BlueprintHandler {
         return blueprintService.getBlueprintsForCharacter(eveUserDetails.getCharId(), eveUserDetails.getAccessToken())
                 .map(BlueprintMapper.INSTANCE::esiToModel)
                 .map(this::addNameToBlueprint)
+                .sorted((b1, b2) -> b1.getName().compareToIgnoreCase(b2.getName()))
                 .collect(Collectors.toList());
     }
 

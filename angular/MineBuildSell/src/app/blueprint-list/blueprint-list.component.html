@@ -3,7 +3,7 @@
   <div class="list-group list-group-flush">
     <a *ngFor="let blueprint of blueprints" [ngClass]="blueprintClass(blueprint)"
        [routerLink]="['/blueprint', blueprint.id]">
-      {{blueprint.name}}
+      {{blueprint.name}} (ME {{blueprint.materialEfficiency}})
     </a>
   </div>
 </div>
