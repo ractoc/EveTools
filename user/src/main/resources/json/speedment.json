@@ -24,14 +24,14 @@
                 ],
                 "indexes": [
                   {
-                    "unique" : true,
-                    "name" : "PRIMARY",
-                    "indexColumns" : [
+                    "unique": true,
+                    "name": "PRIMARY",
+                    "indexColumns": [
                       {
-                        "orderType" : "ASC",
-                        "name" : "eve_state",
-                        "id" : "eve_state",
-                        "ordinalPosition" : 1
+                        "orderType": "ASC",
+                        "name": "eve_state",
+                        "id": "eve_state",
+                        "ordinalPosition": 1
                       }
                     ],
                     "id" : "PRIMARY"
