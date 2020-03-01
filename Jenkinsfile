@@ -6,6 +6,12 @@ pipeline {
                 sh 'mvn clean verify'
             }
         }
+        stage('deploy') {
+            steps {
+                sh 'unzip -d deploy deployment-*.zip'
+                sh './deploy/installAll.sh'
+            }
+        }
     }
   post {
     success {

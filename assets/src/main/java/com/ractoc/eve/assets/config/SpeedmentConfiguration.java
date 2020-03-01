@@ -129,13 +129,14 @@ public class SpeedmentConfiguration {
     @Bean
     @Primary
     public Jackson2ObjectMapperBuilder jacksonBuilder() {
-        return new Jackson2ObjectMapperBuilder().modulesToInstall(new JavaTimeModule()).indentOutput(true);
+        return new Jackson2ObjectMapperBuilder().indentOutput(true);
     }
 
     @Bean
     @Primary
     public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
         ObjectMapper objectMapper = builder.build();
+        objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         return objectMapper;
     }

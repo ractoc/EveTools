@@ -9,8 +9,6 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import javax.validation.constraints.NotNull;
-
 public class ConstellationItemProcessor implements ItemProcessor<Integer, ConstellationModel> {
 
     @Autowired
@@ -20,8 +18,8 @@ public class ConstellationItemProcessor implements ItemProcessor<Integer, Conste
     private int retry;
 
     @Override
-    public ConstellationModel process(@NotNull Integer constellationId) {
-        ConstellationModel constellation = null;
+    public ConstellationModel process(Integer constellationId) {
+        ConstellationModel constellation;
         try {
             constellation = fetchConstellationFromAPI(constellationId);
         } catch (ApiException e) {

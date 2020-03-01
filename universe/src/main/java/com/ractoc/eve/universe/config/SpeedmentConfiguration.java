@@ -10,6 +10,7 @@ import com.ractoc.eve.universe.db.universe.eve_universe.region.RegionManager;
 import com.ractoc.eve.universe.db.universe.eve_universe.solarsystem.SolarsystemManager;
 import com.speedment.runtime.core.component.transaction.TransactionComponent;
 import com.speedment.runtime.core.component.transaction.TransactionHandler;
+import com.speedment.runtime.join.JoinBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+
+import static com.speedment.runtime.core.ApplicationBuilder.LogType.*;
 
 @Configuration
 public class SpeedmentConfiguration {
@@ -50,6 +53,7 @@ public class SpeedmentConfiguration {
             LOGGER.debug("collation: {}", collation);
             LOGGER.debug("collationBinary: {}", collationBinary);
             return new UniverseApplicationBuilder()
+                    .withBundle(JoinBundle.class)
                     .withIpAddress(host)
                     .withPort(port)
                     .withUsername(username)
@@ -57,13 +61,14 @@ public class SpeedmentConfiguration {
                     .withSchema(schema)
                     .withParam("db.mysql.collationName", collation)
                     .withParam("db.mysql.binaryCollationName", collationBinary)
-                    .withLogging(UniverseApplicationBuilder.LogType.STREAM)
-                    .withLogging(UniverseApplicationBuilder.LogType.REMOVE)
-                    .withLogging(UniverseApplicationBuilder.LogType.PERSIST)
-                    .withLogging(UniverseApplicationBuilder.LogType.UPDATE)
+                    .withLogging(STREAM)
+                    .withLogging(REMOVE)
+                    .withLogging(PERSIST)
+                    .withLogging(UPDATE)
                     .build();
         }
         return new UniverseApplicationBuilder()
+                .withBundle(JoinBundle.class)
                 .withIpAddress(host)
                 .withPort(port)
                 .withUsername(username)
@@ -98,11 +103,6 @@ public class SpeedmentConfiguration {
     public MarketHubsManager getMarketHubsManager(UniverseApplication app) {
         return app.getOrThrow(MarketHubsManager.class);
     }
-
-//    @Bean
-//    public Jackson2ObjectMapperBuilder jacksonBuilder() {
-//        return new Jackson2ObjectMapperBuilder().modulesToInstall(new JavaTimeModule()).indentOutput(true);
-//    }
 
     @Bean
     @Primary

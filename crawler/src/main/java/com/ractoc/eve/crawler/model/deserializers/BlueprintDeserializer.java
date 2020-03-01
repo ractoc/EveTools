@@ -31,7 +31,6 @@ public class BlueprintDeserializer extends StdDeserializer<YamlBlueprintModel> {
     public static final String PROBABILITY = "probability";
     public static final String SKILLS = "skills";
     public static final String LEVEL = "level";
-    public static final String ID = "id";
 
 
     @SuppressWarnings("unused")
