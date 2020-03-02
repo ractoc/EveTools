@@ -40,7 +40,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        script: unzip /tmp/eve/deployment/target/deployment*.zip
+        script: unzip /tmp/eve/deployment/target/deployment*.zip -d /tmp/eve
     - name: install new deployment
       uses: appleboy/ssh-action@master
       with:
@@ -48,4 +48,4 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        script: /tmp/eve/deployment/target/installAll.sh
+        script: /tmp/eve/installAll.sh
