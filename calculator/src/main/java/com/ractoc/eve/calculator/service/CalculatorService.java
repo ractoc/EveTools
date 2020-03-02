@@ -31,14 +31,19 @@ public class CalculatorService {
         Set<BlueprintMaterialModel> mats = bp.getManufacturingMaterials();
         double totalMineralSellPrice = 0.0;
         double totalMineralBuyPrice = 0.0;
-        for (BlueprintMaterialModel mat : mats) {
-            getPricesForMaterial(regionId, locationId, mat);
-            mat.setCalculatedTotalQuantity(calculateActualQuantity(runs, mat.getQuantity(), bp.getMaterialEfficiency(), 2));
-            totalMineralSellPrice += mat.getSellPrice() * mat.getCalculatedTotalQuantity();
-            totalMineralBuyPrice += mat.getBuyPrice() * mat.getCalculatedTotalQuantity();
+        try {
+            for (BlueprintMaterialModel mat : mats) {
+                getPricesForMaterial(regionId, locationId, mat);
+                mat.setCalculatedTotalQuantity(calculateActualQuantity(runs, mat.getQuantity(), bp.getMaterialEfficiency(), 2));
+                totalMineralSellPrice += mat.getSellPrice() * mat.getCalculatedTotalQuantity();
+                totalMineralBuyPrice += mat.getBuyPrice() * mat.getCalculatedTotalQuantity();
+            }
+            bp.setMineralSellPrice(Precision.round(totalMineralSellPrice, 2));
+            bp.setMineralBuyPrice(Precision.round(totalMineralBuyPrice, 2));
+        } catch (NoSuchElementException e) {
+            bp.setMineralSellPrice(Precision.round(-1, 2));
+            bp.setMineralBuyPrice(Precision.round(-1, 2));
         }
-        bp.setMineralSellPrice(Precision.round(totalMineralSellPrice, 2));
-        bp.setMineralBuyPrice(Precision.round(totalMineralBuyPrice, 2));
     }
 
     public void calculateItemPrices(ItemModel item, Integer regionId, Long locationId, Integer runs) {
@@ -131,7 +136,10 @@ public class CalculatorService {
             try {
                 List<GetMarketsRegionIdOrders200Ok> orders = marketApi.getMarketsRegionIdOrders("all", regionId, null, null, pageNumber, item.getId());
                 if (orders.isEmpty()) {
-                    throw new NoSuchElementException("No order found for item: " + item + " at location " + locationId);
+                    item.setSellPrice(-1.0);
+                    item.setBuyPrice(-1.0);
+                    return;
+//                    throw new NoSuchElementException("No order found for item: " + item + " at location " + locationId);
                 }
                 List<GetMarketsRegionIdOrders200Ok> locationOrder = findOrdersForLocation(orders, locationId);
                 // buy orders mean sell you minerals, which is done at the highest possible price.
