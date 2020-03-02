@@ -8,8 +8,8 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                sh 'unzip -d deploy deployment-*.zip'
-                sh './deploy/installAll.sh'
+                sh 'unzip -d deployment/target/deploy deployment-*.zip'
+                sh 'deployment/target/deploy/installAll.sh'
             }
         }
     }
