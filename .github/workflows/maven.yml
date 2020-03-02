@@ -16,3 +16,36 @@ jobs:
         java-package: jdk+fx # (jre, jdk, or jdk+fx) - defaults to jdk:  
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: clean old deployment
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: rm -r /tmp/eve
+    - name: upload new deployment
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        source: "deployment/target/deployment*.zip"
+        target: "/tmp/eve"
+    - name: extract new deployment
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: unzip /tmp/eve/deployment/target/deployment*.zip -d /tmp/eve
+    - name: install new deployment
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: /tmp/eve/installAll.sh
