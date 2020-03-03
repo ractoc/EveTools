@@ -1,5 +1,5 @@
 name: Java CI
-
+ 
 on: [push]
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        script: rm -r /tmp/eve
+        script: rm -rf /tmp/eve
     - name: upload new deployment
       uses: appleboy/scp-action@master
       with:
