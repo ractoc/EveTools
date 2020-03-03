@@ -1,5 +1,16 @@
 ./stopAll.sh
 
+echo removing previously installed version
+
+sudo rm -rf /opt/eve/angular.jar
+sudo rm -rf /opt/eve/assets.jar
+sudo rm -rf /opt/eve/calculator.jar
+sudo rm -rf /opt/eve/universe.jar
+sudo rm -rf /opt/eve/user.jar
+sudo rm -rf /opt/eve/crawler.jar
+
+echo installing new version
+
 sudo cp ./angular-${project.version}-executable.jar /opt/eve/angular.jar
 sudo cp ./assets-${project.version}-executable.jar /opt/eve/assets.jar
 sudo cp ./calculator-${project.version}-executable.jar /opt/eve/calculator.jar
@@ -7,22 +18,27 @@ sudo cp ./universe-${project.version}-executable.jar /opt/eve/universe.jar
 sudo cp ./user-${project.version}-executable.jar /opt/eve/user.jar
 sudo cp ./crawler-${project.version}-executable.jar /opt/eve/crawler.jar
 
+echo setting grants on executables
 sudo chown eve:eve /opt/eve/*.jar
 
+echo setting up services
 sudo cp angular-app.service /etc/systemd/system/
 sudo cp assets-app.service /etc/systemd/system/
 sudo cp calculator-app.service /etc/systemd/system/
 sudo cp universe-app.service /etc/systemd/system/
 sudo cp user-app.service /etc/systemd/system/
 
+echo setting grants on services
 sudo chmod u+rwx /etc/systemd/system/angular-app.service
 sudo chmod u+rwx /etc/systemd/system/assets-app.service
 sudo chmod u+rwx /etc/systemd/system/calculator-app.service
 sudo chmod u+rwx /etc/systemd/system/universe-app.service
 sudo chmod u+rwx /etc/systemd/system/user-app.service
 
+echo reloading service configuration
 sudo systemctl daemon-reload
 
+echo enabling services to start on server boot
 sudo systemctl enable angular-app
 sudo systemctl enable assets-app
 sudo systemctl enable calculator-app
@@ -30,4 +46,3 @@ sudo systemctl enable universe-app
 sudo systemctl enable user-app
 
 ./startAll.sh
-

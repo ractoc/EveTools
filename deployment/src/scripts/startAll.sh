@@ -1,3 +1,5 @@
+echo starting all services
+
 sudo systemctl start angular-app
 sudo systemctl start assets-app
 sudo systemctl start calculator-app
