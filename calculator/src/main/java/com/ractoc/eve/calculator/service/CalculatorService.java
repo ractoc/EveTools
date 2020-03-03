@@ -127,7 +127,7 @@ public class CalculatorService {
                 throw new ServiceException("Unable to retrieve orders for material " + mat, e);
             }
         } while (pageNumber < 10000);
-        throw new ServiceException("Maximum number of pages exceeded while requesting an order for material " + mat + " at location " + locationId);
+        throw new NoSuchElementException("No order found for material: " + mat + " at location " + locationId);
     }
 
     private void getPricesForItem(ItemModel item, Integer regionId, Long locationId, Integer runs) {
@@ -166,7 +166,9 @@ public class CalculatorService {
                 throw new ServiceException("Unable to retrieve orders for item " + item, e);
             }
         } while (pageNumber < 10000);
-        throw new ServiceException("Maximum number of pages exceeded while requesting an order for item " + item + " at location " + locationId);
+        item.setSellPrice(-1.0);
+        item.setBuyPrice(-1.0);
+        return;
     }
 
     private List<GetMarketsRegionIdOrders200Ok> findOrdersForLocation(List<GetMarketsRegionIdOrders200Ok> orders, Long locationId) {
