@@ -1,4 +1,10 @@
-./stopAll.sh
+echo stopping all services
+
+sudo systemctl stop angular-app
+sudo systemctl stop assets-app
+sudo systemctl stop calculator-app
+sudo systemctl stop universe-app
+sudo systemctl stop user-app
 
 echo removing previously installed version
 
@@ -45,4 +51,10 @@ sudo systemctl enable calculator-app
 sudo systemctl enable universe-app
 sudo systemctl enable user-app
 
-./startAll.sh
+echo starting all services
+
+sudo systemctl start angular-app
+sudo systemctl start assets-app
+sudo systemctl start calculator-app
+sudo systemctl start universe-app
+sudo systemctl start user-app
