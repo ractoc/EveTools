@@ -23,8 +23,22 @@ spring:
 
 debug: true
 
+logging:
+  level:
+    root: WARN
+    com.ractoc: DEBUG
+  pattern.console: "%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
+
 ---
 spring:
   profiles: prod
 
 debug: false
+
+logging:
+  level:
+    root: WARN
+  file:
+    path: /var/log/eve
+    name: crawler.log
+  pattern.file: "%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n"

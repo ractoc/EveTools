@@ -22,6 +22,12 @@ dbms:
 
 debug: true
 
+logging:
+  level:
+    root: WARN
+    com.ractoc: DEBUG
+  pattern.console: "%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
+
 ---
 spring:
   profiles: prod
@@ -30,3 +36,11 @@ dbms:
   password: Dr!lb00r
 
 debug: false
+
+logging:
+  level:
+    root: WARN
+  file:
+    path: /var/log/eve
+    name: universe.log
+  pattern.file: "%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n"

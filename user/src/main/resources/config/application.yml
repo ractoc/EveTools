@@ -29,6 +29,12 @@ sso:
 
 debug: true
 
+logging:
+  level:
+    root: WARN
+    com.ractoc: DEBUG
+  pattern.console: "%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
+
 ---
 spring:
   profiles: prod
@@ -43,3 +49,11 @@ sso:
   client-secret: oCvUMSI8rykr0shRR41Y2DLVG50kG0bc1ahx2OXQ
 
 debug: false
+
+logging:
+  level:
+    root: WARN
+  file:
+    path: /var/log/eve
+    name: user.log
+  pattern.file: "%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n"
