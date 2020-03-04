@@ -9,6 +9,7 @@ import com.ractoc.eve.assets.service.ServiceException;
 import com.ractoc.eve.domain.assets.BlueprintModel;
 import com.ractoc.eve.user.filter.EveUserDetails;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -33,10 +34,15 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/blueprint")
 @Validated
-public class BlueprintController {
+@Slf4j
+public class BlueprintController extends BaseController {
+
+    private final BlueprintHandler blueprintHandler;
 
     @Autowired
-    private BlueprintHandler blueprintHandler;
+    public BlueprintController(BlueprintHandler blueprintHandler) {
+        this.blueprintHandler = blueprintHandler;
+    }
 
     @ApiOperation(value = "Get blueprint by ID", response = BlueprintResponse.class, produces = "application/json")
     @ApiResponses(value = {
@@ -44,11 +50,11 @@ public class BlueprintController {
             @ApiResponse(code = 404, message = "Blueprint not found", response = ErrorResponse.class)
     })
     @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> getBlueprint(@AuthenticationPrincipal Authentication authentication, @PathVariable("id") int blueprintId) {
+    public ResponseEntity<BaseResponse> getBlueprint(@PathVariable("id") int blueprintId) {
         try {
             return new ResponseEntity<>(new BlueprintResponse(OK, blueprintHandler.getBlueprint(blueprintId)), OK);
         } catch (NoSuchElementException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);
         }
     }
@@ -67,10 +73,10 @@ public class BlueprintController {
                     )
                     , OK);
         } catch (AccessDeniedException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return new ResponseEntity<>(new ErrorResponse(UNAUTHORIZED, e.getMessage()), UNAUTHORIZED);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
     }
@@ -86,7 +92,7 @@ public class BlueprintController {
             blueprintHandler.saveBlueprints(bps);
             return new ResponseEntity<>(new BaseResponse(CREATED.value()), OK);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
     }

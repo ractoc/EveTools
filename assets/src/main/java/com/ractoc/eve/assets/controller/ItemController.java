@@ -1,6 +1,5 @@
 package com.ractoc.eve.assets.controller;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.ractoc.eve.assets.handler.TypeHandler;
 import com.ractoc.eve.assets.response.BaseResponse;
 import com.ractoc.eve.assets.response.ErrorResponse;
@@ -9,11 +8,9 @@ import com.ractoc.eve.assets.response.ItemResponse;
 import com.ractoc.eve.assets.service.ServiceException;
 import com.ractoc.eve.domain.assets.TypeModel;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +30,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/item")
 @Validated
-public class ItemController {
+@Slf4j
+public class ItemController extends BaseController {
 
     private final TypeHandler typeHandler;
 
@@ -48,11 +46,11 @@ public class ItemController {
             @ApiResponse(code = 404, message = "Item not found", response = ErrorResponse.class)
     })
     @GetMapping(value = "/name/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> getItemName(@AuthenticationPrincipal Authentication authentication, @PathVariable("id") int itemId) {
+    public ResponseEntity<BaseResponse> getItemName(@PathVariable("id") int itemId) {
         try {
             return new ResponseEntity<>(new ItemNameResponse(OK, typeHandler.getItemName(itemId)), OK);
         } catch (NoSuchElementException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);
         }
     }
@@ -63,11 +61,11 @@ public class ItemController {
             @ApiResponse(code = 404, message = "Item not found", response = ErrorResponse.class)
     })
     @GetMapping(value = "/blueprint/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> getItemForBlueprint(@AuthenticationPrincipal Authentication authentication, @PathVariable("id") int blueprintId) {
+    public ResponseEntity<BaseResponse> getItemForBlueprint(@PathVariable("id") int blueprintId) {
         try {
             return new ResponseEntity<>(new ItemResponse(OK, typeHandler.getItemForBlueprint(blueprintId)), OK);
         } catch (NoSuchElementException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);
         }
     }
@@ -83,18 +81,8 @@ public class ItemController {
             typeHandler.saveTypes(items);
             return new ResponseEntity<>(new BaseResponse(CREATED.value()), OK);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
-    }
-
-
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    @ResponseBody
-    public String handleHttpMessageNotReadableException(HttpMessageNotReadableException ex)
-    {
-        JsonMappingException jme = (JsonMappingException) ex.getCause();
-        jme.printStackTrace();
-        return jme.getPath().get(0).getFieldName() + " invalid";
     }
 }
