@@ -17,22 +17,22 @@ sudo rm -rf /opt/eve/crawler.jar
 
 echo installing new version
 
-sudo cp ./angular-${project.version}-executable.jar /opt/eve/angular.jar
-sudo cp ./assets-${project.version}-executable.jar /opt/eve/assets.jar
-sudo cp ./calculator-${project.version}-executable.jar /opt/eve/calculator.jar
-sudo cp ./universe-${project.version}-executable.jar /opt/eve/universe.jar
-sudo cp ./user-${project.version}-executable.jar /opt/eve/user.jar
-sudo cp ./crawler-${project.version}-executable.jar /opt/eve/crawler.jar
+sudo cp /tmp/eve/angular-${project.version}-executable.jar /opt/eve/angular.jar
+sudo cp /tmp/eve/assets-${project.version}-executable.jar /opt/eve/assets.jar
+sudo cp /tmp/eve/calculator-${project.version}-executable.jar /opt/eve/calculator.jar
+sudo cp /tmp/eve/universe-${project.version}-executable.jar /opt/eve/universe.jar
+sudo cp /tmp/eve/user-${project.version}-executable.jar /opt/eve/user.jar
+sudo cp /tmp/eve/crawler-${project.version}-executable.jar /opt/eve/crawler.jar
 
 echo setting grants on executables
 sudo chown eve:eve /opt/eve/*.jar
 
 echo setting up services
-sudo cp angular-app.service /etc/systemd/system/
-sudo cp assets-app.service /etc/systemd/system/
-sudo cp calculator-app.service /etc/systemd/system/
-sudo cp universe-app.service /etc/systemd/system/
-sudo cp user-app.service /etc/systemd/system/
+sudo cp /tmp/eve/angular-app.service /etc/systemd/system/
+sudo cp /tmp/eve/assets-app.service /etc/systemd/system/
+sudo cp /tmp/eve/calculator-app.service /etc/systemd/system/
+sudo cp /tmp/eve/universe-app.service /etc/systemd/system/
+sudo cp /tmp/eve/user-app.service /etc/systemd/system/
 
 echo setting grants on services
 sudo chmod u+rwx /etc/systemd/system/angular-app.service
