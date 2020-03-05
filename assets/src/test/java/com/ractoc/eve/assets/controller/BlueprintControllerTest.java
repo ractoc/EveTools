@@ -80,7 +80,7 @@ class BlueprintControllerTest implements WithAssertions {
                 "test_password",
                 new HashSet<>(),
                 25,
-                1234567890l,
+                1234567890L,
                 "127.0.0.1",
                 "access_token");
 
@@ -125,7 +125,7 @@ class BlueprintControllerTest implements WithAssertions {
                 "test_password",
                 new HashSet<>(),
                 25,
-                1234567890l,
+                1234567890L,
                 "127.0.0.1",
                 "access_token");
 
