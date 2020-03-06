@@ -18,7 +18,7 @@ public class TypeItemWriter implements ItemWriter<YamlTypeModel> {
     public void write(List<? extends YamlTypeModel> types) throws ApiException {
         types.stream().filter(t -> t == null).forEach(System.out::println);
         api.saveItems(types.stream()
-                .filter(t -> t.isPublished())
+                .filter(t -> t.isComplete())
                 .map(TypeMapper.INSTANCE::modelToAssetApi)
                 .collect(Collectors.toList()));
     }

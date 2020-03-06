@@ -14,7 +14,6 @@ public class TypeDeserializer extends StdDeserializer<YamlTypeModel> {
     public static final String NAME = "name";
     public static final String EN = "en";
     public static final String GROUP_ID = "groupID";
-    public static final String VOLUME = "volume";
     public static final String PUBLISHED = "published";
 
 
@@ -36,7 +35,6 @@ public class TypeDeserializer extends StdDeserializer<YamlTypeModel> {
             type.setId(getId(typeNode));
             type.setName(getName(typeNode));
             type.setGroupId(getGroupId(typeNode));
-            type.setVolume(getVolume(typeNode));
             type.setPublished(typeNode.get(PUBLISHED).booleanValue());
             return type;
         } catch (Exception e) {
@@ -45,16 +43,12 @@ public class TypeDeserializer extends StdDeserializer<YamlTypeModel> {
         }
     }
 
-    private double getVolume(JsonNode typeNode) {
-        return typeNode.get(VOLUME) != null ? typeNode.get(VOLUME).doubleValue() : 0.0;
-    }
-
     private int getId(JsonNode typeNode) {
         return typeNode.get(TYPE_ID) != null ? typeNode.get(TYPE_ID).intValue() : 0;
     }
 
     private int getGroupId(JsonNode typeNode) {
-            return typeNode.get(GROUP_ID).intValue();
+            return typeNode.get(GROUP_ID) != null ? typeNode.get(GROUP_ID).intValue() : 0;
     }
 
     private String getName(JsonNode typeNode) {

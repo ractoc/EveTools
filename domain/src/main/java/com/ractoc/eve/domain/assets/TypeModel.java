@@ -16,6 +16,5 @@ public class TypeModel {
     private int id;
     private String name;
     private int groupId;
-    private double volume;
     private boolean published;
 }

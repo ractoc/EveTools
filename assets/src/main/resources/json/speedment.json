@@ -537,13 +537,6 @@
                     "name" : "group_id",
                     "id" : "group_id",
                     "ordinalPosition" : 3
-                  },
-                  {
-                    "databaseType" : "java.math.BigDecimal",
-                    "nullable" : true,
-                    "name" : "volume",
-                    "id" : "volume",
-                    "ordinalPosition" : 4
                   }
                 ],
                 "name" : "type",

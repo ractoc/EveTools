@@ -17,6 +17,9 @@ public class YamlTypeModel {
     private int id;
     private String name;
     private int groupId;
-    private double volume;
     private boolean published;
+
+    public boolean isComplete() {
+        return id != 0 && name != null && groupId != 0;
+    }
 }
