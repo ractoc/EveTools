@@ -75,7 +75,6 @@ CREATE TABLE `eve_assets`.`type`
     `id`       int(11) NOT NULL,
     `name`     varchar(100)   DEFAULT NULL,
     `group_id` int(11)        DEFAULT NULL,
-    `volume`   decimal(11, 2) DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
