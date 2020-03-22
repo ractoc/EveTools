@@ -22,4 +22,7 @@
 
     <blueprint_manufacturing_skills blueprint_id="100000" type_id="20" level="1"/>
     <blueprint_manufacturing_skills blueprint_id="100000" type_id="30" level="2"/>
+
+    <type id="100000" name="stuff" group_id="1"/>
+    <type id="100001" name="more stuff" group_id="2"/>
 </dataset>

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import static com.ractoc.eve.assets.db.assets.eve_assets.type.generated.GeneratedType.ID;
+
 @Service
 public class TypeService {
 
@@ -20,7 +22,6 @@ public class TypeService {
     }
 
     public void saveType(Type type) {
-        System.out.println("persisting:" + type);
         typeManager.persist(type);
     }
 
@@ -32,18 +33,16 @@ public class TypeService {
     public String getItemName(int itemId) {
         return typeManager
                 .stream()
-                .filter(Type.ID.equal(itemId))
+                .filter(ID.equal(itemId))
                 .map(Type::getName)
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Item not found, ID: " + itemId))
                 .orElseThrow(() -> new NoSuchElementException("Item not found, ID: " + itemId));
     }
 
-    public Type getItemblueprintId(int itemId) {
+    public Type getItemById(int itemId) {
         return typeManager
                 .stream()
-                .peek(System.out::println)
-                .filter(Type.ID.equal(itemId))
+                .filter(ID.equal(itemId))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Item not found, ID: " + itemId));
     }

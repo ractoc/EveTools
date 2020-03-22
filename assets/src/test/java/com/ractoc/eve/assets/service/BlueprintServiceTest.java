@@ -51,7 +51,7 @@ class BlueprintServiceTest extends SpeedmentDBTestCase implements WithAssertions
     private BlueprintService service;
 
     private AssetsApplication assetsApplication = new AssetsApplicationBuilder()
-            .withPassword("root")
+            .withPassword(PASSWORD)
             .withConnectionUrl(dbUrl)
             .withLogging(LogType.STREAM)
             .withLogging(LogType.REMOVE)

@@ -66,7 +66,7 @@ class TypeHandlerTest implements WithAssertions {
         // Given
         Set<BlueprintManufacturingProducts> manProds = createBpManProds();
         when(mockedBlueprintService.getManufacturingProducts(25)).thenReturn(manProds);
-        when(mockedTypeService.getItemblueprintId(20)).thenReturn(createType());
+        when(mockedTypeService.getItemById(20)).thenReturn(createType());
 
         // When
         ItemModel model = handler.getItemForBlueprint(25);
@@ -120,7 +120,7 @@ class TypeHandlerTest implements WithAssertions {
         verify(mockedTypeService).saveType(typeCaptor.capture());
         Type t = typeCaptor.getValue();
         assertThat(t.getId()).isEqualTo(25);
-        assertThat(t.getName()).isPresent().get().isEqualTo("test type");
+        assertThat(t.getName()).isEqualTo("test type");
         verify(mockedTransaction).commit();
     }
 

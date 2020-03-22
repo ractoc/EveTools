@@ -51,6 +51,6 @@ public class TypeHandler {
                 .findAny()
                 .map(BlueprintManufacturingProducts::getTypeId)
                 .orElseThrow(() -> new NoSuchElementException("No items found for blueprint, ID: " + blueprintId));
-        return ItemMapper.INSTANCE.dbToModel(typeService.getItemblueprintId(itemId));
+        return ItemMapper.INSTANCE.dbToModel(typeService.getItemById(itemId));
     }
 }

@@ -30,4 +30,8 @@
     <blueprint_manufacturing_skills blueprint_id="100000" type_id="20" level="1"/>
     <blueprint_manufacturing_skills blueprint_id="100000" type_id="30" level="2"/>
     <blueprint_manufacturing_skills blueprint_id="100001" type_id="7" level="3"/>
+
+    <type name="stuff" group_id="1"/>
+    <type name="more stuff" group_id="2"/>
+    <type name="test type" group_id="25"/>
 </dataset>

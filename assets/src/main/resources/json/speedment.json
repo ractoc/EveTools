@@ -525,18 +525,18 @@
                     "ordinalPosition" : 1
                   },
                   {
-                    "databaseType" : "java.lang.String",
-                    "nullable" : true,
-                    "name" : "name",
-                    "id" : "name",
-                    "ordinalPosition" : 2
+                    "databaseType": "java.lang.String",
+                    "nullable": false,
+                    "name": "name",
+                    "id": "name",
+                    "ordinalPosition": 2
                   },
                   {
-                    "databaseType" : "java.lang.Integer",
-                    "nullable" : true,
-                    "name" : "group_id",
-                    "id" : "group_id",
-                    "ordinalPosition" : 3
+                    "databaseType": "java.lang.Integer",
+                    "nullable": false,
+                    "name": "group_id",
+                    "id": "group_id",
+                    "ordinalPosition": 3
                   }
                 ],
                 "name" : "type",
