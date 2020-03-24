@@ -8,21 +8,35 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item"><a class="nav-link" routerLink="home">Home</a></li>
-            <li *ngIf="userName" class="nav-item"><a class="nav-link" routerLink="blueprints">Blueprints</a></li>
-          </ul>
-          <div *ngIf="userName; else login">
-            {{userName}}
-            <button class="btn btn-outline-success my-2 my-sm-0" (click)="logout()">Logout</button>
+          <a class="nav-link" routerLink="home">Home</a>
+          <div ngbDropdown *ngIf="userName">
+            <button class="btn" id="bpDropdown" ngbDropdownToggle>Blueprints</button>
+            <div ngbDropdownMenu aria-labelledby="bpDropdown">
+              <a class="dropdown-item" ngbDropdownItem routerLink="blueprints/personal">Personal</a>
+              <a class="dropdown-item" ngbDropdownItem routerLink="blueprints/corporate">Corporate</a>
+            </div>
           </div>
         </div>
+        <div *ngIf="userName; else login" class="navbar-nav ml-auto my-2 my-lg-0">
+          {{userName}}
+          <button class="btn btn-outline-success" (click)="logout()">Logout</button>
+        </div>
       </nav>
-      <router-outlet></router-outlet>
     </div>
+  </div>
+  <div class="row">
+    <!--<div ngbDropdown class="d-inline-block">
+      <button class="btn" id="dropdownBasic2" ngbDropdownToggle>Toggle dropdown</button>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+        <button ngbDropdownItem>Action - 1</button>
+        <button ngbDropdownItem>Another Action</button>
+        <button ngbDropdownItem>Something else is here</button>
+      </div>
+    </div>-->
+    <router-outlet></router-outlet>
   </div>
 </div>
 
 <ng-template #login>
-  <button class="btn btn-outline-success my-2 my-sm-0" routerLink="login">Login</button>
+  <button class="btn btn-outline-success" routerLink="login">Login</button>
 </ng-template>

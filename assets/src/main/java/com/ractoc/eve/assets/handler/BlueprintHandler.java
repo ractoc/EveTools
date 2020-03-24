@@ -119,10 +119,16 @@ public class BlueprintHandler {
                 .collect(Collectors.toList());
     }
 
+    public List<BlueprintModel> getBlueprintsForCorporation(EveUserDetails eveUserDetails) {
+        return blueprintService.getBlueprintsForCorporation(eveUserDetails.getCharId(), eveUserDetails.getAccessToken())
+                .map(BlueprintMapper.INSTANCE::esiToModel)
+                .map(this::addNameToBlueprint)
+                .sorted((b1, b2) -> b1.getName().compareToIgnoreCase(b2.getName()))
+                .collect(Collectors.toList());
+    }
+
     private BlueprintModel addNameToBlueprint(BlueprintModel blueprintModel) {
         blueprintModel.setName(typeService.getItemName(blueprintModel.getId()));
         return blueprintModel;
     }
-
-
 }

@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
@@ -59,17 +58,6 @@ public class UserHandler {
     public UserModel getUserByState(String eveState) {
         return getUser(eveState)
                 .map(user -> {
-                    System.out.println(user);
-                    System.out.println(user.getLastRefresh().orElseThrow(() -> new AccessDeniedException(eveState)));
-                    System.out.println(user.getLastRefresh().orElseThrow(() -> new AccessDeniedException(eveState))
-                            .atZone(ZoneId.systemDefault()));
-                    System.out.println(user.getLastRefresh().orElseThrow(() -> new AccessDeniedException(eveState))
-                            .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-                    System.out.println(user.getExpiresIn().orElseThrow(() -> new AccessDeniedException(eveState)));
-                    System.out.println(user.getLastRefresh().orElseThrow(() -> new AccessDeniedException(eveState))
-                            .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + (1000 *
-                            user.getExpiresIn().orElseThrow(() -> new AccessDeniedException(eveState))));
-                    System.out.println(Instant.now());
                     UserModel result = UserModel.builder()
                             .charId(user.getCharacterId().orElseThrow(() -> new AccessDeniedException(eveState)))
                             .characterName(user.getName().orElseThrow(() -> new AccessDeniedException(eveState)))
@@ -80,7 +68,6 @@ public class UserHandler {
                                     user.getExpiresIn().orElseThrow(() -> new AccessDeniedException(eveState))))
                             .accessToken(user.getAccessToken().orElseThrow(() -> new AccessDeniedException(eveState)))
                             .build();
-                    System.out.println(result);
                     return result;
                 })
                 .orElseThrow(() -> new AccessDeniedException(eveState));

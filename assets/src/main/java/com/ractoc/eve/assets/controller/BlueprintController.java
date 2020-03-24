@@ -81,6 +81,28 @@ public class BlueprintController extends BaseController {
         }
     }
 
+    @ApiOperation(value = "Get corporation owned blueprints by character by ID", response = BlueprintListResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = BlueprintListResponse.class),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
+    @GetMapping(value = "/corporation", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> getBlueprintsForCorporation(@AuthenticationPrincipal Authentication authentication) {
+        try {
+            return new ResponseEntity<>(
+                    new BlueprintListResponse(OK,
+                            blueprintHandler.getBlueprintsForCorporation((EveUserDetails) authentication.getPrincipal())
+                    )
+                    , OK);
+        } catch (AccessDeniedException e) {
+            log.error(e.getMessage(), e);
+            return new ResponseEntity<>(new ErrorResponse(UNAUTHORIZED, e.getMessage()), UNAUTHORIZED);
+        } catch (ServiceException e) {
+            log.error(e.getMessage(), e);
+            return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @ApiOperation(value = "Save all blueprints.", response = BaseResponse.class, consumes = "application/json", produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "The blueprint were successfully created", response = BaseResponse.class),

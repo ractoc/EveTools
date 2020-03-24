@@ -21,13 +21,32 @@ export class AssetsService {
 
   blueprints: BlueprintModel[];
 
-  getBlueprints(): Observable<BlueprintModel[]> {
+  getPersonalBlueprints(): Observable<BlueprintModel[]> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Authorization': 'Bearer ' + this.userService.getEveState()
       })
     };
     return this.http.get<any>(ASSETS_URI + '/blueprint/character', httpOptions)
+      .pipe(
+        map(result => {
+          if (result.responseCode >= 400) {
+            throw new Error('broken API:' + result.responseCode);
+          } else {
+            this.blueprints = result.blueprintList;
+            return result.blueprintList;
+          }
+        })
+      );
+  }
+
+  getCorporateBlueprints(): Observable<BlueprintModel[]> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer ' + this.userService.getEveState()
+      })
+    };
+    return this.http.get<any>(ASSETS_URI + '/blueprint/corporation', httpOptions)
       .pipe(
         map(result => {
           if (result.responseCode >= 400) {

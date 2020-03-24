@@ -16,7 +16,10 @@ import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_skills
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_skills.BlueprintManufacturingSkillsManager;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.CharacterApi;
+import com.ractoc.eve.jesi.api.CorporationApi;
 import com.ractoc.eve.jesi.model.GetCharactersCharacterIdBlueprints200Ok;
+import com.ractoc.eve.jesi.model.GetCharactersCharacterIdOk;
+import com.ractoc.eve.jesi.model.GetCorporationsCorporationIdBlueprints200Ok;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,7 @@ public class BlueprintService {
     private BlueprintManufacturingSkillsManager bmsManager;
 
     private CharacterApi characterApi;
+    private CorporationApi corporationApi;
 
     @Autowired
     public BlueprintService(BlueprintManager bpManager,
@@ -50,7 +54,8 @@ public class BlueprintService {
                             BlueprintManufacturingMaterialsManager bmmManager,
                             BlueprintManufacturingProductsManager bmpManager,
                             BlueprintManufacturingSkillsManager bmsManager,
-                            CharacterApi characterApi) {
+                            CharacterApi characterApi,
+                            CorporationApi corporationApi) {
         this.bpManager = bpManager;
 
         this.bimManager = bimManager;
@@ -60,7 +65,9 @@ public class BlueprintService {
         this.bmmManager = bmmManager;
         this.bmpManager = bmpManager;
         this.bmsManager = bmsManager;
+
         this.characterApi = characterApi;
+        this.corporationApi = corporationApi;
     }
 
     public void saveBlueprint(Blueprint bp) {
@@ -163,6 +170,19 @@ public class BlueprintService {
     public Stream<GetCharactersCharacterIdBlueprints200Ok> getBlueprintsForCharacter(Integer characterId, String accessToken) {
         try {
             return characterApi.getCharactersCharacterIdBlueprints(characterId, null, null, 1, accessToken).stream();
+        } catch (ApiException e) {
+            if (e.getCode() == 403) {
+                throw new AccessDeniedException("Access to the EVE SSO has been denied", e);
+            } else {
+                throw new ServiceException("Unable to retrieve Character Blueprints for character ID " + characterId, e);
+            }
+        }
+    }
+
+    public Stream<GetCorporationsCorporationIdBlueprints200Ok> getBlueprintsForCorporation(int characterId, String accessToken) {
+        try {
+            GetCharactersCharacterIdOk charInfo = characterApi.getCharactersCharacterId(characterId, null, null);
+            return corporationApi.getCorporationsCorporationIdBlueprints(charInfo.getCorporationId(), null, null, 1, accessToken).stream();
         } catch (ApiException e) {
             if (e.getCode() == 403) {
                 throw new AccessDeniedException("Access to the EVE SSO has been denied", e);

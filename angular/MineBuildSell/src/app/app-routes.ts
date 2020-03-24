@@ -9,7 +9,8 @@ export const APP_ROUTES: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'login', redirectTo: 'login/', pathMatch: 'full'},
   {path: 'login/:eveState', component: LoginComponent},
-  {path: 'blueprints', component: BlueprintListComponent},
+  {path: 'blueprints/personal', component: BlueprintListComponent, data: {personal: true}},
+  {path: 'blueprints/corporate', component: BlueprintListComponent, data: {corporate: true}},
   {path: 'blueprint/:id', component: BlueprintDetailsComponent},
   {path: '**', redirectTo: 'home'}
 ];
