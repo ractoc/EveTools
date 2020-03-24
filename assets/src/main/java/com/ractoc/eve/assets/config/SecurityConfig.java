@@ -2,6 +2,7 @@ package com.ractoc.eve.assets.config;
 
 import com.ractoc.eve.user.filter.UserAuthenticationFilter;
 import com.ractoc.eve.user.filter.UserAuthenticationProvider;
+import com.ractoc.eve.user_client.api.UserResourceApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -66,8 +67,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserAuthenticationProvider authenticationProvider() {
-        return new UserAuthenticationProvider();
+    public UserAuthenticationProvider authenticationProvider(UserResourceApi userResourceApi) {
+        return new UserAuthenticationProvider(userResourceApi);
     }
 
     @Bean

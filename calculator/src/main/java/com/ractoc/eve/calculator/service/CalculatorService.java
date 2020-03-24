@@ -16,16 +16,23 @@ import java.util.stream.Collectors;
 @Service
 public class CalculatorService {
 
-    @Autowired
+    public static final String UNABLE_TO_DETERMINE_JOB_FEE = "Unable to determine Job Fee";
+
     private MarketApi marketApi;
-    @Autowired
     private AssetsApi assetsApi;
-    @Autowired
     private IndustryApi industryApi;
-    @Autowired
     private SkillsApi skillsApi;
-    @Autowired
     private UniverseApi universeApi;
+
+    @Autowired
+    public CalculatorService(MarketApi marketApi, AssetsApi assetsApi, IndustryApi industryApi, SkillsApi skillsApi, UniverseApi universeApi) {
+        this.marketApi = marketApi;
+        this.assetsApi = assetsApi;
+        this.industryApi = industryApi;
+        this.skillsApi = skillsApi;
+        this.universeApi = universeApi;
+
+    }
 
     public void calculateMaterialPrices(BlueprintModel bp, Integer regionId, Long locationId, Integer runs) {
         Set<BlueprintMaterialModel> mats = bp.getManufacturingMaterials();
@@ -33,7 +40,7 @@ public class CalculatorService {
         double totalMineralBuyPrice = 0.0;
         for (BlueprintMaterialModel mat : mats) {
             getPricesForMaterial(regionId, locationId, mat);
-            mat.setCalculatedTotalQuantity(calculateActualQuantity(runs, mat.getQuantity(), bp.getMaterialEfficiency(), 2));
+            mat.setCalculatedTotalQuantity(calculateActualQuantity(runs, mat.getQuantity(), bp.getMaterialEfficiency()));
             totalMineralSellPrice += mat.getSellPrice() * mat.getCalculatedTotalQuantity();
             totalMineralBuyPrice += mat.getBuyPrice() * mat.getCalculatedTotalQuantity();
         }
@@ -46,16 +53,23 @@ public class CalculatorService {
     }
 
     public void calculateJobInstallationCosts(BlueprintModel blueprint, Integer charId, String token) {
-        try {
-            Integer systemId = getSystemFromLocation(charId, blueprint.getLocationId(), token);
-            List<GetIndustrySystems200Ok> systems = industryApi.getIndustrySystems(null, null);
-            Optional<GetIndustrySystems200Ok> system = systems.stream()
-                    .filter(s -> s.getSolarSystemId().intValue() == systemId.intValue())
-                    .findAny();
-            blueprint.setJobInstallationCosts(calculateJobInitializationCost(blueprint.getMineralBuyPrice(), system));
-        } catch (ApiException e) {
-            throw new ServiceException("Unable to determine Job Fee", e);
+        int retryCount = 0;
+        while (retryCount < 10) {
+            try {
+                Integer systemId = getSystemFromLocation(charId, blueprint.getLocationId(), token);
+                List<GetIndustrySystems200Ok> systems = industryApi.getIndustrySystems(null, null);
+                Optional<GetIndustrySystems200Ok> system = systems.stream()
+                        .filter(s -> s.getSolarSystemId().intValue() == systemId.intValue())
+                        .findAny();
+                blueprint.setJobInstallationCosts(calculateJobInitializationCost(blueprint.getMineralBuyPrice(), system.orElseThrow(() -> new ServiceException(UNABLE_TO_DETERMINE_JOB_FEE))));
+            } catch (ApiException e) {
+                if (e.getCode() != 502) {
+                    throw new ServiceException(UNABLE_TO_DETERMINE_JOB_FEE, e);
+                }
+                retryCount++;
+            }
         }
+        throw new ServiceException(UNABLE_TO_DETERMINE_JOB_FEE);
     }
 
     public void calculateSalesTax(ItemModel item, Integer charId, String token) {
@@ -66,7 +80,6 @@ public class CalculatorService {
 
     public void calculateBrokerFee(ItemModel item, int charId, String token) {
         Map<Skill, Integer> skillLevels = getSkillsForCharacter(charId, token, Skill.BROKER_RELATIONS);
-        // TODO: Standings are skipped for now since the amount to only 0.5% in total
         double brokerFee = 0.05 - (0.003 * skillLevels.get(Skill.BROKER_RELATIONS).doubleValue());
         item.setBrokerFee(Precision.round(item.getSellPrice() * brokerFee, 2));
     }
@@ -74,25 +87,39 @@ public class CalculatorService {
     private Integer getSystemFromLocation(Integer charId, Long locationId, String token) {
         int pageNumber = 1;
         do {
-            try {
-                List<GetCharactersCharacterIdAssets200Ok> assets = assetsApi.getCharactersCharacterIdAssets(charId, null, null, 1, token);
-                if (assets.isEmpty()) {
-                    throw new NoSuchElementException("No asset found for location: " + locationId);
-                }
-                OptionalLong assetLocation = assets.stream().filter(a -> a.getItemId().longValue() == locationId.longValue()).mapToLong(a -> a.getLocationId()).findFirst();
-                if (assetLocation.isPresent()) {
-                    return universeApi.getUniverseStructuresStructureId(assetLocation.getAsLong(), null, null, token).getSolarSystemId();
-                }
-                pageNumber++;
-            } catch (ApiException e) {
-                throw new ServiceException("Unable to retrieve System from item location " + locationId, e);
-            }
+            Optional<Integer> assetLocation = getSystemFromLocationForPageNumber(charId, locationId, token, pageNumber);
+            if (assetLocation.isPresent()) return assetLocation.get();
+            pageNumber++;
         } while (pageNumber < 10000);
         throw new ServiceException("Maximum number of pages exceeded while requesting a System from item location " + locationId);
     }
 
+    private Optional<Integer> getSystemFromLocationForPageNumber(Integer charId, Long locationId, String token, int pageNumber) {
+        int retryCount = 0;
+        while (retryCount < 10) {
+            try {
+                List<GetCharactersCharacterIdAssets200Ok> assets = assetsApi.getCharactersCharacterIdAssets(charId, null, null, pageNumber, token);
+                if (assets.isEmpty()) {
+                    throw new NoSuchElementException("No asset found for location: " + locationId);
+                }
+                OptionalLong assetLocation = assets.stream().filter(a -> a.getItemId().longValue() == locationId.longValue()).mapToLong(GetCharactersCharacterIdAssets200Ok::getLocationId).findFirst();
+                if (assetLocation.isPresent()) {
+                    return Optional.of(universeApi.getUniverseStructuresStructureId(assetLocation.getAsLong(), null, null, token).getSolarSystemId());
+                }
+                return Optional.empty();
+            } catch (ApiException e) {
+                if (e.getCode() != 502) {
+                    throw new ServiceException("Unable to retrieve System from item location " + locationId, e);
+                }
+                retryCount++;
+            }
+        }
+        throw new ServiceException("Unable to retrieve System from item location " + locationId);
+    }
+
     private void getPricesForMaterial(Integer regionId, Long locationId, BlueprintMaterialModel mat) {
         int pageNumber = 1;
+        int retryCount = 0;
         do {
             try {
                 List<GetMarketsRegionIdOrders200Ok> orders = marketApi.getMarketsRegionIdOrders("all", regionId, null, null, pageNumber, mat.getTypeId());
@@ -121,7 +148,10 @@ public class CalculatorService {
                 }
                 pageNumber++;
             } catch (ApiException e) {
-                throw new ServiceException("Unable to retrieve orders for material " + mat, e);
+                if (e.getCode() != 502 || retryCount > 10) {
+                    throw new ServiceException("Unable to retrieve orders for material " + mat, e);
+                }
+                retryCount++;
             }
         } while (pageNumber < 10000);
         if (mat.getSellPrice() == null) {
@@ -134,6 +164,7 @@ public class CalculatorService {
 
     private void getPricesForItem(ItemModel item, Integer regionId, Long locationId, Integer runs) {
         int pageNumber = 1;
+        int retryCount = 0;
         do {
             try {
                 List<GetMarketsRegionIdOrders200Ok> orders = marketApi.getMarketsRegionIdOrders("all", regionId, null, null, pageNumber, item.getId());
@@ -164,7 +195,10 @@ public class CalculatorService {
                 }
                 pageNumber++;
             } catch (ApiException e) {
-                throw new ServiceException("Unable to retrieve orders for item " + item, e);
+                if (e.getCode() != 502 || retryCount > 10) {
+                    throw new ServiceException("Unable to retrieve orders for item " + item, e);
+                }
+                retryCount++;
             }
         } while (pageNumber < 10000);
         item.setSellPrice(-1.0);
@@ -177,42 +211,48 @@ public class CalculatorService {
                 .collect(Collectors.toList());
     }
 
-    private int calculateActualQuantity(int runs, int baseQuantity, int materialEfficiency, int stationEfficiency) {
-        return (int) Math.max(runs, Math.ceil(Precision.round(runs * baseQuantity * calculateMaterialModifier(materialEfficiency, stationEfficiency), 2)));
+    private int calculateActualQuantity(int runs, int baseQuantity, int materialEfficiency) {
+        return (int) Math.max(runs, Math.ceil(Precision.round(runs * baseQuantity * calculateMaterialModifier(materialEfficiency), 2)));
     }
 
-    private double calculateMaterialModifier(double materialEfficiency, double stationEfficiency) {
-        return (100.00 - materialEfficiency) / 100.00 * (100.00 - stationEfficiency) / 100.00;
+    private double calculateMaterialModifier(double materialEfficiency) {
+        return (100.00 - materialEfficiency) / 100.00 * (100.00 - 2) / 100.00;
     }
 
-    private double calculateJobInitializationCost(double mineralBuyPrice, Optional<GetIndustrySystems200Ok> system) {
+    private double calculateJobInitializationCost(double mineralBuyPrice, GetIndustrySystems200Ok system) {
         Float costIndex = system
-                .orElseThrow(() -> new ServiceException("Unable to determine Job Fee"))
                 .getCostIndices().stream()
                 .filter(index -> index.getActivity() == GetIndustrySystemsCostIndice.ActivityEnum.MANUFACTURING)
                 .findAny()
-                .orElseThrow(() -> new ServiceException("Unable to determine Job Fee"))
+                .orElseThrow(() -> new ServiceException(UNABLE_TO_DETERMINE_JOB_FEE))
                 .getCostIndex();
         return Precision.round(mineralBuyPrice * costIndex, 2);
     }
 
     private Map<Skill, Integer> getSkillsForCharacter(Integer charId, String token, Skill... skills) {
-        Map<Skill, Integer> skillLevels = new HashMap<>();
-        try {
-            GetCharactersCharacterIdSkillsOk charSkills = skillsApi.getCharactersCharacterIdSkills(charId, null, null, token);
-            for (Skill skill : skills) {
-                int skillLevel = charSkills.getSkills()
-                        .stream()
-                        .filter(s -> s.getSkillId() == skill.getSkillId())
-                        .mapToInt(GetCharactersCharacterIdSkillsSkill::getActiveSkillLevel)
-                        .findFirst()
-                        .orElse(0);
-                skillLevels.put(skill, skillLevel);
+        Map<Skill, Integer> skillLevels = new EnumMap<>(Skill.class);
+        int retryCount = 0;
+        while (retryCount < 10) {
+            try {
+                GetCharactersCharacterIdSkillsOk charSkills = skillsApi.getCharactersCharacterIdSkills(charId, null, null, token);
+                for (Skill skill : skills) {
+                    int skillLevel = charSkills.getSkills()
+                            .stream()
+                            .filter(s -> s.getSkillId() == skill.getSkillId())
+                            .mapToInt(GetCharactersCharacterIdSkillsSkill::getActiveSkillLevel)
+                            .findFirst()
+                            .orElse(0);
+                    skillLevels.put(skill, skillLevel);
+                }
+                return skillLevels;
+            } catch (ApiException e) {
+                if (e.getCode() != 502) {
+                    throw new ServiceException("Unable to skills for character " + charId, e);
+                }
+                retryCount++;
             }
-        } catch (ApiException e) {
-            throw new ServiceException("Unable to skills for character " + charId, e);
         }
-        return skillLevels;
+        throw new ServiceException("Unable to skills for character " + charId);
     }
 
     private enum Skill {

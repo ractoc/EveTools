@@ -14,12 +14,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class CalculatorHandler {
 
-    @Autowired
     private BlueprintService blueprintService;
-    @Autowired
     private ItemService itemService;
-    @Autowired
     private CalculatorService calculatorService;
+
+    @Autowired
+    public CalculatorHandler(BlueprintService blueprintService, ItemService itemService, CalculatorService calculatorService) {
+        this.blueprintService = blueprintService;
+        this.itemService = itemService;
+        this.calculatorService = calculatorService;
+    }
 
     public BlueprintModel calculateBlueprintPrices(Integer regionId, Long locationId, BlueprintModel blueprint, Integer runs, EveUserDetails userDetails) {
         BlueprintModel bp = BlueprintMapper.INSTANCE.apiToModel(blueprintService.getBlueprint(blueprint.getId()));

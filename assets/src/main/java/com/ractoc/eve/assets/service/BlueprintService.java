@@ -4,16 +4,22 @@ import com.ractoc.eve.assets.db.assets.eve_assets.blueprint.Blueprint;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint.BlueprintManager;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_invention_materials.BlueprintInventionMaterials;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_invention_materials.BlueprintInventionMaterialsManager;
+import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_invention_materials.generated.GeneratedBlueprintInventionMaterials;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_invention_products.BlueprintInventionProducts;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_invention_products.BlueprintInventionProductsManager;
+import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_invention_products.generated.GeneratedBlueprintInventionProducts;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_invention_skills.BlueprintInventionSkills;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_invention_skills.BlueprintInventionSkillsManager;
+import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_invention_skills.generated.GeneratedBlueprintInventionSkills;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_materials.BlueprintManufacturingMaterials;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_materials.BlueprintManufacturingMaterialsManager;
+import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_materials.generated.GeneratedBlueprintManufacturingMaterials;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_products.BlueprintManufacturingProducts;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_products.BlueprintManufacturingProductsManager;
+import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_products.generated.GeneratedBlueprintManufacturingProducts;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_skills.BlueprintManufacturingSkills;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_skills.BlueprintManufacturingSkillsManager;
+import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_skills.generated.GeneratedBlueprintManufacturingSkills;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.CharacterApi;
 import com.ractoc.eve.jesi.api.CorporationApi;
@@ -29,6 +35,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.ractoc.eve.assets.db.assets.eve_assets.blueprint.generated.GeneratedBlueprint.ID;
 
 @Service
 public class BlueprintService {
@@ -120,7 +128,7 @@ public class BlueprintService {
     public Blueprint getBlueprint(Integer bpId) {
         return bpManager
                 .stream()
-                .filter(Blueprint.ID.equal(bpId))
+                .filter(ID.equal(bpId))
                 .findAny()
                 .orElseThrow(() -> new NoSuchElementException("Unable to find blueprint with id " + bpId));
     }
@@ -128,67 +136,77 @@ public class BlueprintService {
     public Set<BlueprintInventionMaterials> getInventionMaterials(Integer bpId) {
         return bimManager
                 .stream()
-                .filter(BlueprintInventionMaterials.BLUEPRINT_ID.equal(bpId))
+                .filter(GeneratedBlueprintInventionMaterials.BLUEPRINT_ID.equal(bpId))
                 .collect(Collectors.toSet());
     }
 
     public Set<BlueprintInventionProducts> getInventionProducts(Integer bpId) {
         return bipManager
                 .stream()
-                .filter(BlueprintInventionProducts.BLUEPRINT_ID.equal(bpId))
+                .filter(GeneratedBlueprintInventionProducts.BLUEPRINT_ID.equal(bpId))
                 .collect(Collectors.toSet());
     }
 
     public Set<BlueprintInventionSkills> getInventionSkills(Integer bpId) {
         return bisManager
                 .stream()
-                .filter(BlueprintInventionSkills.BLUEPRINT_ID.equal(bpId))
+                .filter(GeneratedBlueprintInventionSkills.BLUEPRINT_ID.equal(bpId))
                 .collect(Collectors.toSet());
     }
 
     public Set<BlueprintManufacturingMaterials> getManufacturingMaterials(Integer bpId) {
         return bmmManager
                 .stream()
-                .filter(BlueprintManufacturingMaterials.BLUEPRINT_ID.equal(bpId))
+                .filter(GeneratedBlueprintManufacturingMaterials.BLUEPRINT_ID.equal(bpId))
                 .collect(Collectors.toSet());
     }
 
     public Set<BlueprintManufacturingProducts> getManufacturingProducts(Integer bpId) {
         return bmpManager
                 .stream()
-                .filter(BlueprintManufacturingProducts.BLUEPRINT_ID.equal(bpId))
+                .filter(GeneratedBlueprintManufacturingProducts.BLUEPRINT_ID.equal(bpId))
                 .collect(Collectors.toSet());
     }
 
     public Set<BlueprintManufacturingSkills> getManufacturingSkills(Integer bpId) {
         return bmsManager
                 .stream()
-                .filter(BlueprintManufacturingSkills.BLUEPRINT_ID.equal(bpId))
+                .filter(GeneratedBlueprintManufacturingSkills.BLUEPRINT_ID.equal(bpId))
                 .collect(Collectors.toSet());
     }
 
     public Stream<GetCharactersCharacterIdBlueprints200Ok> getBlueprintsForCharacter(Integer characterId, String accessToken) {
-        try {
-            return characterApi.getCharactersCharacterIdBlueprints(characterId, null, null, 1, accessToken).stream();
-        } catch (ApiException e) {
-            if (e.getCode() == 403) {
-                throw new AccessDeniedException("Access to the EVE SSO has been denied", e);
-            } else {
-                throw new ServiceException("Unable to retrieve Character Blueprints for character ID " + characterId, e);
+        int retryCount = 0;
+        while (retryCount < 10) {
+            try {
+                return characterApi.getCharactersCharacterIdBlueprints(characterId, null, null, 1, accessToken).stream();
+            } catch (ApiException e) {
+                if (e.getCode() == 403) {
+                    throw new AccessDeniedException("Access to the EVE SSO has been denied", e);
+                } else if (e.getCode() != 502) {
+                    throw new ServiceException(String.format("Unable to retrieve Character Blueprints for character ID %d", characterId), e);
+                }
+                retryCount++;
             }
         }
+        throw new ServiceException(String.format("Unable to retrieve Character Blueprints for character ID %d", characterId));
     }
 
     public Stream<GetCorporationsCorporationIdBlueprints200Ok> getBlueprintsForCorporation(int characterId, String accessToken) {
-        try {
-            GetCharactersCharacterIdOk charInfo = characterApi.getCharactersCharacterId(characterId, null, null);
-            return corporationApi.getCorporationsCorporationIdBlueprints(charInfo.getCorporationId(), null, null, 1, accessToken).stream();
-        } catch (ApiException e) {
-            if (e.getCode() == 403) {
-                throw new AccessDeniedException("Access to the EVE SSO has been denied", e);
-            } else {
-                throw new ServiceException("Unable to retrieve Character Blueprints for character ID " + characterId, e);
+        int retryCount = 0;
+        while (retryCount < 10) {
+            try {
+                GetCharactersCharacterIdOk charInfo = characterApi.getCharactersCharacterId(characterId, null, null);
+                return corporationApi.getCorporationsCorporationIdBlueprints(charInfo.getCorporationId(), null, null, 1, accessToken).stream();
+            } catch (ApiException e) {
+                if (e.getCode() == 403) {
+                    throw new AccessDeniedException("Access to the EVE SSO has been denied", e);
+                } else if (e.getCode() != 502) {
+                    throw new ServiceException("Unable to retrieve Character Blueprints for character ID " + characterId, e);
+                }
+                retryCount++;
             }
         }
+        throw new ServiceException("Unable to retrieve Character Blueprints for character ID " + characterId);
     }
 }

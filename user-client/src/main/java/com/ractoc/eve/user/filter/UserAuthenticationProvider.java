@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,18 +18,22 @@ import java.util.Optional;
 @Component
 public class UserAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
-    @Autowired
     private UserResourceApi userResourceApi;
 
+    @Autowired
+    public UserAuthenticationProvider(UserResourceApi userResourceApi) {
+        this.userResourceApi = userResourceApi;
+    }
+
     @Override
-    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
+    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
         if (Instant.ofEpochMilli(((EveUserDetails) userDetails).getExpiresAt()).isBefore(Instant.now())) {
             throw new CredentialsExpiredException("EVE-State has expired and needs to be refreshed");
         }
     }
 
     @Override
-    protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authToken) throws AuthenticationException {
+    protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authToken) {
         Object token = authToken.getCredentials();
         return Optional.ofNullable(token)
                 .map(String::valueOf)
@@ -40,11 +43,18 @@ public class UserAuthenticationProvider extends AbstractUserDetailsAuthenticatio
     }
 
     private UserModel getUserFromApi(String eveState) {
-        try {
-            return userResourceApi.getUserDetails(eveState);
-        } catch (ApiException e) {
-            throw new UsernameNotFoundException("Cannot find user with authentication eveState=" + eveState);
+        int retryCount = 0;
+        while (retryCount < 10) {
+            try {
+                return userResourceApi.getUserDetails(eveState);
+            } catch (ApiException e) {
+                if (e.getCode() != 5020) {
+                    throw new UsernameNotFoundException("Cannot find user with authentication eveState=" + eveState);
+                }
+                retryCount++;
+            }
         }
+        throw new UsernameNotFoundException("Cannot find user with authentication eveState=" + eveState);
     }
 
     private EveUserDetails convertToEveUserDetails(UserModel user) {
