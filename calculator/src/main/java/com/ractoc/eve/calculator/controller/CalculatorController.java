@@ -42,16 +42,18 @@ public class CalculatorController {
             @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = BlueprintResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    @PostMapping(value = "/{regionId}/{locationId}", produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{buyRegionId}/{buyLocationId}/{sellRegionId}/{sellLocationId}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<BaseResponse> calculateBlueprintPrizes(@AuthenticationPrincipal Authentication authentication
-            , @PathVariable("regionId") Integer regionId
-            , @PathVariable("locationId") Long locationId
+            , @PathVariable("buyRegionId") Integer buyRegionId
+            , @PathVariable("buyLocationId") Long buyLocationId
+            , @PathVariable("sellRegionId") Integer sellRegionId
+            , @PathVariable("sellLocationId") Long sellLocationId
             , @RequestParam(value = "runs", defaultValue = "1") Integer runs
             , @RequestBody BlueprintModel blueprint) {
         try {
             return new ResponseEntity<>(
                     new BlueprintResponse(OK,
-                            calculatorHandler.calculateBlueprintPrices(regionId, locationId, blueprint, runs, (EveUserDetails) authentication.getPrincipal())
+                            calculatorHandler.calculateBlueprintPrices(buyRegionId, buyLocationId, sellRegionId, sellLocationId, blueprint, runs, (EveUserDetails) authentication.getPrincipal())
                     )
                     , OK);
         } catch (ServiceException e) {

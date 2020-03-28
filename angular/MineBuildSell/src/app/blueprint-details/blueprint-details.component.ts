@@ -35,7 +35,8 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
               private formBuilder: FormBuilder
   ) {
     this.form = this.formBuilder.group({
-      marketHubs: [''],
+      buyMarketHubs: [''],
+      sellMarketHubs: [''],
       nrRuns: 1
     });
   }
@@ -56,7 +57,8 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
       (marketHubData: MarketHubModel[]) => {
         if (marketHubData && marketHubData.length > 0) {
           this.marketHubs = marketHubData
-          this.form.controls.marketHubs.patchValue(this.marketHubs[0].id);
+          this.form.controls.buyMarketHubs.patchValue(this.marketHubs[0].id);
+          this.form.controls.sellMarketHubs.patchValue(this.marketHubs[0].id);
         } else {
           this.errorMessage = 'No market hubs to display'
         }
@@ -70,15 +72,15 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
   }
 
   calculate() {
-    const marketHub: MarketHubModel = this.marketHubs.find((mh) => mh.id == this.form.value.marketHubs);
+    const buyMarketHub: MarketHubModel = this.marketHubs.find((mh) => mh.id == this.form.value.buyMarketHubs);
+    const sellMarketHub: MarketHubModel = this.marketHubs.find((mh) => mh.id == this.form.value.sellMarketHubs);
     const nrRuns: number = this.form.value.nrRuns;
 
     this.isCalculating = true;
     this.isCalculated = false;
-    this.calculatorService.calculateBlueprint(this.bp, marketHub, nrRuns).subscribe(
+    this.calculatorService.calculateBlueprint(this.bp, buyMarketHub, sellMarketHub, nrRuns).subscribe(
       (blueprintData: BlueprintModel) => {
         this.bp = blueprintData;
-        console.log("calculated blueprint", blueprintData);
         this.isCalculating = false;
         this.isCalculated = true;
       });

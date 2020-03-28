@@ -34,12 +34,13 @@ public class CalculatorService {
 
     }
 
-    public void calculateMaterialPrices(BlueprintModel bp, Integer regionId, Long locationId, Integer runs) {
+    public void calculateMaterialPrices(BlueprintModel bp, Integer buyRegionId, Long buyLocationId, Integer sellRegionId, Long sellLocationId, Integer runs) {
         Set<BlueprintMaterialModel> mats = bp.getManufacturingMaterials();
         double totalMineralSellPrice = 0.0;
         double totalMineralBuyPrice = 0.0;
         for (BlueprintMaterialModel mat : mats) {
-            getPricesForMaterial(regionId, locationId, mat);
+            getBuyPricesForMaterial(buyRegionId, buyLocationId, mat);
+            getSellPricesForMaterial(sellRegionId, sellLocationId, mat);
             mat.setCalculatedTotalQuantity(calculateActualQuantity(runs, mat.getQuantity(), bp.getMaterialEfficiency()));
             totalMineralSellPrice += mat.getSellPrice() * mat.getCalculatedTotalQuantity();
             totalMineralBuyPrice += mat.getBuyPrice() * mat.getCalculatedTotalQuantity();
@@ -48,8 +49,9 @@ public class CalculatorService {
         bp.setMineralBuyPrice(Precision.round(totalMineralBuyPrice, 2));
     }
 
-    public void calculateItemPrices(ItemModel item, Integer regionId, Long locationId, Integer runs) {
-        getPricesForItem(item, regionId, locationId, runs);
+    public void calculateItemPrices(ItemModel item, Integer buyRegionId, Long buyLocationId, Integer sellRegionId, Long sellLocationId, Integer runs) {
+        getBuyPricesForItem(item, buyRegionId, buyLocationId, runs);
+        getSellPricesForItem(item, sellRegionId, sellLocationId, runs);
     }
 
     public void calculateJobInstallationCosts(BlueprintModel blueprint, Integer charId, String token) {
@@ -62,10 +64,12 @@ public class CalculatorService {
                         .filter(s -> s.getSolarSystemId().intValue() == systemId.intValue())
                         .findAny();
                 blueprint.setJobInstallationCosts(calculateJobInitializationCost(blueprint.getMineralBuyPrice(), system.orElseThrow(() -> new ServiceException(UNABLE_TO_DETERMINE_JOB_FEE))));
+                return;
             } catch (ApiException e) {
                 if (e.getCode() != 502) {
                     throw new ServiceException(UNABLE_TO_DETERMINE_JOB_FEE, e);
                 }
+                System.out.println("retrying calculateJobInstallationCosts: " + retryCount);
                 retryCount++;
             }
         }
@@ -117,14 +121,13 @@ public class CalculatorService {
         throw new ServiceException("Unable to retrieve System from item location " + locationId);
     }
 
-    private void getPricesForMaterial(Integer regionId, Long locationId, BlueprintMaterialModel mat) {
+    private void getBuyPricesForMaterial(Integer regionId, Long locationId, BlueprintMaterialModel mat) {
         int pageNumber = 1;
         int retryCount = 0;
         do {
             try {
-                List<GetMarketsRegionIdOrders200Ok> orders = marketApi.getMarketsRegionIdOrders("all", regionId, null, null, pageNumber, mat.getTypeId());
+                List<GetMarketsRegionIdOrders200Ok> orders = marketApi.getMarketsRegionIdOrders("sell", regionId, null, null, pageNumber, mat.getTypeId());
                 if (orders.isEmpty()) {
-                    mat.setSellPrice(-1.0);
                     mat.setBuyPrice(-1.0);
                     return;
                 }
@@ -132,24 +135,49 @@ public class CalculatorService {
                 // buy orders mean sell you minerals, which is done at the highest possible price.
                 // This is why the buyOrder is put into the SellPrice
                 locationOrder.stream()
-                        .filter(GetMarketsRegionIdOrders200Ok::isIsBuyOrder)
                         .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
                         .max()
-                        .ifPresent(mat::setSellPrice);
-                // sell orders means buy your minerals, which is done at the lowest possible price
-                // This is why the sellOrder it put into the BuyPrice
-                locationOrder.stream()
-                        .filter(o -> !o.isIsBuyOrder())
-                        .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
-                        .min()
                         .ifPresent(mat::setBuyPrice);
-                if (mat.getSellPrice() != null && mat.getBuyPrice() != null) {
+                if (mat.getBuyPrice() != null) {
                     break;
                 }
                 pageNumber++;
             } catch (ApiException e) {
                 if (e.getCode() != 502 || retryCount > 10) {
-                    throw new ServiceException("Unable to retrieve orders for material " + mat, e);
+                    throw new ServiceException("Unable to retrieve sell orders for material " + mat, e);
+                }
+                retryCount++;
+            }
+        } while (pageNumber < 10000);
+        if (mat.getBuyPrice() == null) {
+            mat.setBuyPrice(-1.0);
+        }
+    }
+
+    private void getSellPricesForMaterial(Integer regionId, Long locationId, BlueprintMaterialModel mat) {
+        int pageNumber = 1;
+        int retryCount = 0;
+        do {
+            try {
+                List<GetMarketsRegionIdOrders200Ok> orders = marketApi.getMarketsRegionIdOrders("buy", regionId, null, null, pageNumber, mat.getTypeId());
+                if (orders.isEmpty()) {
+                    mat.setSellPrice(-1.0);
+                    return;
+                }
+                List<GetMarketsRegionIdOrders200Ok> locationOrder = findOrdersForLocation(orders, locationId);
+                // sell orders means buy your minerals, which is done at the lowest possible price
+                // This is why the sellOrder it put into the BuyPrice
+                locationOrder.stream()
+                        .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
+                        .max()
+                        .ifPresent(mat::setSellPrice);
+                if (mat.getSellPrice() != null) {
+                    break;
+                }
+                pageNumber++;
+            } catch (ApiException e) {
+                if (e.getCode() != 502 || retryCount > 10) {
+                    throw new ServiceException("Unable to retrieve buy orders for material " + mat, e);
                 }
                 retryCount++;
             }
@@ -157,40 +185,59 @@ public class CalculatorService {
         if (mat.getSellPrice() == null) {
             mat.setSellPrice(-1.0);
         }
-        if (mat.getBuyPrice() == null) {
-            mat.setBuyPrice(-1.0);
-        }
     }
 
-    private void getPricesForItem(ItemModel item, Integer regionId, Long locationId, Integer runs) {
+    private void getBuyPricesForItem(ItemModel item, Integer regionId, Long locationId, Integer runs) {
         int pageNumber = 1;
         int retryCount = 0;
         do {
             try {
-                List<GetMarketsRegionIdOrders200Ok> orders = marketApi.getMarketsRegionIdOrders("all", regionId, null, null, pageNumber, item.getId());
+                List<GetMarketsRegionIdOrders200Ok> orders = marketApi.getMarketsRegionIdOrders("sell", regionId, null, null, pageNumber, item.getId());
+                if (orders.isEmpty()) {
+                    item.setBuyPrice(-1.0);
+                    return;
+                }
+                List<GetMarketsRegionIdOrders200Ok> locationOrder = findOrdersForLocation(orders, locationId);
+                // sell orders means buy your minerals, which is done at the lowest possible price
+                // This is why the sellOrder it put into the BuyPrice
+                locationOrder.stream()
+                        .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
+                        .map(v -> Precision.round(v, 2))
+                        .max()
+                        .ifPresent(price -> item.setBuyPrice(price * runs));
+                if (item.getBuyPrice() != null) {
+                    return;
+                }
+                pageNumber++;
+            } catch (ApiException e) {
+                if (e.getCode() != 502 || retryCount > 10) {
+                    throw new ServiceException("Unable to retrieve sell orders for item " + item, e);
+                }
+                retryCount++;
+            }
+        } while (pageNumber < 10000);
+        item.setBuyPrice(-1.0);
+    }
+
+    private void getSellPricesForItem(ItemModel item, Integer regionId, Long locationId, Integer runs) {
+        int pageNumber = 1;
+        int retryCount = 0;
+        do {
+            try {
+                List<GetMarketsRegionIdOrders200Ok> orders = marketApi.getMarketsRegionIdOrders("buy", regionId, null, null, pageNumber, item.getId());
                 if (orders.isEmpty()) {
                     item.setSellPrice(-1.0);
-                    item.setBuyPrice(-1.0);
                     return;
                 }
                 List<GetMarketsRegionIdOrders200Ok> locationOrder = findOrdersForLocation(orders, locationId);
                 // buy orders mean sell you minerals, which is done at the highest possible price.
                 // This is why the buyOrder is put into the SellPrice
                 locationOrder.stream()
-                        .filter(GetMarketsRegionIdOrders200Ok::isIsBuyOrder)
                         .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
                         .map(v -> Precision.round(v, 2))
                         .max()
                         .ifPresent(price -> item.setSellPrice(price * runs));
-                // sell orders means buy your minerals, which is done at the lowest possible price
-                // This is why the sellOrder it put into the BuyPrice
-                locationOrder.stream()
-                        .filter(o -> !o.isIsBuyOrder())
-                        .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
-                        .map(v -> Precision.round(v, 2))
-                        .min()
-                        .ifPresent(price -> item.setBuyPrice(price * runs));
-                if (item.getSellPrice() != null && item.getBuyPrice() != null) {
+                if (item.getSellPrice() != null) {
                     return;
                 }
                 pageNumber++;
@@ -202,7 +249,6 @@ public class CalculatorService {
             }
         } while (pageNumber < 10000);
         item.setSellPrice(-1.0);
-        item.setBuyPrice(-1.0);
     }
 
     private List<GetMarketsRegionIdOrders200Ok> findOrdersForLocation(List<GetMarketsRegionIdOrders200Ok> orders, Long locationId) {

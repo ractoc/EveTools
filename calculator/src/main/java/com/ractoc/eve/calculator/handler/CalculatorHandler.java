@@ -25,13 +25,13 @@ public class CalculatorHandler {
         this.calculatorService = calculatorService;
     }
 
-    public BlueprintModel calculateBlueprintPrices(Integer regionId, Long locationId, BlueprintModel blueprint, Integer runs, EveUserDetails userDetails) {
+    public BlueprintModel calculateBlueprintPrices(Integer buyRegionId, Long buyLocationId, Integer sellRegionId, Long sellLocationId, BlueprintModel blueprint, Integer runs, EveUserDetails userDetails) {
         BlueprintModel bp = BlueprintMapper.INSTANCE.apiToModel(blueprintService.getBlueprint(blueprint.getId()));
         blueprint.setManufacturingMaterials(bp.getManufacturingMaterials());
         blueprint.setManufacturingProducts(bp.getManufacturingProducts());
-        calculatorService.calculateMaterialPrices(blueprint, regionId, locationId, runs);
+        calculatorService.calculateMaterialPrices(blueprint, buyRegionId, buyLocationId, sellRegionId, sellLocationId, runs);
         ItemModel item = ItemMapper.INSTANCE.apiToModel(itemService.getItemForBlueprint(blueprint.getId()));
-        calculatorService.calculateItemPrices(item, regionId, locationId, runs);
+        calculatorService.calculateItemPrices(item, buyRegionId, buyLocationId, sellRegionId, sellLocationId, runs);
         calculatorService.calculateSalesTax(item, userDetails.getCharId(), userDetails.getAccessToken());
         calculatorService.calculateBrokerFee(item, userDetails.getCharId(), userDetails.getAccessToken());
         blueprint.setItem(item);

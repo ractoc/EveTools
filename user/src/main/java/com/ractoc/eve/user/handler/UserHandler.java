@@ -85,7 +85,9 @@ public class UserHandler {
     }
 
     private Optional<User> getUser(String eveState) {
-        return service.getUser(eveState);
+        Optional<User> user = service.getUser(eveState);
+
+        return user;
     }
 
     private int extractCharacterIdFromSub(String sub) {
