@@ -132,11 +132,11 @@ public class CalculatorService {
                     return;
                 }
                 List<GetMarketsRegionIdOrders200Ok> locationOrder = findOrdersForLocation(orders, locationId);
-                // buy orders mean sell you minerals, which is done at the highest possible price.
-                // This is why the buyOrder is put into the SellPrice
+                // sell orders mean buy you minerals, which is done at the lowest possible price.
+                // This is why the sellOrder is put into the BuyPrice
                 locationOrder.stream()
                         .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
-                        .max()
+                        .min()
                         .ifPresent(mat::setBuyPrice);
                 if (mat.getBuyPrice() != null) {
                     break;
@@ -165,8 +165,8 @@ public class CalculatorService {
                     return;
                 }
                 List<GetMarketsRegionIdOrders200Ok> locationOrder = findOrdersForLocation(orders, locationId);
-                // sell orders means buy your minerals, which is done at the lowest possible price
-                // This is why the sellOrder it put into the BuyPrice
+                // buy orders means sell your minerals, which is done at the highest possible price
+                // This is why the buyOrder it put into the sellPrice
                 locationOrder.stream()
                         .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
                         .max()
@@ -198,12 +198,12 @@ public class CalculatorService {
                     return;
                 }
                 List<GetMarketsRegionIdOrders200Ok> locationOrder = findOrdersForLocation(orders, locationId);
-                // sell orders means buy your minerals, which is done at the lowest possible price
+                // sell orders means buy your item, which is done at the lowest possible price
                 // This is why the sellOrder it put into the BuyPrice
                 locationOrder.stream()
                         .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
                         .map(v -> Precision.round(v, 2))
-                        .max()
+                        .min()
                         .ifPresent(price -> item.setBuyPrice(price * runs));
                 if (item.getBuyPrice() != null) {
                     return;
@@ -230,7 +230,7 @@ public class CalculatorService {
                     return;
                 }
                 List<GetMarketsRegionIdOrders200Ok> locationOrder = findOrdersForLocation(orders, locationId);
-                // buy orders mean sell you minerals, which is done at the highest possible price.
+                // buy orders mean sell you item, which is done at the highest possible price.
                 // This is why the buyOrder is put into the SellPrice
                 locationOrder.stream()
                         .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
