@@ -24,7 +24,7 @@ export class AssetsService {
   getPersonalBlueprints(): Observable<BlueprintModel[]> {
     const httpOptions = {
       headers: new HttpHeaders({
-        'Authorization': 'Bearer ' + this.userService.getEveState()
+        Authorization: 'Bearer ' + this.userService.getEveState()
       })
     };
     return this.http.get<any>(ASSETS_URI + '/blueprint/character', httpOptions)
@@ -43,7 +43,7 @@ export class AssetsService {
   getCorporateBlueprints(): Observable<BlueprintModel[]> {
     const httpOptions = {
       headers: new HttpHeaders({
-        'Authorization': 'Bearer ' + this.userService.getEveState()
+        Authorization: 'Bearer ' + this.userService.getEveState()
       })
     };
     return this.http.get<any>(ASSETS_URI + '/blueprint/corporation', httpOptions)
@@ -59,11 +59,38 @@ export class AssetsService {
       );
   }
 
-  getBlueprint(blueprintID: number): BlueprintModel {
-    console.log("requesting", blueprintID);
-    const bp = this.blueprints.find(bp => bp.id == blueprintID);
-    console.log("found", bp);
-    return bp;
+  getBlueprint(blueprintID: number, blueprintType: string): Observable<BlueprintModel> {
+    return new Observable<BlueprintModel>((observe) => {
+      if (blueprintType === 'personal' && this.blueprints === undefined) {
+        this.getPersonalBlueprints().subscribe(
+          (blueprintData: BlueprintModel[]) => {
+            if (blueprintData && blueprintData.length > 0) {
+              this.blueprints = blueprintData;
+              observe.next(blueprintData.find(bp => +bp.id === +blueprintID));
+            }
+          },
+          err => {
+            observe.error(err);
+          }
+        );
+      } else if (blueprintType === 'corporate' && this.blueprints === undefined) {
+        this.getCorporateBlueprints().subscribe(
+          (blueprintData: BlueprintModel[]) => {
+            if (blueprintData && blueprintData.length > 0) {
+              this.blueprints = blueprintData;
+              observe.next(this.blueprints.find(bp => +bp.id === +blueprintID));
+            }
+          },
+          err => {
+            observe.error(err);
+          }
+        );
+      } else if (this.blueprints !== undefined) {
+        // tslint:disable-next-line:triple-equals
+        const bpFound = this.blueprints.find(bp => +bp.id === +blueprintID);
+        observe.next(bpFound);
+      }
+    });
   }
 
   // getBlueprint(blueprintID: number): Observable<BlueprintModel> {

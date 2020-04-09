@@ -3,7 +3,7 @@ import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DOCUMENT} from '@angular/common';
 import {UserService} from '../service/user.service';
-import {environment} from "../../environments/environment";
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +30,13 @@ export class LoginComponent implements OnInit, OnDestroy {
             .subscribe(
               un => {
                 this.userName = un.name;
-                this.router.navigate(['home']);
+                const currentPage = localStorage.getItem('currentPage');
+                if (currentPage) {
+                  localStorage.removeItem('currentPage');
+                  this.router.navigateByUrl(currentPage);
+                } else {
+                  this.router.navigate(['home']);
+                }
               });
         } else {
           this.document.location.href = 'http://' + environment.apiHost + ':8484/user/launchSignOn';

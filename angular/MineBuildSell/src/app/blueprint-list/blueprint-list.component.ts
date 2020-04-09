@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {BlueprintModel} from '../shared/model/blueprint.model';
 import {AssetsService} from '../service/assets.service';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 
 @Component({
@@ -14,32 +14,45 @@ export class BlueprintListComponent implements OnInit, OnDestroy {
   blueprints: BlueprintModel[];
   errorMessage: string;
   private routeListener$: Subscription;
+  private bpType: string;
 
   constructor(
-    private route: ActivatedRoute, private assetsService: AssetsService) {
+    private route: ActivatedRoute, private assetsService: AssetsService, private router: Router) {
   }
 
   ngOnInit() {
     this.errorMessage = undefined;
-    console.log(this.route.fragment);
     this.routeListener$ = this.route.data
       .subscribe((data: any) => {
-          console.log(data);
           if (data.personal) {
+            this.bpType = 'personal';
             this.assetsService.getPersonalBlueprints().subscribe(
               (blueprintData: BlueprintModel[]) =>
                 blueprintData && blueprintData.length > 0
                   ? this.blueprints = blueprintData
                   : this.errorMessage = 'No blueprints to display',
-              err => this.errorMessage = err
+              err => {
+                this.errorMessage = err;
+                if (err.status === 401) {
+                  localStorage.setItem('currentPage', '/blueprints/personal');
+                  this.router.navigateByUrl('/login');
+                }
+              }
             );
           } else if (data.corporate) {
+            this.bpType = 'corporate';
             this.assetsService.getCorporateBlueprints().subscribe(
               (blueprintData: BlueprintModel[]) =>
                 blueprintData && blueprintData.length > 0
                   ? this.blueprints = blueprintData
                   : this.errorMessage = 'No blueprints to display',
-              err => this.errorMessage = err
+              err => {
+                this.errorMessage = err;
+                if (err.status === 401) {
+                  localStorage.setItem('currentPage', '/blueprints/corporate');
+                  this.router.navigateByUrl('/login');
+                }
+              }
             );
           }
         }
@@ -56,5 +69,4 @@ export class BlueprintListComponent implements OnInit, OnDestroy {
       'list-group-item-action': true,
     };
   }
-
 }

@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
-import {Observable} from "rxjs";
-import {map} from "rxjs/operators";
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
-import {UserService} from "./user.service";
-import {BlueprintModel} from "../shared/model/blueprint.model";
-import {MarketHubModel} from "../shared/model/markethub.model";
+import {UserService} from './user.service';
+import {BlueprintModel} from '../shared/model/blueprint.model';
+import {MarketHubModel} from '../shared/model/markethub.model';
 
-import {environment} from "../../environments/environment";
+import {environment} from '../../environments/environment';
 
 const CALCULATOR_URI = 'http://' + environment.apiHost + ':8888/calculator';
 
@@ -20,14 +20,26 @@ export class CalculatorService {
   constructor(private http: HttpClient, private userService: UserService) {
   }
 
-  calculateBlueprint(blueprint: BlueprintModel, buyMarketHub: MarketHubModel, sellMarketHub: MarketHubModel, nrRuns: number): Observable<BlueprintModel> {
+  private static createUrl(buyMarketHub: MarketHubModel, sellMarketHub: MarketHubModel, nrRuns: number) {
+    return CALCULATOR_URI + '/blueprint/' +
+      buyMarketHub.regionId + '/' +
+      buyMarketHub.solarSystemId + '/' +
+      sellMarketHub.regionId + '/' +
+      sellMarketHub.solarSystemId +
+      '?runs=' + nrRuns;
+  }
+
+  calculateBlueprint(blueprint: BlueprintModel,
+                     buyMarketHub: MarketHubModel,
+                     sellMarketHub: MarketHubModel,
+                     nrRuns: number): Observable<BlueprintModel> {
     const httpOptions = {
       headers: new HttpHeaders({
-        'Authorization': 'Bearer ' + this.userService.getEveState()
+        Authorization: 'Bearer ' + this.userService.getEveState()
       })
     };
     // TODO: add functionality to dynamically determine region, solarsystem and runs
-    return this.http.post<any>(CALCULATOR_URI + "/blueprint/" + buyMarketHub.regionId + "/" + buyMarketHub.solarSystemId + "/" + sellMarketHub.regionId + "/" + sellMarketHub.solarSystemId + "?runs=" + nrRuns,
+    return this.http.post<any>(CalculatorService.createUrl(buyMarketHub, sellMarketHub, nrRuns),
       blueprint, httpOptions)
       .pipe(
         map(result => {

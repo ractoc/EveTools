@@ -2,7 +2,7 @@
 <div *ngIf="blueprints; else loading">
   <div class="list-group list-group-flush">
     <a *ngFor="let blueprint of blueprints" [ngClass]="blueprintClass(blueprint)"
-       [routerLink]="['/blueprint', blueprint.id]">
+       [routerLink]="['/blueprint', bpType, blueprint.id]">
       {{blueprint.name}} (ME {{blueprint.materialEfficiency}})
     </a>
   </div>

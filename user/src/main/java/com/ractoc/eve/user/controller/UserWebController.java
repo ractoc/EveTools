@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
@@ -52,7 +50,7 @@ public class UserWebController {
     }
 
     @GetMapping(value = "/eveCallBack")
-    public String eveCallBack(HttpServletRequest request, HttpServletResponse response, @RequestParam String code, @RequestParam(name = "state") String eveState) {
+    public String eveCallBack(HttpServletRequest request, @RequestParam String code, @RequestParam(name = "state") String eveState) {
         validatedIP(eveState, RequestUtils.getRemoteIP(request));
 
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
@@ -64,8 +62,6 @@ public class UserWebController {
                 });
 
         handler.storeEveUserRegistration(eveState, accessToken, RequestUtils.getRemoteIP(request));
-
-        response.addCookie(new Cookie("eve-state", eveState));
 
         return REDIRECT + frontendUrl + "/" + eveState;
     }
