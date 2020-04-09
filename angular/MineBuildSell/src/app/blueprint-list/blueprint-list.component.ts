@@ -13,8 +13,8 @@ export class BlueprintListComponent implements OnInit, OnDestroy {
 
   blueprints: BlueprintModel[];
   errorMessage: string;
+  bpType: string;
   private routeListener$: Subscription;
-  private bpType: string;
 
   constructor(
     private route: ActivatedRoute, private assetsService: AssetsService, private router: Router) {
