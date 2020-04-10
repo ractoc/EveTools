@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DOCUMENT} from '@angular/common';
 import {UserService} from '../service/user.service';
 import {environment} from '../../environments/environment';
+import {User} from '../shared/model/user.model';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private routeListener$: Subscription;
 
-  public userName: string;
+  public user: User;
 
   constructor(private userService: UserService,
               private route: ActivatedRoute,
@@ -26,10 +27,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.routeListener$ = this.route.params
       .subscribe((params: any) => {
         if (params.eveState) {
-          this.userService.getUsername(params.eveState)
+          this.userService.getUser(params.eveState)
             .subscribe(
-              un => {
-                this.userName = un.name;
+              user => {
+                this.user = user;
                 const currentPage = localStorage.getItem('currentPage');
                 if (currentPage) {
                   localStorage.removeItem('currentPage');

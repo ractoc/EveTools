@@ -1,11 +1,15 @@
 package com.ractoc.eve.user.service;
 
+import com.ractoc.eve.jesi.ApiException;
+import com.ractoc.eve.jesi.api.CharacterApi;
+import com.ractoc.eve.jesi.model.GetCharactersCharacterIdRolesOk;
 import com.ractoc.eve.user.db.user.eve_user.user.User;
 import com.ractoc.eve.user.db.user.eve_user.user.UserImpl;
 import com.ractoc.eve.user.db.user.eve_user.user.UserManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,10 +19,12 @@ import static com.ractoc.eve.user.db.user.eve_user.user.generated.GeneratedUser.
 public class UserService {
 
     private UserManager userManager;
+    private CharacterApi characterApi;
 
     @Autowired
-    public UserService(UserManager userManager) {
+    public UserService(UserManager userManager, CharacterApi characterApi) {
         this.userManager = userManager;
+        this.characterApi = characterApi;
     }
 
     public String initializeUser(String remoteIP) {
@@ -45,5 +51,9 @@ public class UserService {
             eveState = UUID.randomUUID().toString();
         } while (getUser(eveState).isPresent());
         return eveState;
+    }
+
+    public List<GetCharactersCharacterIdRolesOk.RolesEnum> getRoles(int characterId, String accessToken) throws ApiException {
+        return characterApi.getCharactersCharacterIdRoles(characterId, null, null, accessToken).getRoles();
     }
 }

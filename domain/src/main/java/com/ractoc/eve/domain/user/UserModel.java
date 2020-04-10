@@ -3,6 +3,8 @@ package com.ractoc.eve.domain.user;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,5 +20,6 @@ public class UserModel {
     private long expiresAt;
     private String ipAddress;
     private String accessToken;
+    private List<String> roles;
 
 }

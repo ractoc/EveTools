@@ -8,6 +8,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.SignedJWT;
 import com.ractoc.eve.domain.user.UserModel;
+import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.user.db.user.eve_user.user.User;
 import com.ractoc.eve.user.db.user.eve_user.user.UserImpl;
 import com.ractoc.eve.user.model.AccessDeniedException;
@@ -22,7 +23,9 @@ import java.net.URL;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class UserHandler {
@@ -68,16 +71,30 @@ public class UserHandler {
                                     user.getExpiresIn().orElseThrow(() -> new AccessDeniedException(eveState))))
                             .accessToken(user.getAccessToken().orElseThrow(() -> new AccessDeniedException(eveState)))
                             .build();
+                    result.setRoles(getRoles(result.getCharId(), result.getAccessToken(), eveState));
                     return result;
                 })
                 .orElseThrow(() -> new AccessDeniedException(eveState));
+    }
+
+    private List<String> getRoles(int characterId, String accessToken, String eveState) {
+        try {
+            return service.getRoles(characterId, accessToken).stream().map(Enum::name).collect(Collectors.toList());
+        } catch (ApiException e) {
+            throw new AccessDeniedException(eveState, e);
+        }
     }
 
     public UserModel getUserNameByState(String eveState) {
         return getUser(eveState)
                 .map(user ->
                         UserModel.builder()
-                                .characterName(user.getName().orElseThrow(() -> new AccessDeniedException(eveState)))
+                                .characterName(
+                                        user.getName().orElseThrow(() -> new AccessDeniedException(eveState)))
+                                .roles(getRoles(
+                                        user.getCharacterId().orElseThrow(() -> new AccessDeniedException(eveState)),
+                                        user.getAccessToken().orElseThrow(() -> new AccessDeniedException(eveState)),
+                                        eveState))
                                 .eveState(eveState)
                                 .build())
                 .orElseThrow(() -> new AccessDeniedException(eveState));
@@ -85,9 +102,7 @@ public class UserHandler {
     }
 
     private Optional<User> getUser(String eveState) {
-        Optional<User> user = service.getUser(eveState);
-
-        return user;
+        return service.getUser(eveState);
     }
 
     private int extractCharacterIdFromSub(String sub) {
@@ -105,9 +120,6 @@ public class UserHandler {
         user.setRefreshToken(oAuthToken.getRefresh_token());
         user.setLastRefresh(LocalDateTime.now());
         user.setExpiresIn(oAuthToken.getExpires_in());
-        System.out.println("access token size: " + oAuthToken.getAccess_token().length());
-        System.out.println("access token: " + oAuthToken.getAccess_token());
-        System.out.println("scp: " + jwtContent.getScp());
         user.setAccessToken(oAuthToken.getAccess_token());
         return user;
     }
@@ -122,11 +134,9 @@ public class UserHandler {
             if (!signedJWT.verify(verifier)) {
                 throw new IOException("JWT verification failure");
             }
-            System.out.println("jwt content: " + signedJWT.getJWTClaimsSet().toJSONObject().toJSONString());
             return new ObjectMapper().readValue(signedJWT.getJWTClaimsSet().toJSONObject().toJSONString(), EveJwtContent.class);
         } catch (ParseException | IOException | JOSEException e) {
-            e.printStackTrace();
-            throw new AccessDeniedException("Invalid JWT token");
+            throw new AccessDeniedException("Invalid JWT token", e);
         }
     }
 }

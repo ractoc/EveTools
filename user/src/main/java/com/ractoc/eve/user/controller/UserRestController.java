@@ -59,8 +59,8 @@ public class UserRestController {
             @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = UserModel.class),
             @ApiResponse(code = 403, message = "The user does not exist")
     })
-    @GetMapping(value = "/username/{eveState}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserModel> getUserName(@PathVariable String eveState) {
+    @GetMapping(value = "/user/{eveState}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserModel> getUser(@PathVariable String eveState) {
         UserModel user = handler.getUserNameByState(eveState);
         if (user != null) {
             return new ResponseEntity<>(user, OK);

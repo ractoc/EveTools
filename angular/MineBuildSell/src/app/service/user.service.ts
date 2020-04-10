@@ -5,23 +5,23 @@ import {catchError, map} from 'rxjs/operators';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 
 import {User} from '../shared/model/user.model';
-import {environment} from "../../environments/environment";
+import {environment} from '../../environments/environment';
 
-const USER_URI = 'http://' + environment.apiHost + ':8484/user/api/username';
+const USER_URI = 'http://' + environment.apiHost + ':8484/user/api/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private username$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  private user$: BehaviorSubject<User> = new BehaviorSubject<User>(null);
   private observable: Observable<User>;
   private eveState: string;
 
   constructor(private http: HttpClient) {
   }
 
-  getUsername(eveState: string): Observable<User> {
+  getUser(eveState: string): Observable<User> {
     this.eveState = eveState;
     if (this.observable) {
       return this.observable;
@@ -29,8 +29,8 @@ export class UserService {
       this.observable = this.http.get<any>(USER_URI + '/' + eveState)
         .pipe(map(result => {
             this.observable = null;
-            const user = new User(result.eveState, result.characterName);
-            this.username$.next(user.name);
+            const user = new User(result.eveState, result.name, result.roles);
+            this.user$.next(user);
             return user;
           }),
           catchError((error: any) => {
@@ -41,12 +41,12 @@ export class UserService {
     }
   }
 
-  monitorUsername() {
-    return this.username$;
+  monitorUser() {
+    return this.user$;
   }
 
   logout() {
-    this.username$.next(null);
+    this.user$.next(null);
   }
 
   getEveState() {

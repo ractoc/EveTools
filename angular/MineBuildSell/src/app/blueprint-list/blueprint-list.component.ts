@@ -3,6 +3,7 @@ import {BlueprintModel} from '../shared/model/blueprint.model';
 import {AssetsService} from '../service/assets.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
+import {LoginComponent} from '../login/login.component';
 
 @Component({
   selector: 'app-blueprint-list',
@@ -19,7 +20,7 @@ export class BlueprintListComponent implements OnInit, OnDestroy {
   search: string;
 
   constructor(
-    private route: ActivatedRoute, private assetsService: AssetsService, private router: Router) {
+    private route: ActivatedRoute, private assetsService: AssetsService, private router: Router, private login: LoginComponent) {
   }
 
   ngOnInit() {
@@ -45,7 +46,7 @@ export class BlueprintListComponent implements OnInit, OnDestroy {
                 }
               }
             );
-          } else if (data.corporate) {
+          } else if (data.corporate && this.login.user.hasRole('director')) {
             this.bpType = 'corporate';
             this.assetsService.getCorporateBlueprints().subscribe(
               (blueprintData: BlueprintModel[]) => {

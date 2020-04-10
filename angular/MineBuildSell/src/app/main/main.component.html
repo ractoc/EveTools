@@ -9,16 +9,17 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <a class="nav-link" routerLink="home">Home</a>
-          <div ngbDropdown *ngIf="userName">
+          <div ngbDropdown *ngIf="user">
             <button class="btn" id="bpDropdown" ngbDropdownToggle>Blueprints</button>
             <div ngbDropdownMenu aria-labelledby="bpDropdown">
               <a class="dropdown-item" ngbDropdownItem routerLink="blueprints/personal">Personal</a>
-              <a class="dropdown-item" ngbDropdownItem routerLink="blueprints/corporate">Corporate</a>
+              <a *ngIf="user.hasRole('director')" class="dropdown-item" ngbDropdownItem
+                 routerLink="blueprints/corporate">Corporate</a>
             </div>
           </div>
         </div>
-        <div *ngIf="userName; else login" class="navbar-nav ml-auto my-2 my-lg-0">
-          {{userName}}
+        <div *ngIf="user; else login" class="navbar-nav ml-auto my-2 my-lg-0">
+          {{user.name}}
           <button class="btn btn-outline-success" (click)="logout()">Logout</button>
         </div>
       </nav>

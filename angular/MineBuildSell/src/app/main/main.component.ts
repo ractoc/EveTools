@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Subject} from 'rxjs';
 import {UserService} from '../service/user.service';
 import {Router} from '@angular/router';
+import {User} from '../shared/model/user.model';
 
 @Component({
   selector: 'app-main',
@@ -10,17 +11,17 @@ import {Router} from '@angular/router';
 })
 export class MainComponent implements OnInit {
 
-  public userName: string;
-  private usernameMonitor: Subject<string>;
+  public user: User;
+  private userMonitor: Subject<User>;
 
   constructor(private userService: UserService, private router: Router) {
   }
 
   ngOnInit() {
-    this.usernameMonitor = this.userService.monitorUsername();
-    this.usernameMonitor
-      .subscribe((un: string) => {
-        this.userName = un;
+    this.userMonitor = this.userService.monitorUser();
+    this.userMonitor
+      .subscribe((us: User) => {
+        this.user = us;
       });
   }
 
