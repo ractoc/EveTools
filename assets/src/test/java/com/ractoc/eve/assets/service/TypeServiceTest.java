@@ -5,6 +5,7 @@ import com.ractoc.eve.assets.db.AssetsApplicationBuilder;
 import com.ractoc.eve.assets.db.assets.eve_assets.type.Type;
 import com.ractoc.eve.assets.db.assets.eve_assets.type.TypeImpl;
 import com.ractoc.eve.assets.db.assets.eve_assets.type.TypeManager;
+import com.ractoc.eve.assets.db.assets.eve_assets.type.generated.GeneratedType;
 import com.ractoc.eve.test.db.SpeedmentDBTestCase;
 import com.speedment.runtime.core.ApplicationBuilder;
 import org.assertj.core.api.WithAssertions;
@@ -14,6 +15,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ExtendWith(MockitoExtension.class)
 class TypeServiceTest extends SpeedmentDBTestCase implements WithAssertions {
@@ -84,5 +88,23 @@ class TypeServiceTest extends SpeedmentDBTestCase implements WithAssertions {
 
         // Then
         assertThat(item).isNotNull().extracting("name").isEqualTo("more stuff");
+    }
+
+    @Test
+    void getItemsByNameMultiple() {
+        // When
+        List<String> result = service.getItemsByName("tuf").map(GeneratedType::getName).collect(Collectors.toList());
+
+        // Then
+        assertThat(result).containsExactly("stuff", "more stuff");
+    }
+
+    @Test
+    void getItemsByNameSingle() {
+        // When
+        List<String> result = service.getItemsByName("ore").map(GeneratedType::getName).collect(Collectors.toList());
+
+        // Then
+        assertThat(result).containsExactly("more stuff");
     }
 }

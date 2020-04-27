@@ -14,13 +14,14 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class TypeHandler {
 
-    private BlueprintService blueprintService;
-    private TypeService typeService;
-    private TransactionHandler transactionHandler;
+    private final BlueprintService blueprintService;
+    private final TypeService typeService;
+    private final TransactionHandler transactionHandler;
 
     @Autowired
     public TypeHandler(TransactionHandler transactionHandler,
@@ -52,5 +53,9 @@ public class TypeHandler {
                 .map(BlueprintManufacturingProducts::getTypeId)
                 .orElseThrow(() -> new NoSuchElementException("No items found for blueprint, ID: " + blueprintId));
         return ItemMapper.INSTANCE.dbToModel(typeService.getItemById(itemId));
+    }
+
+    public List<ItemModel> getItemsByName(String name) {
+        return typeService.getItemsByName(name).map(ItemMapper.INSTANCE::dbToModel).collect(Collectors.toList());
     }
 }

@@ -41,18 +41,18 @@ import static com.ractoc.eve.assets.db.assets.eve_assets.blueprint.generated.Gen
 @Service
 public class BlueprintService {
 
-    private BlueprintManager bpManager;
+    private final BlueprintManager bpManager;
 
-    private BlueprintInventionMaterialsManager bimManager;
-    private BlueprintInventionProductsManager bipManager;
-    private BlueprintInventionSkillsManager bisManager;
+    private final BlueprintInventionMaterialsManager bimManager;
+    private final BlueprintInventionProductsManager bipManager;
+    private final BlueprintInventionSkillsManager bisManager;
 
-    private BlueprintManufacturingMaterialsManager bmmManager;
-    private BlueprintManufacturingProductsManager bmpManager;
-    private BlueprintManufacturingSkillsManager bmsManager;
+    private final BlueprintManufacturingMaterialsManager bmmManager;
+    private final BlueprintManufacturingProductsManager bmpManager;
+    private final BlueprintManufacturingSkillsManager bmsManager;
 
-    private CharacterApi characterApi;
-    private CorporationApi corporationApi;
+    private final CharacterApi characterApi;
+    private final CorporationApi corporationApi;
 
     @Autowired
     public BlueprintService(BlueprintManager bpManager,

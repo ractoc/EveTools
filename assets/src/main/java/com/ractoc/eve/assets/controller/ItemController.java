@@ -1,10 +1,7 @@
 package com.ractoc.eve.assets.controller;
 
 import com.ractoc.eve.assets.handler.TypeHandler;
-import com.ractoc.eve.assets.response.BaseResponse;
-import com.ractoc.eve.assets.response.ErrorResponse;
-import com.ractoc.eve.assets.response.ItemNameResponse;
-import com.ractoc.eve.assets.response.ItemResponse;
+import com.ractoc.eve.assets.response.*;
 import com.ractoc.eve.assets.service.ServiceException;
 import com.ractoc.eve.domain.assets.TypeModel;
 import io.swagger.annotations.*;
@@ -38,6 +35,20 @@ public class ItemController extends BaseController {
     @Autowired
     public ItemController(TypeHandler typeHandler) {
         this.typeHandler = typeHandler;
+    }
+
+    @ApiOperation(value = "Get items by part of their name", response = ItemListResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieval successfully processed, This does not mean items were actually found.", response = ItemNameResponse.class)
+    })
+    @GetMapping(value = "/", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> getItemsByName(@RequestParam("name") String name) {
+        try {
+            return new ResponseEntity<>(new ItemListResponse(OK, typeHandler.getItemsByName(name)), OK);
+        } catch (NoSuchElementException e) {
+            log.error(e.getMessage(), e);
+            return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);
+        }
     }
 
     @ApiOperation(value = "Get item name by item ID", response = ItemNameResponse.class, produces = "application/json")

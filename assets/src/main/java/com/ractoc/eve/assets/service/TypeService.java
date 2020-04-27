@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.ractoc.eve.assets.db.assets.eve_assets.type.generated.GeneratedType.ID;
 
@@ -45,5 +46,9 @@ public class TypeService {
                 .filter(ID.equal(itemId))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Item not found, ID: " + itemId));
+    }
+
+    public Stream<Type> getItemsByName(String name) {
+        return typeManager.stream().filter(type -> type.getName().toLowerCase().contains(name.toLowerCase()));
     }
 }

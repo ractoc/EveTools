@@ -8,6 +8,7 @@ import {BlueprintModel} from '../shared/model/blueprint.model';
 import {UserService} from './user.service';
 
 import {environment} from '../../environments/environment';
+import {MarketGroupModel} from '../shared/model/marketgroup.model';
 
 const ASSETS_URI = 'http://' + environment.apiHost + ':8787/assets';
 
@@ -20,6 +21,8 @@ export class AssetsService {
   }
 
   blueprints: BlueprintModel[];
+  marketGroups = new Map<number, MarketGroupModel>();
+  marketGroupParents = new Map<number, number[]>();
 
   getPersonalBlueprints(): Observable<BlueprintModel[]> {
     const httpOptions = {
@@ -93,22 +96,40 @@ export class AssetsService {
     });
   }
 
-  // getBlueprint(blueprintID: number): Observable<BlueprintModel> {
-  //   const httpOptions = {
-  //     headers: new HttpHeaders({
-  //       'Authorization': 'Bearer ' + this.userService.getEveState()
-  //     })
-  //   };
-  //   console.log('headers: ' + httpOptions);
-  //   return this.http.get<any>(ASSETS_URI + '/blueprint/' + blueprintID, httpOptions)
-  //     .pipe(
-  //       map(result => {
-  //         if (result.responseCode >= 400) {
-  //           throw new Error('broken API:' + result.responseCode);
-  //         } else {
-  //           return result.blueprint;
-  //         }
-  //       })
-  //     );
-  // }
+  getMarketGroups(parentGroupId: number): Observable<MarketGroupModel[]> {
+    return new Observable<MarketGroupModel[]>((observe) => {
+      if (this.marketGroupParents.has(parentGroupId)) {
+        const groups: Array<MarketGroupModel> = new Array();
+        for (const group of this.marketGroupParents.get(parentGroupId)) {
+          groups.push(this.marketGroups.get(group));
+        }
+        observe.next(groups);
+      } else {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            Authorization: 'Bearer ' + this.userService.getEveState()
+          })
+        };
+        this.http.get<any>(ASSETS_URI + '/group/' + parentGroupId, httpOptions)
+          .pipe(
+            map(result => {
+              if (result.responseCode >= 400) {
+                throw new Error('broken API:' + result.responseCode);
+              } else {
+                result.marketGroupList.forEach(group => {
+                  this.marketGroups.set(group.id, group);
+                  if (!this.marketGroupParents.has(parentGroupId)) {
+                    this.marketGroupParents.set(parentGroupId, new Array());
+                  }
+                  this.marketGroupParents.get(parentGroupId).push(group.id);
+                });
+                return result.marketGroupList;
+              }
+            })
+          ).subscribe(groups => {
+          observe.next(groups);
+        });
+      }
+    });
+  }
 }

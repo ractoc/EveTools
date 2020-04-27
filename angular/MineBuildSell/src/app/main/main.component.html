@@ -17,6 +17,9 @@
                  routerLink="blueprints/corporate">Corporate</a>
             </div>
           </div>
+          <div *ngIf="user">
+            <a class="nav-link" routerLink="items">Items</a>
+          </div>
         </div>
         <div *ngIf="user; else login" class="navbar-nav ml-auto my-2 my-lg-0">
           {{user.name}}

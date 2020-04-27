@@ -18,6 +18,8 @@ public class SdeJob {
     @Autowired
     private TypesStep typesStep;
     @Autowired
+    private MarketGroupsStep marketGroupsStep;
+    @Autowired
     private RegionStep regionStep;
     @Autowired
     private ConstellationStep constellationStep;
@@ -32,6 +34,7 @@ public class SdeJob {
                 .listener(listener)
                 .flow(blueprintsStep.getStep())
                 .next(typesStep.getStep())
+                .next(marketGroupsStep.getStep())
                 .next(regionStep.getStep())
                 .next(constellationStep.getStep())
                 .next(solarsystemStep.getStep())

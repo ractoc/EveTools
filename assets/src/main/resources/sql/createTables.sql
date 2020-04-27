@@ -78,3 +78,12 @@ CREATE TABLE `eve_assets`.`type`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
+CREATE TABLE `eve_assets`.`market_group`
+(
+    `id`              int(11)      NOT NULL,
+    `name`            varchar(100) NOT NULL,
+    `parent_group_id` int(11)      NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
