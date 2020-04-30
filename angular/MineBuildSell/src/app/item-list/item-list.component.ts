@@ -9,6 +9,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./item-list.component.css']
 })
 export class ItemListComponent implements OnInit {
+  private displayItemsForGroup: MarketGroupModel;
 
   constructor(private assetsService: AssetsService, private router: Router) {
   }
@@ -17,6 +18,7 @@ export class ItemListComponent implements OnInit {
   errorMessage: string;
 
   expanded: Array<MarketGroupModel> = new Array<MarketGroupModel>();
+  selectedMarketGroup: MarketGroupModel;
 
   ngOnInit() {
     this.assetsService.getMarketGroups(0).subscribe(
@@ -35,7 +37,8 @@ export class ItemListComponent implements OnInit {
   marketGroupClass(marketGroup: MarketGroupModel) {
     return {
       'list-group-item': true,
-      'list-group-item-action': true,
+      'border-0': true,
+      active: this.expanded.find(mg => mg === marketGroup)
     };
   }
 
@@ -43,19 +46,27 @@ export class ItemListComponent implements OnInit {
     return this.expanded.find(e => e === mgItem) !== undefined;
   }
 
-  selectMarketGroup(mgItem: any) {
-    if (mgItem.children.length > 0) {
-      if (this.isExpanded(mgItem)) {
-        this.expanded = this.expanded.filter(item => item !== mgItem);
-      } else {
-        this.expanded.push(mgItem);
-      }
+  selectMarketGroup(marketGroup: MarketGroupModel) {
+    this.selectedMarketGroup = marketGroup;
+    this.expanded = this.determineExpanded(marketGroup);
+    if (marketGroup.children.length === 0) {
+      this.displayItemsForGroup = this.selectedMarketGroup;
     } else {
-      console.log('Show item list');
+      this.displayItemsForGroup = undefined;
     }
   }
 
   collapseId(item: any) {
     return 'collapse_' + item.id;
+  }
+
+  private determineExpanded(marketGroup: MarketGroupModel) {
+    const crumbtrail = new Array<MarketGroupModel>();
+    crumbtrail.push(marketGroup);
+    if (marketGroup.parentGroupId !== 0) {
+      const parent = this.expanded.find(item => item.id === marketGroup.parentGroupId);
+      this.determineExpanded(parent).forEach(item => crumbtrail.push(item));
+    }
+    return crumbtrail;
   }
 }

@@ -1,19 +1,19 @@
 <div *ngIf="errorMessage">{{errorMessage}}</div>
 
 <div *ngIf="marketGroups; else loading">
-  <ul>
+  <ul class="list-group">
     <ng-container *ngTemplateOutlet="margetGroupsTree; context:{ $implicit: marketGroups }"></ng-container>
   </ul>
 </div>
 
 <ng-template #margetGroupsTree let-list>
-  <li *ngFor="let item of list">
-    <button type="button" class="btn btn-outline-primary" (click)="selectMarketGroup(item)"
+  <li *ngFor="let item of list" class="list-group-item border-0">
+    <button type="button" [ngClass]="marketGroupClass(item)" (click)="selectMarketGroup(item)"
             [attr.aria-expanded]="isExpanded(item)" [attr.aria-controls]="collapseId(item)">
       {{ item.name }}
     </button>
     <div [id]="collapseId(item)" [ngbCollapse]="!isExpanded(item)">
-      <ul *ngIf="item.children.length > 0">
+      <ul *ngIf="item.children.length > 0" class="list-group">
         <ng-container *ngTemplateOutlet="margetGroupsTree; context:{ $implicit: item.children }"></ng-container>
       </ul>
     </div>

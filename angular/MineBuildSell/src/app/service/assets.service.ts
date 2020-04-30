@@ -98,13 +98,6 @@ export class AssetsService {
 
   getMarketGroups(parentGroupId: number): Observable<MarketGroupModel[]> {
     return new Observable<MarketGroupModel[]>((observe) => {
-      if (this.marketGroupParents.has(parentGroupId)) {
-        const groups: Array<MarketGroupModel> = new Array();
-        for (const group of this.marketGroupParents.get(parentGroupId)) {
-          groups.push(this.marketGroups.get(group));
-        }
-        observe.next(groups);
-      } else {
         const httpOptions = {
           headers: new HttpHeaders({
             Authorization: 'Bearer ' + this.userService.getEveState()
@@ -116,20 +109,12 @@ export class AssetsService {
               if (result.responseCode >= 400) {
                 throw new Error('broken API:' + result.responseCode);
               } else {
-                result.marketGroupList.forEach(group => {
-                  this.marketGroups.set(group.id, group);
-                  if (!this.marketGroupParents.has(parentGroupId)) {
-                    this.marketGroupParents.set(parentGroupId, new Array());
-                  }
-                  this.marketGroupParents.get(parentGroupId).push(group.id);
-                });
                 return result.marketGroupList;
               }
             })
           ).subscribe(groups => {
           observe.next(groups);
         });
-      }
     });
   }
 }
