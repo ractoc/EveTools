@@ -48,13 +48,17 @@ public class TypeHandler {
         return typeService.getItemName(itemId);
     }
 
+    public ItemModel getItemById(Integer id) {
+        return ItemMapper.INSTANCE.dbToModel(typeService.getTypeById(id));
+    }
+
     public ItemModel getItemForBlueprint(int blueprintId) {
         Set<BlueprintManufacturingProducts> products = blueprintService.getManufacturingProducts(blueprintId);
         Integer itemId = products.stream()
                 .findAny()
                 .map(BlueprintManufacturingProducts::getTypeId)
                 .orElseThrow(() -> new NoSuchElementException("No items found for blueprint, ID: " + blueprintId));
-        return ItemMapper.INSTANCE.dbToModel(typeService.getItemById(itemId));
+        return ItemMapper.INSTANCE.dbToModel(typeService.getTypeById(itemId));
     }
 
     public List<ItemModel> getItemsByName(@NotEmpty String name) {

@@ -42,7 +42,8 @@ public class ItemController extends BaseController {
             @ApiResponse(code = 200, message = "Retrieval successfully processed, This does not mean items were actually found.", response = ItemNameResponse.class)
     })
     @GetMapping(value = "/", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> getItems(@RequestParam(name = "name", required = false) String name, @RequestParam(name = "group", required = false) Integer groupId) {
+    public ResponseEntity<BaseResponse> getItems(@RequestParam(name = "name", required = false) String name
+            , @RequestParam(name = "group", required = false) Integer groupId) {
         try {
             if (groupId != null) {
                 return new ResponseEntity<>(new ItemListResponse(OK, typeHandler.getItemsByMarketGroup(groupId)), OK);
@@ -66,6 +67,21 @@ public class ItemController extends BaseController {
     public ResponseEntity<BaseResponse> getItemName(@PathVariable("id") int itemId) {
         try {
             return new ResponseEntity<>(new ItemNameResponse(OK, typeHandler.getItemName(itemId)), OK);
+        } catch (NoSuchElementException e) {
+            log.error(e.getMessage(), e);
+            return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);
+        }
+    }
+
+    @ApiOperation(value = "Get item by item ID", response = ItemResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = ItemResponse.class),
+            @ApiResponse(code = 404, message = "Item not found", response = ErrorResponse.class)
+    })
+    @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> getItemById(@PathVariable("id") int itemId) {
+        try {
+            return new ResponseEntity<>(new ItemResponse(OK, typeHandler.getItemById(itemId)), OK);
         } catch (NoSuchElementException e) {
             log.error(e.getMessage(), e);
             return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);

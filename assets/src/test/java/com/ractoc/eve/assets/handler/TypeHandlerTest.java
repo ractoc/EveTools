@@ -66,7 +66,7 @@ class TypeHandlerTest implements WithAssertions {
         // Given
         Set<BlueprintManufacturingProducts> manProds = createBpManProds();
         when(mockedBlueprintService.getManufacturingProducts(25)).thenReturn(manProds);
-        when(mockedTypeService.getItemById(20)).thenReturn(createType());
+        when(mockedTypeService.getTypeById(20)).thenReturn(createType());
 
         // When
         ItemModel model = handler.getItemForBlueprint(25);

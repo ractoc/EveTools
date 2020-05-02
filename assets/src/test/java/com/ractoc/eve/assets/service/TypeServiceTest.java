@@ -84,7 +84,7 @@ class TypeServiceTest extends SpeedmentDBTestCase implements WithAssertions {
     @Test
     void getItemById() {
         // When
-        Type item = service.getItemById(100001);
+        Type item = service.getTypeById(100001);
 
         // Then
         assertThat(item).isNotNull().extracting("name").isEqualTo("more stuff");

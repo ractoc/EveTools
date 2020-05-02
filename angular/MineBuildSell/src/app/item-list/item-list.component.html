@@ -10,7 +10,7 @@
     <div *ngIf="itemList">
       <ul class="list-group">
         <li *ngFor="let item of itemList" class="list-group-item border-0">
-          <a class="nav-link" routerLink="item/{{item.id}}">{{ item.name }}</a>
+          <a class="nav-link" routerLink="/item/{{item.id}}">{{ item.name }}</a>
         </li>
       </ul>
     </div>

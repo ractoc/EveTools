@@ -43,4 +43,12 @@ public class CalculatorHandler {
         return blueprint;
     }
 
+    public ItemModel calculateItemPrices(Integer buyRegionId, Long buyLocationId, Integer sellRegionId, Long sellLocationId, ItemModel item, Integer runs, EveUserDetails userDetails) {
+        calculatorService.calculateItemPrices(item, buyRegionId, buyLocationId, sellRegionId, sellLocationId, runs);
+        calculatorService.calculateSalesTax(item, userDetails.getCharId(), userDetails.getAccessToken());
+        calculatorService.calculateBrokerFee(item, userDetails.getCharId(), userDetails.getAccessToken());
+        // profitability:
+        // itemBuyPrice < itemSellPrice = just buy and sell the item
+        return item;
+    }
 }

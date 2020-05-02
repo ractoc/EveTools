@@ -153,4 +153,26 @@ export class AssetsService {
       });
     });
   }
+
+  getItem(id: any) {
+    return new Observable<ItemModel>((observe) => {
+      const httpOptions = {
+        headers: new HttpHeaders({
+          Authorization: 'Bearer ' + this.userService.getEveState()
+        })
+      };
+      this.http.get<any>(ASSETS_URI + '/item/' + id, httpOptions)
+        .pipe(
+          map(result => {
+            if (result.responseCode >= 400) {
+              throw new Error('broken API:' + result.responseCode);
+            } else {
+              return result.item;
+            }
+          })
+        ).subscribe(item => {
+        observe.next(item);
+      });
+    });
+  }
 }

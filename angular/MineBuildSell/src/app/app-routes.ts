@@ -4,6 +4,7 @@ import {LoginComponent} from './login/login.component';
 import {BlueprintListComponent} from './blueprint-list/blueprint-list.component';
 import {BlueprintDetailsComponent} from './blueprint-details/blueprint-details.component';
 import {ItemListComponent} from './item-list/item-list.component';
+import {ItemDetailsComponent} from './item-details/item-details.component';
 
 export const APP_ROUTES: Routes = [
   {path: '', component: HomeComponent},
@@ -14,5 +15,6 @@ export const APP_ROUTES: Routes = [
   {path: 'blueprints/corporate', component: BlueprintListComponent, data: {corporate: true}},
   {path: 'blueprint/:type/:id', component: BlueprintDetailsComponent},
   {path: 'items', component: ItemListComponent},
+  {path: 'item/:id', component: ItemDetailsComponent},
   {path: '**', redirectTo: 'home'}
 ];

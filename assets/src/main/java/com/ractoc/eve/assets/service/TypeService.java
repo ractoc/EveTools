@@ -41,7 +41,7 @@ public class TypeService {
                 .orElseThrow(() -> new NoSuchElementException("Item not found, ID: " + itemId));
     }
 
-    public Type getItemById(int itemId) {
+    public Type getTypeById(Integer itemId) {
         return typeManager
                 .stream()
                 .filter(ID.equal(itemId))

@@ -13,6 +13,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {BlueprintListComponent} from './blueprint-list/blueprint-list.component';
 import {BlueprintDetailsComponent} from './blueprint-details/blueprint-details.component';
 import {ItemListComponent} from './item-list/item-list.component';
+import {ItemDetailsComponent} from './item-details/item-details.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import {ItemListComponent} from './item-list/item-list.component';
     LoginComponent,
     BlueprintListComponent,
     BlueprintDetailsComponent,
-    ItemListComponent
+    ItemListComponent,
+    ItemDetailsComponent
   ],
   imports: [
     NgbModule,
