@@ -59,6 +59,7 @@ export class ItemListComponent implements OnInit {
             this.displayItemList(marketGroup);
           } else {
             this.displayItemsForGroup = undefined;
+            this.itemList = undefined;
           }
         },
         error => {
@@ -94,6 +95,7 @@ export class ItemListComponent implements OnInit {
   private displayItemList(marketGroup: MarketGroupModel) {
     this.assetsService.getItemsForMarketGroup(marketGroup).subscribe(
       items => {
+        console.log('received items', items);
         this.itemList = items;
       },
       error => {

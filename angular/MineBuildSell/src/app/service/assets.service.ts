@@ -145,7 +145,7 @@ export class AssetsService {
             if (result.responseCode >= 400) {
               throw new Error('broken API:' + result.responseCode);
             } else {
-              return result.marketGroupList;
+              return result.itemList;
             }
           })
         ).subscribe(items => {
