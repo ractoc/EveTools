@@ -49,10 +49,31 @@ export class ItemListComponent implements OnInit {
 
   selectMarketGroup(marketGroup: MarketGroupModel) {
     this.expanded = this.determineExpanded(marketGroup);
-    if (marketGroup.children.length === 0) {
-      this.displayItemList(marketGroup);
+    if (!marketGroup.children) {
+      this.assetsService.getMarketGroups(marketGroup.id).subscribe(
+        groups => {
+          marketGroup.children = groups;
+          console.log('looking up market group', marketGroup.name);
+          console.log('received children listing', marketGroup.children);
+          if (marketGroup.children.length === 0) {
+            this.displayItemList(marketGroup);
+          } else {
+            this.displayItemsForGroup = undefined;
+          }
+        },
+        error => {
+          if (error.status === 401) {
+            localStorage.setItem('currentPage', '/items');
+            this.router.navigateByUrl('/login');
+          }
+        }
+      );
     } else {
-      this.displayItemsForGroup = undefined;
+      if (marketGroup.children.length === 0) {
+        this.displayItemList(marketGroup);
+      } else {
+        this.displayItemsForGroup = undefined;
+      }
     }
   }
 
@@ -60,7 +81,7 @@ export class ItemListComponent implements OnInit {
     return 'collapse_' + item.id;
   }
 
-  private determineExpanded(marketGroup: MarketGroupModel) {
+  determineExpanded(marketGroup: MarketGroupModel) {
     const crumbtrail = new Array<MarketGroupModel>();
     crumbtrail.push(marketGroup);
     if (marketGroup.parentGroupId !== 0) {

@@ -44,10 +44,10 @@ public class MarketGroupHandler {
     public List<MarketGroupModel> getMarketGroups(int parentGroupId) {
         return marketGroupService.getMarketGroups(parentGroupId)
                 .map(MarketGroupMapper.INSTANCE::dbToModel)
-                .map(mgm -> {
-                    mgm.setChildren(getMarketGroups(mgm.getId()));
-                    return mgm;
-                })
+//                    .map(mgm -> {
+//                        mgm.setChildren(getMarketGroups(mgm.getId()));
+//                        return mgm;
+//                    })
                 .collect(Collectors.toList());
     }
 }

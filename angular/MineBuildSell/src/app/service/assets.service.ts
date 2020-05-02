@@ -9,7 +9,7 @@ import {UserService} from './user.service';
 
 import {environment} from '../../environments/environment';
 import {MarketGroupModel} from '../shared/model/marketgroup.model';
-import {ItemModel} from "../shared/model/item.model";
+import {ItemModel} from '../shared/model/item.model';
 
 const ASSETS_URI = 'http://' + environment.apiHost + ':8787/assets';
 
@@ -22,8 +22,7 @@ export class AssetsService {
   }
 
   blueprints: BlueprintModel[];
-  marketGroups = new Map<number, MarketGroupModel>();
-  marketGroupParents = new Map<number, number[]>();
+  marketGroupParents = new Map<number, MarketGroupModel[]>();
 
   getPersonalBlueprints(): Observable<BlueprintModel[]> {
     const httpOptions = {
@@ -99,6 +98,9 @@ export class AssetsService {
 
   getMarketGroups(parentGroupId: number): Observable<MarketGroupModel[]> {
     return new Observable<MarketGroupModel[]>((observe) => {
+      if (this.marketGroupParents.get(parentGroupId)) {
+        observe.next(this.marketGroupParents.get(parentGroupId));
+      } else {
         const httpOptions = {
           headers: new HttpHeaders({
             Authorization: 'Bearer ' + this.userService.getEveState()
@@ -114,8 +116,19 @@ export class AssetsService {
               }
             })
           ).subscribe(groups => {
-          observe.next(groups);
+          if (!groups) {
+            observe.next(new Array<MarketGroupModel>());
+          } else {
+            groups.forEach(group => {
+              if (!this.marketGroupParents.get(group.parentId)) {
+                this.marketGroupParents.set(group.parentId, new Array<MarketGroupModel>());
+              }
+              this.marketGroupParents.get(group.parentId).push(group);
+            });
+            observe.next(groups);
+          }
         });
+      }
     });
   }
 
@@ -135,8 +148,8 @@ export class AssetsService {
               return result.marketGroupList;
             }
           })
-        ).subscribe(groups => {
-        observe.next(groups);
+        ).subscribe(items => {
+        observe.next(items);
       });
     });
   }
