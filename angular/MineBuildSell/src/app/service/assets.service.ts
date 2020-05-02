@@ -9,6 +9,7 @@ import {UserService} from './user.service';
 
 import {environment} from '../../environments/environment';
 import {MarketGroupModel} from '../shared/model/marketgroup.model';
+import {ItemModel} from "../shared/model/item.model";
 
 const ASSETS_URI = 'http://' + environment.apiHost + ':8787/assets';
 
@@ -115,6 +116,28 @@ export class AssetsService {
           ).subscribe(groups => {
           observe.next(groups);
         });
+    });
+  }
+
+  getItemsForMarketGroup(marketGroup: MarketGroupModel): Observable<ItemModel[]> {
+    return new Observable<ItemModel[]>((observe) => {
+      const httpOptions = {
+        headers: new HttpHeaders({
+          Authorization: 'Bearer ' + this.userService.getEveState()
+        })
+      };
+      this.http.get<any>(ASSETS_URI + '/item/?group=' + marketGroup.id, httpOptions)
+        .pipe(
+          map(result => {
+            if (result.responseCode >= 400) {
+              throw new Error('broken API:' + result.responseCode);
+            } else {
+              return result.marketGroupList;
+            }
+          })
+        ).subscribe(groups => {
+        observe.next(groups);
+      });
     });
   }
 }

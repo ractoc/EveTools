@@ -13,7 +13,7 @@ public class TypeDeserializer extends StdDeserializer<YamlTypeModel> {
     public static final String TYPE_ID = "id";
     public static final String NAME = "name";
     public static final String EN = "en";
-    public static final String GROUP_ID = "groupID";
+    public static final String MARKET_GROUP_ID = "marketGroupID";
     public static final String PUBLISHED = "published";
 
 
@@ -34,7 +34,7 @@ public class TypeDeserializer extends StdDeserializer<YamlTypeModel> {
         try {
             type.setId(getId(typeNode));
             type.setName(getName(typeNode));
-            type.setGroupId(getGroupId(typeNode));
+            type.setMarketGroupId(getGroupId(typeNode));
             type.setPublished(typeNode.get(PUBLISHED).booleanValue());
             return type;
         } catch (Exception e) {
@@ -48,7 +48,7 @@ public class TypeDeserializer extends StdDeserializer<YamlTypeModel> {
     }
 
     private int getGroupId(JsonNode typeNode) {
-            return typeNode.get(GROUP_ID) != null ? typeNode.get(GROUP_ID).intValue() : 0;
+        return typeNode.get(MARKET_GROUP_ID) != null ? typeNode.get(MARKET_GROUP_ID).intValue() : 0;
     }
 
     private String getName(JsonNode typeNode) {

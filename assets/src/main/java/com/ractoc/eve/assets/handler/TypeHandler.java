@@ -11,6 +11,8 @@ import com.speedment.runtime.core.component.transaction.TransactionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -55,7 +57,11 @@ public class TypeHandler {
         return ItemMapper.INSTANCE.dbToModel(typeService.getItemById(itemId));
     }
 
-    public List<ItemModel> getItemsByName(String name) {
+    public List<ItemModel> getItemsByName(@NotEmpty String name) {
         return typeService.getItemsByName(name).map(ItemMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+    }
+
+    public List<ItemModel> getItemsByMarketGroup(@NotNull Integer group) {
+        return typeService.getItemsByMarketGroup(group).map(ItemMapper.INSTANCE::dbToModel).collect(Collectors.toList());
     }
 }

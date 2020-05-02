@@ -37,14 +37,20 @@ public class ItemController extends BaseController {
         this.typeHandler = typeHandler;
     }
 
-    @ApiOperation(value = "Get items by part of their name", response = ItemListResponse.class, produces = "application/json")
+    @ApiOperation(value = "Get items by part of their name or by their group id", response = ItemListResponse.class, produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Retrieval successfully processed, This does not mean items were actually found.", response = ItemNameResponse.class)
     })
     @GetMapping(value = "/", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> getItemsByName(@RequestParam("name") String name) {
+    public ResponseEntity<BaseResponse> getItems(@RequestParam(name = "name", required = false) String name, @RequestParam(name = "group", required = false) Integer groupId) {
         try {
-            return new ResponseEntity<>(new ItemListResponse(OK, typeHandler.getItemsByName(name)), OK);
+            if (groupId != null) {
+                return new ResponseEntity<>(new ItemListResponse(OK, typeHandler.getItemsByMarketGroup(groupId)), OK);
+            } else if (name != null) {
+                return new ResponseEntity<>(new ItemListResponse(OK, typeHandler.getItemsByName(name)), OK);
+            } else {
+                return new ResponseEntity<>(new ErrorResponse(BAD_REQUEST, "Either a name or group must be provided"), BAD_REQUEST);
+            }
         } catch (NoSuchElementException e) {
             log.error(e.getMessage(), e);
             return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);

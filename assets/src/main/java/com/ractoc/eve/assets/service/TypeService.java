@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.ractoc.eve.assets.db.assets.eve_assets.type.generated.GeneratedType.ID;
+import static com.ractoc.eve.assets.db.assets.eve_assets.type.generated.GeneratedType.MARKET_GROUP_ID;
 
 @Service
 public class TypeService {
@@ -50,5 +51,9 @@ public class TypeService {
 
     public Stream<Type> getItemsByName(String name) {
         return typeManager.stream().filter(type -> type.getName().toLowerCase().contains(name.toLowerCase()));
+    }
+
+    public Stream<Type> getItemsByMarketGroup(Integer group) {
+        return typeManager.stream().filter(MARKET_GROUP_ID.equal(group));
     }
 }

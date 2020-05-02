@@ -24,7 +24,7 @@ class TypeServiceTest extends SpeedmentDBTestCase implements WithAssertions {
 
     private TypeService service;
 
-    private AssetsApplication assetsApplication = new AssetsApplicationBuilder()
+    private final AssetsApplication assetsApplication = new AssetsApplicationBuilder()
             .withPassword(PASSWORD)
             .withConnectionUrl(dbUrl)
             .withLogging(ApplicationBuilder.LogType.STREAM)
@@ -52,7 +52,7 @@ class TypeServiceTest extends SpeedmentDBTestCase implements WithAssertions {
     void saveType() throws Exception {
         // Given
         Type type = new TypeImpl();
-        type.setGroupId(25);
+        type.setMarketGroupId(25);
         type.setName("test type");
 
         // When

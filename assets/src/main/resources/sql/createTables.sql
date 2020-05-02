@@ -72,9 +72,9 @@ CREATE TABLE `eve_assets`.`blueprint_manufacturing_skills`
 
 CREATE TABLE `eve_assets`.`type`
 (
-    `id`       int(11)      NOT NULL,
-    `name`     varchar(100) NOT NULL,
-    `group_id` int(11)      NOT NULL,
+    `id`              int(11)      NOT NULL,
+    `name`            varchar(100) NOT NULL,
+    `market_group_id` int(11)      NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;

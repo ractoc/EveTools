@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AssetsService} from '../service/assets.service';
 import {MarketGroupModel} from '../shared/model/marketgroup.model';
 import {Router} from '@angular/router';
+import {ItemModel} from '../shared/model/item.model';
 
 @Component({
   selector: 'app-item-list',
@@ -9,16 +10,16 @@ import {Router} from '@angular/router';
   styleUrls: ['./item-list.component.css']
 })
 export class ItemListComponent implements OnInit {
-  private displayItemsForGroup: MarketGroupModel;
 
   constructor(private assetsService: AssetsService, private router: Router) {
   }
 
+  private displayItemsForGroup: MarketGroupModel;
+
+  itemList: Array<ItemModel>;
   marketGroups: Array<MarketGroupModel> = new Array<MarketGroupModel>();
   errorMessage: string;
-
   expanded: Array<MarketGroupModel> = new Array<MarketGroupModel>();
-  selectedMarketGroup: MarketGroupModel;
 
   ngOnInit() {
     this.assetsService.getMarketGroups(0).subscribe(
@@ -47,10 +48,9 @@ export class ItemListComponent implements OnInit {
   }
 
   selectMarketGroup(marketGroup: MarketGroupModel) {
-    this.selectedMarketGroup = marketGroup;
     this.expanded = this.determineExpanded(marketGroup);
     if (marketGroup.children.length === 0) {
-      this.displayItemsForGroup = this.selectedMarketGroup;
+      this.displayItemList(marketGroup);
     } else {
       this.displayItemsForGroup = undefined;
     }
@@ -68,5 +68,19 @@ export class ItemListComponent implements OnInit {
       this.determineExpanded(parent).forEach(item => crumbtrail.push(item));
     }
     return crumbtrail;
+  }
+
+  private displayItemList(marketGroup: MarketGroupModel) {
+    this.assetsService.getItemsForMarketGroup(marketGroup).subscribe(
+      items => {
+        this.itemList = items;
+      },
+      error => {
+        if (error.status === 401) {
+          localStorage.setItem('currentPage', '/items');
+          this.router.navigateByUrl('/login');
+        }
+      }
+    );
   }
 }
