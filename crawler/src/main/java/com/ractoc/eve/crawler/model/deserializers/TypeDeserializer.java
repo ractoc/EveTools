@@ -36,6 +36,7 @@ public class TypeDeserializer extends StdDeserializer<YamlTypeModel> {
             type.setName(getName(typeNode));
             type.setMarketGroupId(getGroupId(typeNode));
             type.setPublished(typeNode.get(PUBLISHED).booleanValue());
+            System.out.println(type);
             return type;
         } catch (Exception e) {
             System.out.println("unable to process type: " + type);

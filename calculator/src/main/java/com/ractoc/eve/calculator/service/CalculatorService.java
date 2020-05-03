@@ -122,133 +122,138 @@ public class CalculatorService {
     }
 
     private void getBuyPricesForMaterial(Integer regionId, Long locationId, BlueprintMaterialModel mat) {
-        int pageNumber = 1;
         int retryCount = 0;
         do {
             try {
-                List<GetMarketsRegionIdOrders200Ok> orders = marketApi.getMarketsRegionIdOrders("sell", regionId, null, null, pageNumber, mat.getTypeId());
+                List<GetMarketsRegionIdOrders200Ok> orders = getAllOrdersForLocation("sell", regionId, locationId, mat.getTypeId());
                 if (orders.isEmpty()) {
                     mat.setBuyPrice(-1.0);
                     return;
                 }
-                List<GetMarketsRegionIdOrders200Ok> locationOrder = findOrdersForLocation(orders, locationId);
                 // sell orders mean buy you minerals, which is done at the lowest possible price.
                 // This is why the sellOrder is put into the BuyPrice
-                locationOrder.stream()
+                orders.stream()
                         .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
                         .min()
                         .ifPresent(mat::setBuyPrice);
                 if (mat.getBuyPrice() != null) {
                     break;
                 }
-                pageNumber++;
+                retryCount = -1;
             } catch (ApiException e) {
                 if (e.getCode() != 502 || retryCount > 10) {
                     throw new ServiceException("Unable to retrieve sell orders for material " + mat, e);
                 }
                 retryCount++;
             }
-        } while (pageNumber < 10000);
+        } while (retryCount > 0);
         if (mat.getBuyPrice() == null) {
             mat.setBuyPrice(-1.0);
         }
     }
 
     private void getSellPricesForMaterial(Integer regionId, Long locationId, BlueprintMaterialModel mat) {
-        int pageNumber = 1;
         int retryCount = 0;
         do {
             try {
-                List<GetMarketsRegionIdOrders200Ok> orders = marketApi.getMarketsRegionIdOrders("buy", regionId, null, null, pageNumber, mat.getTypeId());
+                List<GetMarketsRegionIdOrders200Ok> orders = getAllOrdersForLocation("buy", regionId, locationId, mat.getTypeId());
                 if (orders.isEmpty()) {
                     mat.setSellPrice(-1.0);
                     return;
                 }
-                List<GetMarketsRegionIdOrders200Ok> locationOrder = findOrdersForLocation(orders, locationId);
                 // buy orders means sell your minerals, which is done at the highest possible price
                 // This is why the buyOrder it put into the sellPrice
-                locationOrder.stream()
+                orders.stream()
                         .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
                         .max()
                         .ifPresent(mat::setSellPrice);
                 if (mat.getSellPrice() != null) {
                     break;
                 }
-                pageNumber++;
+                retryCount = -1;
             } catch (ApiException e) {
                 if (e.getCode() != 502 || retryCount > 10) {
                     throw new ServiceException("Unable to retrieve buy orders for material " + mat, e);
                 }
                 retryCount++;
             }
-        } while (pageNumber < 10000);
+        } while (retryCount > 0);
         if (mat.getSellPrice() == null) {
             mat.setSellPrice(-1.0);
         }
     }
 
     private void getBuyPricesForItem(ItemModel item, Integer regionId, Long locationId, Integer runs) {
-        int pageNumber = 1;
         int retryCount = 0;
         do {
             try {
-                List<GetMarketsRegionIdOrders200Ok> orders = marketApi.getMarketsRegionIdOrders("sell", regionId, null, null, pageNumber, item.getId());
+                List<GetMarketsRegionIdOrders200Ok> orders = getAllOrdersForLocation("sell", regionId, locationId, item.getId());
                 if (orders.isEmpty()) {
                     item.setBuyPrice(-1.0);
                     return;
                 }
-                List<GetMarketsRegionIdOrders200Ok> locationOrder = findOrdersForLocation(orders, locationId);
                 // sell orders means buy your item, which is done at the lowest possible price
                 // This is why the sellOrder it put into the BuyPrice
-                locationOrder.stream()
+                orders.stream()
                         .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
-                        .map(v -> Precision.round(v, 2))
                         .min()
-                        .ifPresent(price -> item.setBuyPrice(price * runs));
+                        .ifPresent(price -> item.setBuyPrice(Precision.round(price * runs, 2)));
                 if (item.getBuyPrice() != null) {
                     return;
                 }
-                pageNumber++;
+                retryCount = -1;
             } catch (ApiException e) {
                 if (e.getCode() != 502 || retryCount > 10) {
                     throw new ServiceException("Unable to retrieve sell orders for item " + item, e);
                 }
                 retryCount++;
             }
-        } while (pageNumber < 10000);
+        } while (retryCount > 0);
         item.setBuyPrice(-1.0);
     }
 
     private void getSellPricesForItem(ItemModel item, Integer regionId, Long locationId, Integer runs) {
-        int pageNumber = 1;
         int retryCount = 0;
         do {
             try {
-                List<GetMarketsRegionIdOrders200Ok> orders = marketApi.getMarketsRegionIdOrders("buy", regionId, null, null, pageNumber, item.getId());
+                List<GetMarketsRegionIdOrders200Ok> orders = getAllOrdersForLocation("buy", regionId, locationId, item.getId());
                 if (orders.isEmpty()) {
                     item.setSellPrice(-1.0);
                     return;
                 }
-                List<GetMarketsRegionIdOrders200Ok> locationOrder = findOrdersForLocation(orders, locationId);
                 // buy orders mean sell you item, which is done at the highest possible price.
                 // This is why the buyOrder is put into the SellPrice
-                locationOrder.stream()
+                orders.stream()
                         .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
-                        .map(v -> Precision.round(v, 2))
                         .max()
-                        .ifPresent(price -> item.setSellPrice(price * runs));
+                        .ifPresent(price -> item.setSellPrice(Precision.round(price * runs, 2)));
                 if (item.getSellPrice() != null) {
                     return;
                 }
-                pageNumber++;
+                retryCount = -1;
             } catch (ApiException e) {
                 if (e.getCode() != 502 || retryCount > 10) {
                     throw new ServiceException("Unable to retrieve orders for item " + item, e);
                 }
                 retryCount++;
             }
-        } while (pageNumber < 10000);
+        } while (retryCount > 0);
         item.setSellPrice(-1.0);
+    }
+
+    private List<GetMarketsRegionIdOrders200Ok> getAllOrdersForLocation(String type, Integer regionId, Long locationId, int itemId) throws ApiException {
+        List<GetMarketsRegionIdOrders200Ok> orders = new ArrayList<>();
+        boolean keepSearching = true;
+        int pageNumber = 1;
+        while (keepSearching) {
+            List<GetMarketsRegionIdOrders200Ok> searchResult = marketApi.getMarketsRegionIdOrders(type, regionId, null, null, pageNumber, itemId);
+            orders.addAll(searchResult.stream()
+                    .filter(o -> o.getSystemId().equals(locationId.intValue()))
+                    .collect(Collectors.toList()));
+            keepSearching = !searchResult.isEmpty();
+            pageNumber++;
+        }
+        return orders;
     }
 
     private List<GetMarketsRegionIdOrders200Ok> findOrdersForLocation(List<GetMarketsRegionIdOrders200Ok> orders, Long locationId) {

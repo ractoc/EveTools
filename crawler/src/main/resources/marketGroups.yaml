@@ -163,12 +163,12 @@
   hasTypes: false
   iconID: 365
   nameID:
-    de: Geschütztürme & -buchten
-    en: Turrets & Bays
-    fr: Tourelles et lanceurs
+    de: Waffentürme & Launcher
+    en: Turrets & Launchers
+    fr: Tourelles et lance-missiles
     ja: タレットと装備
-    ko: 터렛 및 무기
-    ru: Орудийные и пусковые установки
+    ko: 터렛 및 런처 효과
+    ru: Турели и пусковые установки
     zh: 炮台和发射器
   parentGroupID: 9
 11:
@@ -1116,7 +1116,7 @@
     en: Defender
     fr: Défenseur
     ja: ディフェンダー
-    ko: 수비자
+    ko: 디펜더
     ru: Противоракеты
     zh: 反弹道导弹
   parentGroupID: 114
@@ -1440,14 +1440,14 @@
     de: Drohnen sind semi-autonome Robotereinheiten, die für militärische und industrielle
       Zwecke im Weltraum genutzt werden können.
     en: Drones are semi-autonomous robotic devices used for military and industrial
-      purposes throughout space.
-    fr: Les drones sont des robots semi-autonomes à vocation militaire et industrielle,
-      conçus pour évoluer dans l'espace.
+      purposes throughout space
+    fr: Les drones sont des appareils robotisés semi-autonomes conçus pour des usages
+      militaires et industriels dans l'espace
     ja: ドローンは宙域全体で軍事・産業目的に用いられている半自律型デバイスです
     ko: 첨단 로봇공학의 집합체로 각종 군사 및 산업 분야에 사용되고 있습니다.
-    ru: Дроны — это полуавтоматические беспилотные устройства, повсеместно используемые
-      в космосе в боевых и промышленных целях.
-    zh: 无人机是一种半自主式机器设备，可以用于军事和工业领域。
+    ru: Дроны — полуавтоматические роботизированные устройства, используемые в военных
+      и промышленных целях по всему космосу.
+    zh: 无人机是一种半自主式机器设备，可以用于军事和工业领域
   hasTypes: false
   iconID: 1084
   nameID:
@@ -2555,7 +2555,7 @@
     en: Defender
     fr: Défenseur
     ja: ディフェンダー
-    ko: 수비자
+    ko: 디펜더
     ru: Противоракеты
     zh: 反弹道导弹
   parentGroupID: 314
@@ -4097,7 +4097,7 @@
     en: Logistics
     fr: Logistique
     ja: 支援型巡洋艦
-    ko: 지원
+    ko: 로지스틱스
     ru: Крейсеры обеспечения
     zh: 后勤舰
   parentGroupID: 1368
@@ -8708,7 +8708,7 @@
     en: Tracking Computers
     fr: Ordinateurs de suivi
     ja: トラッキングコンピューター
-    ko: 추적 시스템
+    ko: 트래킹 컴퓨터
     ru: Вычислители наводки орудий
     zh: 索敌计算机
   parentGroupID: 143
@@ -8749,7 +8749,7 @@
     en: Remote Tracking Computers
     fr: Ordinateurs de suivi à distance
     ja: リモートトラッキングコンピューター
-    ko: 원격 추적 시스템
+    ko: 원격 트래킹 컴퓨터
     ru: Передатчики данных наводки
     zh: 远距索敌计算机
   parentGroupID: 143
@@ -12742,7 +12742,7 @@
     en: Assembly Arrays
     fr: Modules d'assemblage
     ja: 組み立て施設
-    ko: 어셈블리 시설
+    ko: 생산시설
     ru: Сборочные линии
     zh: 装配阵列
   parentGroupID: 1285
@@ -16579,7 +16579,7 @@
     en: Medium Drone Rigs
     fr: Modifications de drone intermédiaires
     ja: 中型ドローンリグ
-    ko: 미디움 드론 리그
+    ko: 중형 드론 리그
     ru: Средние
     zh: 中型无人机改装件
   parentGroupID: 958
@@ -16901,7 +16901,7 @@
     en: Medium Missile Launcher Rigs
     fr: Modifications de lance-missiles intermédiaires
     ja: 中型ミサイル兵器リグ
-    ko: 미디움 미사일 런처 리그
+    ko: 중형 미사일 런처 리그
     ru: Средние
     zh: 中型导弹发射器改装件
   parentGroupID: 964
@@ -17134,7 +17134,7 @@
     en: Blueprints of Medium Drone Rigs.
     fr: Plans de construction de modules d'optimisation de drones de taille intermédiaire.
     ja: 中型ドローンリグのブループリント。
-    ko: 미디움 드론 리그 블루프린트입니다.
+    ko: 중형 드론 리그 블루프린트입니다.
     ru: Чертежи тюнинг-модулей средних размеров, влияющих на работу запускаемых с
       борта корабля дронов.
     zh: 各种中型无人机改装件的蓝图。
@@ -17145,7 +17145,7 @@
     en: Medium Drone Rigs
     fr: Modifications de drone intermédiaires
     ja: 中型ドローンリグ
-    ko: 미디움 드론 리그
+    ko: 중형 드론 리그
     ru: Средние
     zh: 中型无人机改装件
   parentGroupID: 946
@@ -17449,7 +17449,7 @@
     fr: Plans de construction de modules d'optimisation de lance-missiles de taille
       intermédiaire.
     ja: 中型ミサイル兵器リグのブループリント。
-    ko: 미디움 미사일 런처 리그 블루프린트입니다.
+    ko: 중형 미사일 런처 리그 블루프린트입니다.
     ru: Чертежи тюнинг-модулей средних размеров, влияющих на работу бортовых ракетных
       установок.
     zh: 各种中型导弹发射器改装件的蓝图。
@@ -17460,7 +17460,7 @@
     en: Medium Missile Launcher Rigs
     fr: Modifications de lance-missiles intermédiaires
     ja: 中型ミサイル兵器リグ
-    ko: 미디움 미사일 런처 리그
+    ko: 중형 미사일 런처 리그
     ru: Средние
     zh: 中型导弹发射器改装件
   parentGroupID: 952
@@ -18145,7 +18145,7 @@
     en: Blueprints of Assembly Arrays.
     fr: Plans de construction de modules d'assemblage.
     ja: 組み立て施設のブループリント。
-    ko: 어셈블리 시설 블루프린트입니다.
+    ko: 생산 시설 블루프린트입니다.
     ru: Чертежи сборочных цехов.
     zh: 各种装配阵列的蓝图。
   hasTypes: true
@@ -18155,7 +18155,7 @@
     en: Assembly Arrays
     fr: Modules d'assemblage
     ja: 組み立て施設
-    ko: 어셈블리 시설
+    ko: 생산시설
     ru: Сборочные линии
     zh: 装配阵列
   parentGroupID: 1841
@@ -20794,6 +20794,7 @@
     en: Shield
     fr: Bouclier
     ja: シールド
+    ko: 실드
     ru: Щиты
     zh: 护盾
   parentGroupID: 209
@@ -20813,6 +20814,7 @@
     en: Engineering Equipment
     fr: Équipement d'ingénierie
     ja: エンジニアリング系装備
+    ko: 엔지니어링 장비
     ru: Инженерное оборудование
     zh: 工程装备
   parentGroupID: 209
@@ -20832,6 +20834,7 @@
     en: Shield Flux Coils
     fr: Bobines de flux de bouclier
     ja: シールドフラックスコイル
+    ko: 실드 플럭스 코일
     ru: Силовые петли щитов
     zh: 护盾通量线圈
   parentGroupID: 1545
@@ -20855,6 +20858,7 @@
     fr: Renforcements de bouclier
     it: Tempratura scudo
     ja: シールドハードナー
+    ko: 실드 강화장치
     ru: Активные модуляторы щитов
     zh: 护盾增强系统
   parentGroupID: 1545
@@ -20878,6 +20882,7 @@
     fr: Extenseurs de bouclier
     it: Estensori scudo
     ja: シールドエクステンダー
+    ko: 실드 확장장치
     ru: Дополнительные источники щитов
     zh: 护盾扩展装置
   parentGroupID: 1545
@@ -20897,6 +20902,7 @@
     en: Shield Power Relays
     fr: Relais d’alimentation de bouclier
     ja: シールドパワーリレー
+    ko: 실드 릴레이
     ru: Силовые реле щитов
     zh: 护盾能源继电器
   parentGroupID: 1545
@@ -20916,6 +20922,7 @@
     en: Shield Rechargers
     fr: Rechargeurs de bouclier
     ja: シールドリチャージャー
+    ko: 실드 회복장치
     ru: Регенераторы щитов
     zh: 护盾回充器
   parentGroupID: 1545
@@ -20935,6 +20942,7 @@
     en: Shield Boosters
     fr: Boosters de bouclier
     ja: シールドブースター
+    ko: 실드 부스터
     ru: Установки накачки щитов
     zh: 护盾回充增量器
   parentGroupID: 1545
@@ -20954,6 +20962,7 @@
     en: Remote Shield Boosters
     fr: Boosters de bouclier à distance
     ja: リモートシールドブースター
+    ko: 원격 실드 부스터
     ru: Установки дистанционной накачки щитов
     zh: 远程护盾回充增量器
   parentGroupID: 1545
@@ -20973,6 +20982,7 @@
     en: Shield Resistance Amplifiers
     fr: Amplificateurs de résistance de bouclier
     ja: シールドレジスタンス増幅器
+    ko: 실드 저항력 증폭기
     ru: Пассивные модуляторы щитов
     zh: 护盾抗性增效器
   parentGroupID: 1545
@@ -22088,6 +22098,7 @@
     en: Caldari Subsystems
     fr: Sous-systèmes caldari
     ja: カルダリサブシステム
+    ko: 칼다리 서브시스템
     ru: Калдарские подсистемы
     zh: 加达里子系统
   parentGroupID: 1112
@@ -22107,6 +22118,7 @@
     en: Minmatar Subsystems
     fr: Sous-systèmes minmatar
     ja: ミンマターサブシステム
+    ko: 민마타 서브시스템
     ru: Минматарские подсистемы
     zh: 米玛塔尔子系统
   parentGroupID: 1112
@@ -22126,6 +22138,7 @@
     en: Gallente Subsystems
     fr: Sous-systèmes gallente
     ja: ガレンテサブシステム
+    ko: 갈란테 서브시스템
     ru: Галлентские подсистемы
     zh: 盖伦特子系统
   parentGroupID: 1112
@@ -25516,7 +25529,7 @@
     en: Mobile Micro Jump Units
     fr: Unités de microsaut mobiles
     ja: 移動式マイクロジャンプユニット
-    ko: 이동식 마이크로 점프장치
+    ko: 이동식 마이크로 점프 장치
     ru: Полевые разгонные блоки
     zh: 移动式微型跳跃装置
   parentGroupID: 406
@@ -25540,7 +25553,7 @@
     en: Mobile Micro Jump Units
     fr: Unités de microsaut mobiles
     ja: 移動式マイクロジャンプユニット
-    ko: 이동식 마이크로 점프장치
+    ko: 이동식 마이크로 점프 장치
     ru: Полевые разгонные блоки
     zh: 移动式微型跳跃装置
   parentGroupID: 404
@@ -26588,7 +26601,7 @@
     en: Expedition Frigates
     fr: Frégates d'expédition
     ja: 長距離フリゲート
-    ko: 익스페디션 프리깃
+    ko: 탐사 프리깃
     ru: Разведочно-буровые фрегаты
     zh: 勘探护卫舰
   parentGroupID: 1364
@@ -31151,7 +31164,7 @@
     en: Command Burst Charges
     fr: Charges de salve commandante
     ja: コマンドバーストチャージ
-    ko: 커맨드 버스트
+    ko: 커맨드 버스트 차지
     ru: Заряды импульсных оптимизаторов
     zh: 指挥脉冲弹药
   hasTypes: false
@@ -31161,7 +31174,7 @@
     en: Command Burst Charges
     fr: Charges de salve commandante
     ja: コマンドバーストチャージ
-    ko: 커맨드 버스트
+    ko: 커맨드 버스트 차지
     ru: Заряды импульсных оптимизаторов
     zh: 指挥脉冲弹药
   parentGroupID: 211
@@ -31171,7 +31184,7 @@
     en: Armor Command Burst Charges
     fr: Charges de salve commandante de blindage
     ja: アーマーコマンドバーストチャージ
-    ko: 장갑 버스트
+    ko: 장갑 버스트 차지
     ru: Броневой защиты
     zh: 装甲指挥脉冲弹药
   hasTypes: true
@@ -31181,7 +31194,7 @@
     en: Armor Command Burst Charges
     fr: Charges de salve commandante de blindage
     ja: アーマーコマンドバーストチャージ
-    ko: 장갑 버스트
+    ko: 장갑 버스트 차지
     ru: Брони
     zh: 装甲指挥脉冲弹药
   parentGroupID: 2290
@@ -31191,7 +31204,7 @@
     en: Information Command Burst Charges
     fr: Charges de salve commandante d'information
     ja: 情報戦コマンドバーストチャージ
-    ko: 정보전 버스트
+    ko: 정보전 버스트 차지
     ru: Мер РЭБ
     zh: 信息战指挥脉冲弹药
   hasTypes: true
@@ -31201,7 +31214,7 @@
     en: Information Command Burst Charges
     fr: Charges de salve commandante d'information
     ja: 情報戦コマンドバーストチャージ
-    ko: 정보전 버스트
+    ko: 정보전 버스트 차지
     ru: РЭБ
     zh: 信息战指挥脉冲弹药
   parentGroupID: 2290
@@ -31211,7 +31224,7 @@
     en: Mining Foreman Burst Charges
     fr: Charges de salve de contremaîtrise d'extraction minière
     ja: 採掘支援バーストチャージ
-    ko: 채광 버스트
+    ko: 채광 버스트 차지
     ru: Добычи сырья
     zh: 开采先锋脉冲弹药
   hasTypes: true
@@ -31221,7 +31234,7 @@
     en: Mining Foreman Burst Charges
     fr: Charges de salve de contremaîtrise d'extraction minière
     ja: 採掘支援バーストチャージ
-    ko: 채광 버스트
+    ko: 채광 버스트 차지
     ru: Добычи
     zh: 开采先锋脉冲弹药
   parentGroupID: 2290
@@ -31231,7 +31244,7 @@
     en: Shield Command Burst Charges
     fr: Charges de salve commandante de boucliers
     ja: シールドコマンドバーストチャージ
-    ko: 실드 버스트
+    ko: 실드 버스트 차지
     ru: Силовой защиты
     zh: 护盾指挥脉冲弹药
   hasTypes: true
@@ -31241,7 +31254,7 @@
     en: Shield Command Burst Charges
     fr: Charges de salve commandante de boucliers
     ja: シールドコマンドバーストチャージ
-    ko: 실드 버스트
+    ko: 실드 버스트 차지
     ru: Щитов
     zh: 护盾指挥脉冲弹药
   parentGroupID: 2290
@@ -31251,7 +31264,7 @@
     en: Skirmish Command Burst Charges
     fr: Charges de salve commandante de guérilla
     ja: 機動戦コマンドバーストチャージ
-    ko: 스커미시 버스트
+    ko: 스커미시 버스트 차지
     ru: Боевого маневрирования
     zh: 游击战指挥脉冲弹药
   hasTypes: true
@@ -31261,7 +31274,7 @@
     en: Skirmish Command Burst Charges
     fr: Charges de salve commandante de guérilla
     ja: 機動戦コマンドバーストチャージ
-    ko: 스커미시 버스트
+    ko: 스커미시 버스트 차지
     ru: Маневрирования
     zh: 游击战指挥脉冲弹药
   parentGroupID: 2290
@@ -31271,7 +31284,7 @@
     en: Command Burst Charges
     fr: Charges de salve commandante
     ja: コマンドバーストチャージ
-    ko: 커맨드 버스트
+    ko: 커맨드 버스트 차지
     ru: Заряды импульсных оптимизаторов
     zh: 指挥脉冲弹药
   hasTypes: false
@@ -31281,7 +31294,7 @@
     en: Command Burst Charges
     fr: Charges de salve commandante
     ja: コマンドバーストチャージ
-    ko: 커맨드 버스트
+    ko: 커맨드 버스트 차지
     ru: Заряды импульсных оптимизаторов
     zh: 指挥脉冲弹药
   parentGroupID: 11
@@ -31291,7 +31304,7 @@
     en: Armor Command Burst Charges
     fr: Charges de salve commandante de blindage
     ja: アーマーコマンドバーストチャージ
-    ko: 장갑 버스트
+    ko: 장갑 버스트 차지
     ru: Броневой защиты
     zh: 装甲指挥脉冲弹药
   hasTypes: true
@@ -31301,7 +31314,7 @@
     en: Armor Command Burst Charges
     fr: Charges de salve commandante de blindage
     ja: アーマーコマンドバーストチャージ
-    ko: 장갑 버스트
+    ko: 장갑 버스트 차지
     ru: Брони
     zh: 装甲指挥脉冲弹药
   parentGroupID: 2297
@@ -31311,7 +31324,7 @@
     en: Information Command Burst Charges
     fr: Charges de salve commandante d'information
     ja: 情報戦コマンドバーストチャージ
-    ko: 정보전 버스트
+    ko: 정보전 버스트 차지
     ru: Мер РЭБ
     zh: 信息战指挥脉冲弹药
   hasTypes: true
@@ -31321,7 +31334,7 @@
     en: Information Command Burst Charges
     fr: Charges de salve commandante d'information
     ja: 情報戦コマンドバーストチャージ
-    ko: 정보전 버스트
+    ko: 정보전 버스트 차지
     ru: РЭБ
     zh: 信息战指挥脉冲弹药
   parentGroupID: 2297
@@ -31331,7 +31344,7 @@
     en: Mining Foreman Burst Charges
     fr: Charges de salve de contremaîtrise d'extraction minière
     ja: 採掘支援バーストチャージ
-    ko: 채광 버스트
+    ko: 채광 버스트 차지
     ru: Добычи сырья
     zh: 开采先锋脉冲弹药
   hasTypes: true
@@ -31341,7 +31354,7 @@
     en: Mining Foreman Burst Charges
     fr: Charges de salve de contremaîtrise d'extraction minière
     ja: 採掘支援バーストチャージ
-    ko: 채광 버스트
+    ko: 채광 버스트 차지
     ru: Добычи
     zh: 开采先锋脉冲弹药
   parentGroupID: 2297
@@ -31351,7 +31364,7 @@
     en: Shield Command Burst Charges
     fr: Charges de salve commandante de boucliers
     ja: シールドコマンドバーストチャージ
-    ko: 실드 버스트
+    ko: 실드 버스트 차지
     ru: Силовой защиты
     zh: 护盾指挥脉冲弹药
   hasTypes: true
@@ -31361,7 +31374,7 @@
     en: Shield Command Burst Charges
     fr: Charges de salve commandante de boucliers
     ja: シールドコマンドバーストチャージ
-    ko: 실드 버스트
+    ko: 실드 버스트 차지
     ru: Щитов
     zh: 护盾指挥脉冲弹药
   parentGroupID: 2297
@@ -31371,7 +31384,7 @@
     en: Skirmish Command Burst Charges
     fr: Charges de salve commandante de guérilla
     ja: 機動戦コマンドバーストチャージ
-    ko: 스커미시 버스트
+    ko: 스커미시 버스트 차지
     ru: Боевого маневрирования
     zh: 游击战指挥脉冲弹药
   hasTypes: true
@@ -31381,7 +31394,7 @@
     en: Skirmish Command Burst Charges
     fr: Charges de salve commandante de guérilla
     ja: 機動戦コマンドバーストチャージ
-    ko: 스커미시 버스트
+    ko: 스커미시 버스트 차지
     ru: Маневрирования
     zh: 游击战指挥脉冲弹药
   parentGroupID: 2297
@@ -31558,7 +31571,7 @@
     en: Expedition Frigates
     fr: Frégates d'expédition
     ja: 長距離フリゲート
-    ko: 익스페디션 프리깃
+    ko: 탐사 프리깃
     ru: Разведочно-буровые фрегаты
     zh: 勘探护卫舰
   parentGroupID: 2042
@@ -32453,7 +32466,7 @@
     de: Verbreitete Monderze
     en: Ubiquitous Moon Ores
     fr: Minerais lunaires répandus
-    ko: 저급한 위성 광물
+    ko: 저급 위성 광물
     ru: Повсеместные руды со спутников
     zh: 常见卫星矿石
   parentGroupID: 2395
@@ -32464,7 +32477,7 @@
     de: Gewöhnliche Monderze
     en: Common Moon Ores
     fr: Minerais lunaires communs
-    ko: 흔한 위성 광물
+    ko: 일반 위성 광물
     ru: Обычные руды со спутников
     zh: 普通卫星矿石
   parentGroupID: 2395
@@ -32475,7 +32488,7 @@
     de: Ungewöhnliche Monderze
     en: Uncommon Moon Ores
     fr: Minerais lunaires peu communs
-    ko: 일반 위성 광물
+    ko: 고급 위성 광물
     ru: Необычные руды со спутников
     zh: 罕见卫星矿石
   parentGroupID: 2395
@@ -32486,7 +32499,7 @@
     de: Seltene Monderze
     en: Rare Moon Ores
     fr: Minerais lunaires rares
-    ko: 희귀한 위성 광물
+    ko: 희귀 위성 광물
     ru: Редкие руды со спутников
     zh: 稀有卫星矿石
   parentGroupID: 2395
@@ -32497,7 +32510,7 @@
     de: Außerordentliche Monderze
     en: Exceptional Moon Ores
     fr: Minerais lunaires exceptionnels
-    ko: 특별한 위성 광물
+    ko: 특별 위성 광물
     ru: Исключительные руды со спутников
     zh: 非凡卫星矿石
   parentGroupID: 2395
@@ -33289,22 +33302,21 @@
   parentGroupID: 2440
 2456:
   descriptionID:
-    de: Abgrundfilamente werden verwendet, um in die Raumverwerfung des Abgrunds zu
-      gelangen
-    en: Abyssal Filaments are used to access Abyssal Deadspace
-    fr: Les filaments abyssaux sont utilisés pour accéder à l'Abîme Deadspace
-    ko: 어비설 데드스페이스로 진입하기 위해 사용됩니다.
-    ru: Нити бездны необходимы для доступа к Мёртвой бездне.
-    zh: 用来进入深渊空间的深渊纤维
+    de: Abgrundfilamente und Sprungfilamente
+    en: Abyssal Filaments and Jump Filaments
+    fr: Filaments abyssaux et filaments de saut
+    ko: 어비설 필라멘트 및 점프 필라멘트
+    ru: Нити бездны и прыжковые нити
+    zh: 深渊纤维和跳跃纤维
   hasTypes: false
   iconID: 21924
   nameID:
-    de: Abgrundfilamente
-    en: Abyssal Filaments
-    fr: Filaments abyssaux
-    ko: 어비설 필라멘트
-    ru: Нити бездны
-    zh: 深渊纤维
+    de: Filamente
+    en: Filaments
+    fr: Filaments
+    ko: 필라멘트
+    ru: Нити
+    zh: 纤维
   parentGroupID: 19
 2457:
   descriptionID:
@@ -33342,7 +33354,7 @@
     de: Dunkle Filamente
     en: Dark Filaments
     fr: Filaments noirs
-    ko: 다크 필라멘트
+    ko: 암흑 필라멘트
     ru: Тёмные нити
     zh: 黑暗纤维
   parentGroupID: 2456
@@ -34756,7 +34768,7 @@
       использования на дредноутах и титанах.
     zh: 旗舰级熵能分解者，在无畏舰或者泰坦上使用。
   hasTypes: true
-  iconID: 21921
+  iconID: 24237
   nameID:
     de: Extragroß
     en: Extra Large
@@ -34794,3 +34806,99 @@
     ru: Триглавские
     zh: 三神裔
   parentGroupID: 1883
+2701:
+  descriptionID:
+    de: Im HyperNet-Relais verwendete Gegenstände
+    en: Items used in the HyperNet Relay
+    fr: Objets utilisés pour le relais Hypernet
+    ko: 하이퍼넷 전용 아이템
+    ru: Предметы, использованные в гиперсетевом реле
+    zh: 在超网中继使用的物品
+  hasTypes: true
+  iconID: 24205
+  nameID:
+    de: HyperNet-Relais
+    en: HyperNet Relay
+    fr: Relai Hypernet
+    ko: 하이퍼넷 중계소
+    ru: Гиперсетевое реле
+    zh: 超网中继
+  parentGroupID: 1922
+2702:
+  descriptionID:
+    de: Corvettes, die Kapselpiloten gelegentlich für begrenzte Zeitperioden angeboten
+      wurden.
+    en: Corvettes that have been offered to capsuleers on occasion for limited periods.
+    fr: Corvettes mises parfois à la disposition des capsuliers pendant une période
+      de temps limitée.
+    ko: 캡슐리어들에게 한정된 기회로 제공된 코르벳입니다.
+    ru: Корветы, которые в течение ограниченного времени по особому поводу предлагались
+      капсулёрам.
+    zh: 限时供应的轻型护卫舰。
+  hasTypes: true
+  iconID: 1443
+  nameID:
+    de: Sonderversion-Corvettes
+    en: Special Edition Corvettes
+    fr: Corvettes édition spéciale
+    ko: 스페셜 에디션 코르벳
+    ru: Корветы особой версии
+    zh: 特别版轻型护卫舰
+  parentGroupID: 1612
+2703:
+  descriptionID:
+    de: Precursor-Dreadnoughts
+    en: Precursor Dreadnoughts
+    fr: Supercuirassés de précursion
+    ko: 프리커서 드레드노트
+    ru: Дредноуты Предтечей
+    zh: 先驱者无畏舰
+  hasTypes: false
+  iconID: 21420
+  nameID:
+    de: Precursor-Dreadnoughts
+    en: Precursor Dreadnoughts
+    fr: Supercuirassés de précursion
+    ko: 프리커서 드레드노트
+    ru: Дредноуты Предтечей
+    zh: 先驱者无畏舰
+  parentGroupID: 1971
+2704:
+  descriptionID:
+    de: Triglavia-Dreadnoughts
+    en: Triglavian Dreadnoughts
+    fr: Supercuirassés triglavian
+    ko: 트리글라비안 드레드노트
+    ru: Дредноуты Триглава
+    zh: 三神裔无畏舰
+  hasTypes: true
+  iconID: 21420
+  nameID:
+    de: Triglavia
+    en: Triglavian
+    fr: Triglavian
+    ko: 트리글라비안
+    ru: Триглавские
+    zh: 三神裔
+  parentGroupID: 2703
+2706:
+  descriptionID:
+    de: Filamente, die Flotten unberechenbar zu anderen Gebieten im bekannten Raum
+      befördern.
+    en: Filaments that jump fleets unpredictably to other locations in known space.
+    fr: Filaments qui permettent à des flottes de sauter de manière imprévisible vers
+      d'autres lieux de l'espace connu.
+    ko: 일반 우주의 무작위 지점으로 함대를 전송합니다.
+    ru: Эти нити непредсказуемым образом переносят флоты в новые точки известного
+      космоса.
+    zh: 能将舰队跳跃到宇宙中的其他随机地点的纤维
+  hasTypes: true
+  iconID: 21924
+  nameID:
+    de: Sprungfilamente
+    en: Jump Filaments
+    fr: Filaments de saut
+    ko: 점프 필라멘트
+    ru: Прыжковые нити
+    zh: 跳跃纤维
+  parentGroupID: 2456

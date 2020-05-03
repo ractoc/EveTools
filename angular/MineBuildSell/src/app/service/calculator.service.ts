@@ -9,7 +9,7 @@ import {BlueprintModel} from '../shared/model/blueprint.model';
 import {MarketHubModel} from '../shared/model/markethub.model';
 
 import {environment} from '../../environments/environment';
-import {ItemModel} from "../shared/model/item.model";
+import {ItemModel} from '../shared/model/item.model';
 
 const CALCULATOR_URI = 'http://' + environment.apiHost + ':8888/calculator';
 

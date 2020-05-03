@@ -45,13 +45,13 @@
           <table class="table">
             <tbody>
             <tr>
-              <th scope="row">Item Costs</th>
+              <th scope="row">Item Buy Price</th>
               <td>
                 <div *ngIf="item.buyPrice >= 0; else nodata">{{item.buyPrice}}</div>
               </td>
             </tr>
             <tr>
-              <th scope="row">Item Profit</th>
+              <th scope="row">Item Sell Price</th>
               <td>
                 <div *ngIf="item.sellPrice >= 0; else nodata">{{item.sellPrice}}</div>
               </td>

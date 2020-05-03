@@ -54,25 +54,25 @@
           <table class="table">
             <tbody>
             <tr>
-              <th scope="row">Material Cost</th>
+              <th scope="row">Material Buy Price</th>
               <td>
                 <div *ngIf="bp.mineralBuyPrice >= 0; else nodata">{{bp.mineralBuyPrice}}</div>
               </td>
             </tr>
             <tr>
-              <th scope="row">Material Profit</th>
+              <th scope="row">Material Sell Price</th>
               <td>
                 <div *ngIf="bp.mineralSellPrice >= 0; else nodata">{{bp.mineralSellPrice}}</div>
               </td>
             </tr>
             <tr>
-              <th scope="row">Item Costs</th>
+              <th scope="row">Item Buy Price</th>
               <td>
                 <div *ngIf="bp.item.buyPrice >= 0; else nodata">{{bp.item.buyPrice}}</div>
               </td>
             </tr>
             <tr>
-              <th scope="row">Item Profit</th>
+              <th scope="row">Item Sell Price</th>
               <td>
                 <div *ngIf="bp.item.sellPrice >= 0; else nodata">{{bp.item.sellPrice}}</div>
               </td>

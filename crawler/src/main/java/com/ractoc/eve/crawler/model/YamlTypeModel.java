@@ -20,6 +20,6 @@ public class YamlTypeModel {
     private boolean published;
 
     public boolean isComplete() {
-        return id != 0 && name != null && marketGroupId != 0;
+        return id != 0 && name != null;
     }
 }
