@@ -47,25 +47,25 @@
             <tr>
               <th scope="row">Item Buy Price</th>
               <td>
-                <div *ngIf="item.buyPrice >= 0; else nodata">{{item.buyPrice}}</div>
+                <div *ngIf="item.buyPrice >= 0; else nodata">{{item.buyPrice | number:'':'is' }}</div>
               </td>
             </tr>
             <tr>
               <th scope="row">Item Sell Price</th>
               <td>
-                <div *ngIf="item.sellPrice >= 0; else nodata">{{item.sellPrice}}</div>
+                <div *ngIf="item.sellPrice >= 0; else nodata">{{item.sellPrice | number:'':'is' }}</div>
               </td>
             </tr>
             <tr>
               <th scope="row">Broker Fee</th>
               <td>
-                <div *ngIf="item.brokerFee >= 0; else nodata">{{item.brokerFee}}</div>
+                <div *ngIf="item.brokerFee >= 0; else nodata">{{item.brokerFee | number:'':'is' }}</div>
               </td>
             </tr>
             <tr>
               <th scope="row">Sales Tax</th>
               <td>
-                <div *ngIf="item.salesTax >= 0; else nodata">{{item.salesTax}}</div>
+                <div *ngIf="item.salesTax >= 0; else nodata">{{item.salesTax | number:'':'is' }}</div>
               </td>
             </tr>
             </tbody>
