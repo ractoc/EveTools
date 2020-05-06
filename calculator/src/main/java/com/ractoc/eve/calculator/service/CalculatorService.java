@@ -1,6 +1,5 @@
 package com.ractoc.eve.calculator.service;
 
-import com.ractoc.eve.assets_client.api.ItemResourceApi;
 import com.ractoc.eve.domain.assets.BlueprintMaterialModel;
 import com.ractoc.eve.domain.assets.BlueprintModel;
 import com.ractoc.eve.domain.assets.ItemModel;
@@ -13,36 +12,30 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class CalculatorService {
 
     public static final String UNABLE_TO_DETERMINE_JOB_FEE = "Unable to determine Job Fee";
+    public static final String UNABLE_TO_DETERMINE_BROKER_FEE = "Unable to determine Broker Fee";
 
-    private MarketApi marketApi;
-    private AssetsApi assetsApi;
-    private IndustryApi industryApi;
-    private SkillsApi skillsApi;
-    private UniverseApi universeApi;
-
-    private ItemResourceApi itemResourceApi;
-
-    private List<String> playerOwnedStations = Stream.of("Astrahus", "Fortizar", "Keepstar", "Athanor", "Tatara", "Raitaru", "Azbel", "Sotiyo").collect(Collectors.toList());
+    private final MarketApi marketApi;
+    private final AssetsApi assetsApi;
+    private final IndustryApi industryApi;
+    private final SkillsApi skillsApi;
+    private final UniverseApi universeApi;
 
     @Autowired
     public CalculatorService(MarketApi marketApi,
                              AssetsApi assetsApi,
                              IndustryApi industryApi,
                              SkillsApi skillsApi,
-                             UniverseApi universeApi,
-                             ItemResourceApi itemResourceApi) {
+                             UniverseApi universeApi) {
         this.marketApi = marketApi;
         this.assetsApi = assetsApi;
         this.industryApi = industryApi;
         this.skillsApi = skillsApi;
         this.universeApi = universeApi;
-        this.itemResourceApi = itemResourceApi;
 
     }
 
@@ -81,7 +74,6 @@ public class CalculatorService {
                 if (e.getCode() != 502) {
                     throw new ServiceException(UNABLE_TO_DETERMINE_JOB_FEE, e);
                 }
-                System.out.println("retrying calculateJobInstallationCosts: " + retryCount);
                 retryCount++;
             }
         }
@@ -100,8 +92,15 @@ public class CalculatorService {
             GetUniverseStationsStationIdOk station = universeApi.getUniverseStationsStationId(sellOrder.getLocationId().intValue(), null, null);
             percentage = station.getReprocessingStationsTake();
         } catch (ApiException e) {
-            // in case of an error requesting the station, just fall back to the default percentage.
-            percentage = 0.05f;
+            // in case of an error requesting the station, check if it is actually a structure
+            try {
+                universeApi.getUniverseStructuresStructureId(sellOrder.getLocationId(), null, null, token);
+                percentage = 0.01f;
+            } catch (ApiException apiException) {
+                throw new ServiceException(UNABLE_TO_DETERMINE_BROKER_FEE, e);
+            }
+
+
         }
 
         Map<Skill, Integer> skillLevels = getSkillsForCharacter(charId, token, Skill.BROKER_RELATIONS);
@@ -146,21 +145,17 @@ public class CalculatorService {
         int retryCount = 0;
         do {
             try {
-                List<GetMarketsRegionIdOrders200Ok> orders = getAllOrdersForLocation("sell", regionId, locationId, mat.getTypeId());
-                if (orders.isEmpty()) {
-                    mat.setBuyPrice(-1.0);
-                    return;
-                }
                 // sell orders mean buy you minerals, which is done at the lowest possible price.
                 // This is why the sellOrder is put into the BuyPrice
-                orders.stream()
-                        .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
-                        .min()
-                        .ifPresent(mat::setBuyPrice);
-                if (mat.getBuyPrice() != null) {
-                    break;
-                }
-                retryCount = -1;
+                GetMarketsRegionIdOrders200Ok minOrder = getAllOrdersForLocation("sell", regionId, locationId, mat.getTypeId())
+                        .stream()
+                        .min(Comparator.comparing(GetMarketsRegionIdOrders200Ok::getPrice))
+                        .orElseThrow(() -> new NoSuchElementException("Material not found"));
+                mat.setBuyPrice(Precision.round(minOrder.getPrice(), 2));
+                return;
+            } catch (NoSuchElementException e) {
+                mat.setBuyPrice(-1.0);
+                return;
             } catch (ApiException e) {
                 if (e.getCode() != 502 || retryCount > 10) {
                     throw new ServiceException("Unable to retrieve sell orders for material " + mat, e);
@@ -168,30 +163,24 @@ public class CalculatorService {
                 retryCount++;
             }
         } while (retryCount > 0);
-        if (mat.getBuyPrice() == null) {
             mat.setBuyPrice(-1.0);
-        }
     }
 
     private void getSellPricesForMaterial(Integer regionId, Long locationId, BlueprintMaterialModel mat) {
         int retryCount = 0;
         do {
             try {
-                List<GetMarketsRegionIdOrders200Ok> orders = getAllOrdersForLocation("buy", regionId, locationId, mat.getTypeId());
-                if (orders.isEmpty()) {
-                    mat.setSellPrice(-1.0);
-                    return;
-                }
                 // buy orders means sell your minerals, which is done at the highest possible price
                 // This is why the buyOrder it put into the sellPrice
-                orders.stream()
-                        .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
-                        .max()
-                        .ifPresent(mat::setSellPrice);
-                if (mat.getSellPrice() != null) {
-                    break;
-                }
-                retryCount = -1;
+                GetMarketsRegionIdOrders200Ok maxOrder = getAllOrdersForLocation("buy", regionId, locationId, mat.getTypeId())
+                        .stream()
+                        .max(Comparator.comparing(GetMarketsRegionIdOrders200Ok::getPrice))
+                        .orElseThrow(() -> new NoSuchElementException("Material not found"));
+                mat.setSellPrice(Precision.round(maxOrder.getPrice(), 2));
+                return;
+            } catch (NoSuchElementException e) {
+                mat.setSellPrice(-1.0);
+                return;
             } catch (ApiException e) {
                 if (e.getCode() != 502 || retryCount > 10) {
                     throw new ServiceException("Unable to retrieve buy orders for material " + mat, e);
@@ -199,30 +188,24 @@ public class CalculatorService {
                 retryCount++;
             }
         } while (retryCount > 0);
-        if (mat.getSellPrice() == null) {
-            mat.setSellPrice(-1.0);
-        }
+        mat.setSellPrice(-1.0);
     }
 
     private void getBuyPricesForItem(ItemModel item, Integer regionId, Long locationId, Integer runs) {
         int retryCount = 0;
         do {
             try {
-                List<GetMarketsRegionIdOrders200Ok> orders = getAllOrdersForLocation("sell", regionId, locationId, item.getId());
-                if (orders.isEmpty()) {
-                    item.setBuyPrice(-1.0);
-                    return;
-                }
                 // sell orders means buy your item, which is done at the lowest possible price
                 // This is why the sellOrder it put into the BuyPrice
-                orders.stream()
-                        .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
-                        .min()
-                        .ifPresent(price -> item.setBuyPrice(Precision.round(price * runs, 2)));
-                if (item.getBuyPrice() != null) {
-                    return;
-                }
-                retryCount = -1;
+                GetMarketsRegionIdOrders200Ok minOrder = getAllOrdersForLocation("sell", regionId, locationId, item.getId())
+                        .stream()
+                        .min(Comparator.comparing(GetMarketsRegionIdOrders200Ok::getPrice))
+                        .orElseThrow(() -> new NoSuchElementException("Order not found"));
+                item.setBuyPrice(Precision.round(minOrder.getPrice() * runs, 2));
+                return;
+            } catch (NoSuchElementException e) {
+                item.setBuyPrice(-1.0);
+                return;
             } catch (ApiException e) {
                 if (e.getCode() != 502 || retryCount > 10) {
                     throw new ServiceException("Unable to retrieve sell orders for item " + item, e);
@@ -237,20 +220,17 @@ public class CalculatorService {
         int retryCount = 0;
         do {
             try {
-                List<GetMarketsRegionIdOrders200Ok> orders = getAllOrdersForLocation("buy", regionId, locationId, item.getId());
-                if (orders.isEmpty()) {
-                    item.setSellPrice(-1.0);
-                    return null;
-                }
                 // buy orders mean sell you item, which is done at the highest possible price.
                 // This is why the buyOrder is put into the SellPrice
-                Optional<GetMarketsRegionIdOrders200Ok> maxOrder = orders.stream()
-                        .max(Comparator.comparing(GetMarketsRegionIdOrders200Ok::getPrice));
-                if (maxOrder.isPresent()) {
-                    item.setSellPrice(Precision.round(maxOrder.get().getPrice() * runs, 2));
-                    return maxOrder.get();
-                }
-                retryCount = -1;
+                GetMarketsRegionIdOrders200Ok maxOrder = getAllOrdersForLocation("buy", regionId, locationId, item.getId())
+                        .stream()
+                        .max(Comparator.comparing(GetMarketsRegionIdOrders200Ok::getPrice))
+                        .orElseThrow(() -> new NoSuchElementException("Order not found"));
+                item.setSellPrice(Precision.round(maxOrder.getPrice() * runs, 2));
+                return maxOrder;
+            } catch (NoSuchElementException e) {
+                item.setSellPrice(-1.0);
+                return null;
             } catch (ApiException e) {
                 if (e.getCode() != 502 || retryCount > 10) {
                     throw new ServiceException("Unable to retrieve orders for item " + item, e);
