@@ -3,6 +3,7 @@ package com.ractoc.eve.universe.handler;
 import com.ractoc.eve.domain.universe.RegionModel;
 import com.ractoc.eve.universe.mapper.RegionMapper;
 import com.ractoc.eve.universe.service.RegionService;
+import com.speedment.runtime.core.component.transaction.TransactionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -15,10 +16,13 @@ import java.util.stream.Collectors;
 public class RegionHandler {
 
     private final RegionService regionService;
+    private TransactionHandler transactionHandler;
 
     @Autowired
-    public RegionHandler(RegionService regionService) {
+    public RegionHandler(TransactionHandler transactionHandler,
+                         RegionService regionService) {
         this.regionService = regionService;
+        this.transactionHandler = transactionHandler;
     }
 
     public List<RegionModel> getRegionList() {
@@ -29,7 +33,13 @@ public class RegionHandler {
         return RegionMapper.INSTANCE.dbToModel(regionService.getRegionById(id));
     }
 
-    public RegionModel saveRegion(RegionModel region) {
-        return RegionMapper.INSTANCE.dbToModel(regionService.saveRegion(RegionMapper.INSTANCE.modelToDb(region)));
+    public void saveRegion(List<RegionModel> regions) {
+        transactionHandler.createAndAccept(tx -> {
+            regionService.clearAllRegions();
+            regions.stream()
+                    .map(RegionMapper.INSTANCE::modelToDb)
+                    .forEach(regionService::saveRegion);
+            tx.commit();
+        });
     }
 }

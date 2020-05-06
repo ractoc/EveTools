@@ -1,0 +1,12 @@
+[Service]
+WorkingDirectory=/opt/eve
+ExecStart=/opt/eve/universe.jar
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=universe-app
+User=eve
+Group=eve
+Environment=NODE_ENV=production
+[Install]
+WantedBy=multi-user.target

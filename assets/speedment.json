@@ -1,0 +1,612 @@
+{
+  "config" : {
+    "speedmentVersion": "Speedment:3.2.9-SNAPSHOT",
+    "companyName": "ractoc.com",
+    "appId": "c91b8451-0456-444d-b8d0-2e96872790a2",
+    "name": "assets",
+    "packageLocation": "target/generated-sources/java",
+    "packageName": "com.ractoc.eve.assets.db",
+    "id": "assets",
+    "enabled": true,
+    "dbmses": [
+      {
+        "port": 9876,
+        "schemas": [
+          {
+            "tables": [
+              {
+                "primaryKeyColumns": [
+                  {
+                    "name": "id",
+                    "id": "id",
+                    "ordinalPosition": 1
+                  }
+                ],
+                "indexes": [
+                  {
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
+                      {
+                        "orderType" : "ASC",
+                        "name" : "id",
+                        "id" : "id",
+                        "ordinalPosition" : 1
+                      }
+                    ],
+                    "id" : "PRIMARY"
+                  }
+                ],
+                "isView" : false,
+                "columns" : [
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "max_production_limit",
+                    "id" : "max_production_limit",
+                    "ordinalPosition" : 2
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "copying_time",
+                    "id" : "copying_time",
+                    "ordinalPosition" : 3
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "invention_time",
+                    "id" : "invention_time",
+                    "ordinalPosition" : 4
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "manufacturing_time",
+                    "id" : "manufacturing_time",
+                    "ordinalPosition" : 5
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "research_material_time",
+                    "id" : "research_material_time",
+                    "ordinalPosition" : 6
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "research_time_time",
+                    "id" : "research_time_time",
+                    "ordinalPosition" : 7
+                  }
+                ],
+                "name" : "blueprint",
+                "id" : "blueprint"
+              },
+              {
+                "primaryKeyColumns" : [
+                  {
+                    "name" : "blueprint_id",
+                    "id" : "blueprint_id",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 2
+                  }
+                ],
+                "indexes" : [
+                  {
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
+                      {
+                        "orderType" : "ASC",
+                        "name" : "blueprint_id",
+                        "id" : "blueprint_id",
+                        "ordinalPosition" : 1
+                      },
+                      {
+                        "orderType" : "ASC",
+                        "name" : "type_id",
+                        "id" : "type_id",
+                        "ordinalPosition" : 2
+                      }
+                    ],
+                    "id" : "PRIMARY"
+                  }
+                ],
+                "isView" : false,
+                "columns" : [
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "blueprint_id",
+                    "id" : "blueprint_id",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 2
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "quantity",
+                    "id" : "quantity",
+                    "ordinalPosition" : 3
+                  }
+                ],
+                "name" : "blueprint_invention_materials",
+                "id" : "blueprint_invention_materials"
+              },
+              {
+                "primaryKeyColumns" : [
+                  {
+                    "name" : "blueprint_id",
+                    "id" : "blueprint_id",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 2
+                  }
+                ],
+                "indexes" : [
+                  {
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
+                      {
+                        "orderType" : "ASC",
+                        "name" : "blueprint_id",
+                        "id" : "blueprint_id",
+                        "ordinalPosition" : 1
+                      },
+                      {
+                        "orderType" : "ASC",
+                        "name" : "type_id",
+                        "id" : "type_id",
+                        "ordinalPosition" : 2
+                      }
+                    ],
+                    "id" : "PRIMARY"
+                  }
+                ],
+                "isView" : false,
+                "columns" : [
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "blueprint_id",
+                    "id" : "blueprint_id",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 2
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "probability",
+                    "id" : "probability",
+                    "ordinalPosition" : 3
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "quantity",
+                    "id" : "quantity",
+                    "ordinalPosition" : 4
+                  }
+                ],
+                "name" : "blueprint_invention_products",
+                "id" : "blueprint_invention_products"
+              },
+              {
+                "primaryKeyColumns" : [
+                  {
+                    "name" : "blueprint_id",
+                    "id" : "blueprint_id",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 2
+                  }
+                ],
+                "indexes" : [
+                  {
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
+                      {
+                        "orderType" : "ASC",
+                        "name" : "blueprint_id",
+                        "id" : "blueprint_id",
+                        "ordinalPosition" : 1
+                      },
+                      {
+                        "orderType" : "ASC",
+                        "name" : "type_id",
+                        "id" : "type_id",
+                        "ordinalPosition" : 2
+                      }
+                    ],
+                    "id" : "PRIMARY"
+                  }
+                ],
+                "isView" : false,
+                "columns" : [
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "blueprint_id",
+                    "id" : "blueprint_id",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 2
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "level",
+                    "id" : "level",
+                    "ordinalPosition" : 3
+                  }
+                ],
+                "name" : "blueprint_invention_skills",
+                "id" : "blueprint_invention_skills"
+              },
+              {
+                "primaryKeyColumns" : [
+                  {
+                    "name" : "blueprint_id",
+                    "id" : "blueprint_id",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 2
+                  }
+                ],
+                "indexes" : [
+                  {
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
+                      {
+                        "orderType" : "ASC",
+                        "name" : "blueprint_id",
+                        "id" : "blueprint_id",
+                        "ordinalPosition" : 1
+                      },
+                      {
+                        "orderType" : "ASC",
+                        "name" : "type_id",
+                        "id" : "type_id",
+                        "ordinalPosition" : 2
+                      }
+                    ],
+                    "id" : "PRIMARY"
+                  }
+                ],
+                "isView" : false,
+                "columns" : [
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "blueprint_id",
+                    "id" : "blueprint_id",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 2
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "quantity",
+                    "id" : "quantity",
+                    "ordinalPosition" : 3
+                  }
+                ],
+                "name" : "blueprint_manufacturing_materials",
+                "id" : "blueprint_manufacturing_materials"
+              },
+              {
+                "primaryKeyColumns" : [
+                  {
+                    "name" : "blueprint_id",
+                    "id" : "blueprint_id",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 2
+                  }
+                ],
+                "indexes" : [
+                  {
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
+                      {
+                        "orderType" : "ASC",
+                        "name" : "blueprint_id",
+                        "id" : "blueprint_id",
+                        "ordinalPosition" : 1
+                      },
+                      {
+                        "orderType" : "ASC",
+                        "name" : "type_id",
+                        "id" : "type_id",
+                        "ordinalPosition" : 2
+                      }
+                    ],
+                    "id" : "PRIMARY"
+                  }
+                ],
+                "isView" : false,
+                "columns" : [
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "blueprint_id",
+                    "id" : "blueprint_id",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 2
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "quantity",
+                    "id" : "quantity",
+                    "ordinalPosition" : 3
+                  }
+                ],
+                "name" : "blueprint_manufacturing_products",
+                "id" : "blueprint_manufacturing_products"
+              },
+              {
+                "primaryKeyColumns" : [
+                  {
+                    "name" : "blueprint_id",
+                    "id" : "blueprint_id",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 2
+                  }
+                ],
+                "indexes" : [
+                  {
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
+                      {
+                        "orderType" : "ASC",
+                        "name" : "blueprint_id",
+                        "id" : "blueprint_id",
+                        "ordinalPosition" : 1
+                      },
+                      {
+                        "orderType" : "ASC",
+                        "name" : "type_id",
+                        "id" : "type_id",
+                        "ordinalPosition" : 2
+                      }
+                    ],
+                    "id" : "PRIMARY"
+                  }
+                ],
+                "isView" : false,
+                "columns" : [
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "blueprint_id",
+                    "id" : "blueprint_id",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 2
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "level",
+                    "id" : "level",
+                    "ordinalPosition" : 3
+                  }
+                ],
+                "name" : "blueprint_manufacturing_skills",
+                "id" : "blueprint_manufacturing_skills"
+              },
+              {
+                "primaryKeyColumns" : [
+                  {
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
+                  }
+                ],
+                "indexes" : [
+                  {
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
+                      {
+                        "orderType" : "ASC",
+                        "name" : "id",
+                        "id" : "id",
+                        "ordinalPosition" : 1
+                      }
+                    ],
+                    "id" : "PRIMARY"
+                  }
+                ],
+                "isView" : false,
+                "columns" : [
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition": 1
+                  },
+                  {
+                    "databaseType": "java.lang.String",
+                    "nullable": false,
+                    "name": "name",
+                    "id": "name",
+                    "ordinalPosition": 2
+                  },
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "name": "parent_group_id",
+                    "id": "parent_group_id",
+                    "ordinalPosition": 3
+                  }
+                ],
+                "name": "market_group",
+                "id": "market_group"
+              },
+              {
+                "primaryKeyColumns": [
+                  {
+                    "name": "id",
+                    "id": "id",
+                    "ordinalPosition": 1
+                  }
+                ],
+                "indexes": [
+                  {
+                    "unique": true,
+                    "name": "PRIMARY",
+                    "indexColumns": [
+                      {
+                        "orderType": "ASC",
+                        "name": "id",
+                        "id": "id",
+                        "ordinalPosition": 1
+                      }
+                    ],
+                    "id": "PRIMARY"
+                  }
+                ],
+                "isView": false,
+                "columns": [
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "name": "id",
+                    "id": "id",
+                    "ordinalPosition": 1
+                  },
+                  {
+                    "databaseType": "java.lang.String",
+                    "nullable": false,
+                    "name": "name",
+                    "id": "name",
+                    "ordinalPosition": 2
+                  },
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "name": "group_id",
+                    "id": "group_id",
+                    "ordinalPosition": 3
+                  }
+                ],
+                "name": "type",
+                "id": "type"
+              }
+            ],
+            "name" : "eve_assets",
+            "id" : "eve_assets",
+            "enabled" : true
+          }
+        ],
+        "name" : "assets",
+        "typeName" : "MySQL",
+        "id" : "assets",
+        "enabled" : true,
+        "username" : "eve"
+      }
+    ]
+  }
+}

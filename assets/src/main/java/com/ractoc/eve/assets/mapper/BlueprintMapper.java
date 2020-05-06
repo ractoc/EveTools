@@ -5,6 +5,7 @@ import com.ractoc.eve.assets.db.assets.eve_assets.blueprint.BlueprintImpl;
 import com.ractoc.eve.domain.BaseMapper;
 import com.ractoc.eve.domain.assets.BlueprintModel;
 import com.ractoc.eve.jesi.model.GetCharactersCharacterIdBlueprints200Ok;
+import com.ractoc.eve.jesi.model.GetCorporationsCorporationIdBlueprints200Ok;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -18,5 +19,10 @@ public interface BlueprintMapper extends BaseMapper {
     BlueprintModel dbToModel(Blueprint bp);
 
     @Mapping(source = "typeId", target = "id")
+    @Mapping(source = "locationFlag.value", target = "locationFlag")
     BlueprintModel esiToModel(GetCharactersCharacterIdBlueprints200Ok esiModel);
+
+    @Mapping(source = "typeId", target = "id")
+    @Mapping(source = "locationFlag.value", target = "locationFlag")
+    BlueprintModel esiToModel(GetCorporationsCorporationIdBlueprints200Ok esiModel);
 }

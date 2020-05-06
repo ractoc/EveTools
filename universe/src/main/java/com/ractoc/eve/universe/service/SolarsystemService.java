@@ -6,7 +6,9 @@ import com.speedment.runtime.core.exception.SpeedmentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.ractoc.eve.universe.db.universe.eve_universe.solarsystem.generated.GeneratedSolarsystem.ID;
@@ -32,22 +34,16 @@ public class SolarsystemService {
         return solarsystem.orElseThrow(() -> new NoSuchEntryException(String.format(SOLARSYSTEM_NOT_FOUND, "id", id)));
     }
 
-    public Solarsystem saveSolarsystem(Solarsystem solarsystem) {
+    public void saveSolarsystem(Solarsystem solarsystem) {
         try {
-            return insertOrUpdateSolarsystem(solarsystem);
+            solarsystemManager.persist(solarsystem);
         } catch (SpeedmentException e) {
             throw new ServiceException("Unable to save solarsystem " + solarsystem.getName(), e);
         }
     }
 
-    private Solarsystem insertOrUpdateSolarsystem(Solarsystem solarsystem) {
-        try {
-            getSolarsystemById(solarsystem.getId());
-            // if a solarsystem is found, update
-            return solarsystemManager.update(solarsystem);
-        } catch (NoSuchEntryException nse) {
-            // if no solarsystem is found, persist
-            return solarsystemManager.persist(solarsystem);
-        }
+    public void clearAllSolarSystems() {
+        List<Solarsystem> solarsystems = solarsystemManager.stream().collect(Collectors.toList());
+        solarsystems.forEach(solarsystemManager.remover());
     }
 }

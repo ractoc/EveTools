@@ -2,6 +2,7 @@ package com.ractoc.eve.universe.config;
 
 import com.ractoc.eve.user.filter.UserAuthenticationFilter;
 import com.ractoc.eve.user.filter.UserAuthenticationProvider;
+import com.ractoc.eve.user_client.api.UserResourceApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.util.matcher.*;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -39,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.sessionManagement()
+        http.cors().and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling()
@@ -64,12 +67,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserAuthenticationProvider authenticationProvider() {
-        return new UserAuthenticationProvider();
+    public UserAuthenticationProvider authenticationProvider(UserResourceApi userResourceApi) {
+        return new UserAuthenticationProvider(userResourceApi);
     }
 
     @Bean
     public AuthenticationEntryPoint forbiddenEntryPoint() {
         return new HttpStatusEntryPoint(HttpStatus.FORBIDDEN);
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedHeaders("Accept",
+                        "Accept-Language",
+                        "Content-Language",
+                        "Content-Type",
+                        "Last-Event-ID",
+                        "DPR",
+                        "Save-Data",
+                        "Viewport-Width",
+                        "Width",
+                        "Authorization");
+            }
+        };
     }
 }

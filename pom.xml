@@ -10,7 +10,6 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>angular</module>
         <module>assets</module>
         <module>crawler</module>
         <module>domain</module>
@@ -21,29 +20,35 @@
         <module>user-client</module>
         <module>assets-client</module>
         <module>calculator</module>
+        <module>deployment</module>
+        <module>common-test</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+
+        <java.version>11</java.version>
 
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+
         <maven-plugin-version>1.0.0</maven-plugin-version>
 
         <commons-lang.version>3.9</commons-lang.version>
         <hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
 
-        <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
-        <jackson-datatype.version>2.9.9</jackson-datatype.version>
-        <speedment.version>3.1.15</speedment.version>
-        <mysql.version>8.0.17</mysql.version>
+        <spring-boot.version>2.2.4.RELEASE</spring-boot.version>
+        <jackson-datatype.version>2.10.2</jackson-datatype.version>
+        <speedment.version>3.2.9</speedment.version>
+        <mysql.version>8.0.19</mysql.version>
         <springfox-swagger.version>2.9.2</springfox-swagger.version>
 
         <jersey-version>2.29.1</jersey-version>
         <swagger-annotations-version>1.6.0</swagger-annotations-version>
         <swagger-maven-plugin-version>3.1.8</swagger-maven-plugin-version>
-        <jackson-version>2.10.1</jackson-version>
+        <jackson-version>2.10.2</jackson-version>
         <jackson-databind-nullable-version>0.2.1</jackson-databind-nullable-version>
         <junit-version>4.8.1</junit-version>
         <findbugs-version>3.0.2</findbugs-version>
@@ -55,6 +60,8 @@
         <mariadb-client.version>2.4.2</mariadb-client.version>
 
         <jaxb-substitute.api.version>1.0.4.Final</jaxb-substitute.api.version>
+
+        <environment>dev</environment>
 
     </properties>
 
@@ -102,6 +109,44 @@
             <version>${springfox-swagger.version}</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- teset dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>3.3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.15.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -111,8 +156,6 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
-                        <source>${java.version}</source>
-                        <target>${java.version}</target>
                         <forceJavacCompilerUse>true</forceJavacCompilerUse>
                         <annotationProcessorPaths>
                             <path>
@@ -131,5 +174,27 @@
             </plugins>
         </pluginManagement>
     </build>
+
+
+    <profiles>
+        <profile>
+            <id>production</id>
+            <!--
+            only make a production build on the build server
+            it is never used locally and takes forever
+            -->
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <modules>
+                <module>angular</module>
+            </modules>
+            <properties>
+                <environment>prod</environment>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

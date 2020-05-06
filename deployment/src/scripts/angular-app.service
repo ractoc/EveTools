@@ -1,0 +1,12 @@
+[Service]
+WorkingDirectory=/opt/eve
+ExecStart=/opt/eve/angular.jar
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=angular-app
+User=eve
+Group=eve
+Environment=NODE_ENV=production
+[Install]
+WantedBy=multi-user.target

@@ -1,5 +1,6 @@
 package com.ractoc.eve.crawler.config;
 
+import com.ractoc.eve.assets_client.api.BlueprintResourceApi;
 import com.ractoc.eve.crawler.reader.BlueprintItemReader;
 import com.ractoc.eve.crawler.step.BlueprintsStep;
 import com.ractoc.eve.crawler.writer.BlueprintItemWriter;
@@ -22,5 +23,10 @@ public class BlueprintConfig {
     @Bean
     BlueprintsStep blueprintStep() {
         return new BlueprintsStep();
+    }
+
+    @Bean
+    BlueprintResourceApi blueprintResourceApi() {
+        return new BlueprintResourceApi();
     }
 }

@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>assets</artifactId>
+
     <dependencies>
         <!-- Project dependencies -->
         <dependency>
@@ -79,9 +80,23 @@
             <artifactId>spring-security-oauth2-resource-server</artifactId>
             <version>5.2.1.RELEASE</version>
         </dependency>
+
+        <!-- test dependencies -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>common-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>com.speedment</groupId>
@@ -152,6 +167,26 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <configuration>
+                    <executable>true</executable>
+                    <classifier>executable</classifier>
+                    <embeddedLaunchScriptProperties>
+                        <inlinedConfScript>${project.build.directory}/classes/custom_execute.script</inlinedConfScript>
+                    </embeddedLaunchScriptProperties>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -163,7 +198,8 @@
                     <plugin>
                         <groupId>com.speedment</groupId>
                         <artifactId>speedment-maven-plugin</artifactId>
-                        <version>${speedment.version}</version>
+                        <version>3.2.9-SNAPSHOT</version>
+                        <!--                        <version>${speedment.version}</version>-->
                         <dependencies>
                             <dependency>
                                 <groupId>mysql</groupId>

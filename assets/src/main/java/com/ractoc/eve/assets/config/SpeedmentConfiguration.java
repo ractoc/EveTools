@@ -12,6 +12,7 @@ import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_invention_skills.Blu
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_materials.BlueprintManufacturingMaterialsManager;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_products.BlueprintManufacturingProductsManager;
 import com.ractoc.eve.assets.db.assets.eve_assets.blueprint_manufacturing_skills.BlueprintManufacturingSkillsManager;
+import com.ractoc.eve.assets.db.assets.eve_assets.market_group.MarketGroupManager;
 import com.ractoc.eve.assets.db.assets.eve_assets.type.TypeManager;
 import com.speedment.runtime.core.component.transaction.TransactionComponent;
 import com.speedment.runtime.core.component.transaction.TransactionHandler;
@@ -127,15 +128,21 @@ public class SpeedmentConfiguration {
     }
 
     @Bean
+    public MarketGroupManager getMarketGroupManager(AssetsApplication app) {
+        return app.getOrThrow(MarketGroupManager.class);
+    }
+
+    @Bean
     @Primary
     public Jackson2ObjectMapperBuilder jacksonBuilder() {
-        return new Jackson2ObjectMapperBuilder().modulesToInstall(new JavaTimeModule()).indentOutput(true);
+        return new Jackson2ObjectMapperBuilder().indentOutput(true);
     }
 
     @Bean
     @Primary
     public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
         ObjectMapper objectMapper = builder.build();
+        objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         return objectMapper;
     }

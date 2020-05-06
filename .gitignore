@@ -5,7 +5,11 @@ target/
 /assets/src/main/json/
 dist/
 node_modules/
+node/
 
 # IDE exclude paths
 /.idea/
 .iml
+/angular/angular.iml
+/deployment/deployment.iml
+/MineBuildSell.iml

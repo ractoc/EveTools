@@ -6,7 +6,6 @@ import com.ractoc.eve.universe.response.BaseResponse;
 import com.ractoc.eve.universe.response.ErrorResponse;
 import com.ractoc.eve.universe.response.RegionListResponse;
 import com.ractoc.eve.universe.response.RegionResponse;
-import com.ractoc.eve.universe.service.DuplicateEntryException;
 import com.ractoc.eve.universe.service.NoSuchEntryException;
 import com.ractoc.eve.universe.service.ServiceException;
 import io.swagger.annotations.*;
@@ -16,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -66,18 +66,16 @@ public class RegionController {
         }
     }
 
-    @ApiOperation(value = "Save a region. This can result in a new region being created or an existing region being updated.", response = RegionResponse.class, consumes = "application/json", produces = "application/json")
+    @ApiOperation(value = "Save a region. This can result in a new region being created or an existing region being updated.", response = BaseResponse.class, consumes = "application/json", produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "The region was successfully created", response = RegionResponse.class),
-            @ApiResponse(code = 400, message = "Unable to create region, see body for more information", response = ErrorResponse.class),
+            @ApiResponse(code = 201, message = "The region was successfully created", response = BaseResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
     @PostMapping(value = "/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> createRegion(@Valid @RequestBody RegionModel region) {
+    public ResponseEntity<BaseResponse> saveRegions(@Valid @RequestBody List<RegionModel> regions) {
         try {
-            return new ResponseEntity<>(new RegionResponse(CREATED, regionHandler.saveRegion(region)), OK);
-        } catch (DuplicateEntryException e) {
-            return new ResponseEntity<>(new ErrorResponse(CONFLICT, e.getMessage()), BAD_REQUEST);
+            regionHandler.saveRegion(regions);
+            return new ResponseEntity<>(new BaseResponse(CREATED.value()), OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
         }

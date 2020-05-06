@@ -9,14 +9,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class BlueprintService {
 
-    @Autowired
     private BlueprintResourceApi blueprintResourceApi;
 
+    @Autowired
+    public BlueprintService(BlueprintResourceApi blueprintResourceApi) {
+        this.blueprintResourceApi = blueprintResourceApi;
+    }
+
     public BlueprintModel getBlueprint(Integer bpId) {
-        try {
-            return blueprintResourceApi.getBlueprint(bpId).getBlueprint();
-        } catch (ApiException e) {
-            throw new ServiceException("Unable to retrieve Blueprint: " + bpId, e);
+        int retryCount = 0;
+        while (retryCount < 10) {
+            try {
+                return blueprintResourceApi.getBlueprint(bpId).getBlueprint();
+            } catch (ApiException e) {
+                if (e.getCode() != 502) {
+                    throw new ServiceException("Unable to retrieve Blueprint: " + bpId, e);
+                }
+                retryCount++;
+            }
         }
+        throw new ServiceException("Unable to retrieve Blueprint: " + bpId);
     }
 }

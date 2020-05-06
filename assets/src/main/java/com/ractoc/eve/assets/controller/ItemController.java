@@ -1,25 +1,21 @@
 package com.ractoc.eve.assets.controller;
 
 import com.ractoc.eve.assets.handler.TypeHandler;
-import com.ractoc.eve.assets.response.BaseResponse;
-import com.ractoc.eve.assets.response.ErrorResponse;
-import com.ractoc.eve.assets.response.ItemNameResponse;
-import com.ractoc.eve.assets.response.ItemResponse;
+import com.ractoc.eve.assets.response.*;
+import com.ractoc.eve.assets.service.ServiceException;
+import com.ractoc.eve.domain.assets.TypeModel;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.List;
 import java.util.NoSuchElementException;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Api(tags = {"Item Resource"}, value = "/item", produces = "application/json")
@@ -31,7 +27,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/item")
 @Validated
-public class ItemController {
+@Slf4j
+public class ItemController extends BaseController {
 
     private final TypeHandler typeHandler;
 
@@ -40,33 +37,85 @@ public class ItemController {
         this.typeHandler = typeHandler;
     }
 
-    @ApiOperation(value = "Get item by ID", response = ItemNameResponse.class, produces = "application/json")
+    @ApiOperation(value = "Get items by part of their name or by their group id", response = ItemListResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieval successfully processed, This does not mean items were actually found.", response = ItemNameResponse.class)
+    })
+    @GetMapping(value = "/", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> getItems(@RequestParam(name = "name", required = false) String name
+            , @RequestParam(name = "group", required = false) Integer groupId) {
+        try {
+            if (groupId != null) {
+                return new ResponseEntity<>(new ItemListResponse(OK, typeHandler.getItemsByMarketGroup(groupId)), OK);
+            } else if (name != null) {
+                return new ResponseEntity<>(new ItemListResponse(OK, typeHandler.getItemsByName(name)), OK);
+            } else {
+                return new ResponseEntity<>(new ErrorResponse(BAD_REQUEST, "Either a name or group must be provided"), BAD_REQUEST);
+            }
+        } catch (NoSuchElementException e) {
+            log.error(e.getMessage(), e);
+            return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);
+        }
+    }
+
+    @ApiOperation(value = "Get item name by item ID", response = ItemNameResponse.class, produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = ItemNameResponse.class),
             @ApiResponse(code = 404, message = "Item not found", response = ErrorResponse.class)
     })
     @GetMapping(value = "/name/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> getItemName(@AuthenticationPrincipal Authentication authentication, @PathVariable("id") int itemId) {
+    public ResponseEntity<BaseResponse> getItemName(@PathVariable("id") int itemId) {
         try {
             return new ResponseEntity<>(new ItemNameResponse(OK, typeHandler.getItemName(itemId)), OK);
         } catch (NoSuchElementException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);
         }
     }
 
-    @ApiOperation(value = "Get item by ID", response = ItemResponse.class, produces = "application/json")
+    @ApiOperation(value = "Get item by item ID", response = ItemResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = ItemResponse.class),
+            @ApiResponse(code = 404, message = "Item not found", response = ErrorResponse.class)
+    })
+    @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> getItemById(@PathVariable("id") int itemId) {
+        try {
+            return new ResponseEntity<>(new ItemResponse(OK, typeHandler.getItemById(itemId)), OK);
+        } catch (NoSuchElementException e) {
+            log.error(e.getMessage(), e);
+            return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);
+        }
+    }
+
+    @ApiOperation(value = "Get item by blueprint ID", response = ItemResponse.class, produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = ItemResponse.class),
             @ApiResponse(code = 404, message = "Item not found", response = ErrorResponse.class)
     })
     @GetMapping(value = "/blueprint/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> getItemForBlueprint(@AuthenticationPrincipal Authentication authentication, @PathVariable("id") int blueprintId) {
+    public ResponseEntity<BaseResponse> getItemForBlueprint(@PathVariable("id") int blueprintId) {
         try {
             return new ResponseEntity<>(new ItemResponse(OK, typeHandler.getItemForBlueprint(blueprintId)), OK);
         } catch (NoSuchElementException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return new ResponseEntity<>(new ErrorResponse(NOT_FOUND, e.getMessage()), NOT_FOUND);
+        }
+    }
+
+    @ApiOperation(value = "Save all items.", response = BaseResponse.class, consumes = "application/json", produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "The items were successfully created", response = BaseResponse.class),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
+    @PostMapping(value = "/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> saveItems(@Valid @RequestBody List<TypeModel> items) {
+        try {
+            typeHandler.saveTypes(items);
+            return new ResponseEntity<>(new BaseResponse(CREATED.value()), OK);
+        } catch (ServiceException e) {
+            log.error(e.getMessage(), e);
+            return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
     }
 }

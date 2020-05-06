@@ -15,6 +15,9 @@ import lombok.*;
 public class ItemModel {
     private int id;
     private String name;
+    private int marketGroupId;
     private Double buyPrice;
     private Double sellPrice;
+    private Double salesTax;
+    private Double brokerFee;
 }

@@ -1,0 +1,23 @@
+# Server Settings
+server:
+  servlet:
+    contextPath: /
+
+logging:
+  level:
+    web: debug
+    root: debug
+
+---
+spring:
+  profiles: default
+
+server:
+  port: 4200
+
+---
+spring:
+  profiles: prod
+
+server:
+  port: 8181

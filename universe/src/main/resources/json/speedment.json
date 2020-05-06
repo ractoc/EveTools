@@ -1,8 +1,8 @@
 {
   "config" : {
-    "speedmentVersion": "Speedment:3.1.15",
+    "speedmentVersion": "Speedment:3.2.9",
     "companyName": "ractoc.com",
-    "appId": "993c7f0e-ba40-435d-b811-9f360aeeddf2",
+    "appId": "a1672738-8aef-44e2-8e08-b2744529d591",
     "name": "universe",
     "packageLocation": "target/generated-sources/java",
     "packageName": "com.ractoc.eve.universe.db",
@@ -24,14 +24,14 @@
                 ],
                 "indexes": [
                   {
-                    "unique": true,
-                    "name": "name_UNIQUE",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "name_UNIQUE",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "name",
-                        "id": "name",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "name",
+                        "id" : "name",
+                        "ordinalPosition" : 1
                       }
                     ],
                     "id" : "name_UNIQUE"
@@ -78,6 +78,59 @@
                 ],
                 "name" : "constellation",
                 "id" : "constellation"
+              },
+              {
+                "primaryKeyColumns" : [
+                  {
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
+                  }
+                ],
+                "indexes" : [
+                  {
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
+                      {
+                        "orderType" : "ASC",
+                        "name" : "id",
+                        "id" : "id",
+                        "ordinalPosition" : 1
+                      }
+                    ],
+                    "id" : "PRIMARY"
+                  }
+                ],
+                "isView" : false,
+                "columns" : [
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "region_id",
+                    "id" : "region_id",
+                    "ordinalPosition" : 2
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "solar_system_id",
+                    "id" : "solar_system_id",
+                    "ordinalPosition" : 3
+                  }
+                ],
+                "name" : "market_hubs",
+                "id" : "market_hubs"
               },
               {
                 "primaryKeyColumns" : [

@@ -3,30 +3,25 @@ package com.ractoc.eve.crawler.reader;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.ractoc.eve.assets.handler.BlueprintHandler;
-import com.ractoc.eve.domain.assets.BlueprintModel;
+import com.ractoc.eve.crawler.model.YamlBlueprintModel;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BlueprintItemReader implements ItemReader<BlueprintModel> {
+public class BlueprintItemReader implements ItemReader<YamlBlueprintModel> {
 
     private int nextBlueprintIndex = 0;
-    private List<BlueprintModel> blueprints;
+    private List<YamlBlueprintModel> blueprints;
 
-    @Autowired
-    private BlueprintHandler handler;
-
-    public BlueprintModel read() {
+    public YamlBlueprintModel read() {
         if (blueprints == null) {
-            init();
+            blueprints = fetchBlueprintsFromYML();
         }
-        BlueprintModel blueprint = null;
+        YamlBlueprintModel blueprint = null;
         if (nextBlueprintIndex < blueprints.size()) {
             blueprint = blueprints.get(nextBlueprintIndex);
             nextBlueprintIndex++;
@@ -34,21 +29,15 @@ public class BlueprintItemReader implements ItemReader<BlueprintModel> {
         return blueprint;
     }
 
-    private void init() {
-        blueprints = fetchBlueprintsFromYML();
-        handler.clearAllBlueprints();
-    }
-
-    private List<BlueprintModel> fetchBlueprintsFromYML() {
+    private List<YamlBlueprintModel> fetchBlueprintsFromYML() {
         try {
-            // FIXME: retreive the filename from a commandline param
-            File file = new File("D:/tmp/sde/fsd/blueprints.yaml");
+            URL file = this.getClass().getClassLoader().getResource("blueprints.yaml");
             ObjectMapper om = new ObjectMapper(new YAMLFactory());
-            Map<Integer, BlueprintModel> bp = om.readValue(file, new TypeReference<Map<Integer, BlueprintModel>>() {
+            Map<Integer, YamlBlueprintModel> bp = om.readValue(file, new TypeReference<Map<Integer, YamlBlueprintModel>>() {
             });
             return new ArrayList<>(bp.values());
         } catch (IOException e) {
-            throw new SdeReaderException("Unable to read YML file: " + "D:/tmp/sde/fsd/blueprints.yaml", e);
+            throw new SdeReaderException("Unable to read YML file: blueprints.yaml", e);
         }
     }
 }

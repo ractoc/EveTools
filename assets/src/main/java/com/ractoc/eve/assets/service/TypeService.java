@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.ractoc.eve.assets.db.assets.eve_assets.type.generated.GeneratedType.ID;
+import static com.ractoc.eve.assets.db.assets.eve_assets.type.generated.GeneratedType.MARKET_GROUP_ID;
 
 @Service
 public class TypeService {
@@ -31,20 +35,25 @@ public class TypeService {
     public String getItemName(int itemId) {
         return typeManager
                 .stream()
-                .filter(Type.ID.equal(itemId))
+                .filter(ID.equal(itemId))
                 .map(Type::getName)
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Item not found, ID: " + itemId))
                 .orElseThrow(() -> new NoSuchElementException("Item not found, ID: " + itemId));
     }
 
-    public Type getItemblueprintId(int itemId) {
-        System.out.println("retrieving item: " + itemId);
+    public Type getTypeById(Integer itemId) {
         return typeManager
                 .stream()
-                .peek(System.out::println)
-                .filter(Type.ID.equal(itemId))
+                .filter(ID.equal(itemId))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Item not found, ID: " + itemId));
+    }
+
+    public Stream<Type> getItemsByName(String name) {
+        return typeManager.stream().filter(type -> type.getName().toLowerCase().contains(name.toLowerCase()));
+    }
+
+    public Stream<Type> getItemsByMarketGroup(Integer group) {
+        return typeManager.stream().filter(MARKET_GROUP_ID.equal(group));
     }
 }

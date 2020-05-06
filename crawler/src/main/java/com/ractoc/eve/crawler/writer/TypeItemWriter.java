@@ -1,19 +1,24 @@
 package com.ractoc.eve.crawler.writer;
 
-import com.ractoc.eve.assets.handler.TypeHandler;
-import com.ractoc.eve.domain.assets.TypeModel;
+import com.ractoc.eve.assets_client.ApiException;
+import com.ractoc.eve.assets_client.api.ItemResourceApi;
+import com.ractoc.eve.crawler.mapper.TypeMapper;
+import com.ractoc.eve.crawler.model.YamlTypeModel;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class TypeItemWriter implements ItemWriter<TypeModel> {
+public class TypeItemWriter implements ItemWriter<YamlTypeModel> {
 
     @Autowired
-    private TypeHandler handler;
+    private ItemResourceApi api;
 
-    public void write(@NonNull List<? extends TypeModel> types) {
-        handler.saveTypes(types);
+    public void write(List<? extends YamlTypeModel> types) throws ApiException {
+        api.saveItems(types.stream()
+                .filter(t -> t.isComplete())
+                .map(TypeMapper.INSTANCE::modelToAssetApi)
+                .collect(Collectors.toList()));
     }
 }

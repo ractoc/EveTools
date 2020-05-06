@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <blueprint id="100000" max_production_limit="5" copying_time="50" invention_time="500" manufacturing_time="5000"
+               research_material_time="50000" research_time_time="500000"/>
+    <blueprint id="100001" max_production_limit="7" copying_time="70" invention_time="700" manufacturing_time="7000"
+               research_material_time="70000" research_time_time="700000"/>
+
+    <blueprint_invention_materials blueprint_id="100000" type_id="20" quantity="2"/>
+    <blueprint_invention_materials blueprint_id="100000" type_id="30" quantity="3"/>
+
+    <blueprint_invention_products blueprint_id="100000" type_id="20" probability="25" quantity="2"/>
+    <blueprint_invention_products blueprint_id="100000" type_id="30" probability="50" quantity="3"/>
+
+    <blueprint_invention_skills blueprint_id="100000" type_id="20" level="1"/>
+    <blueprint_invention_skills blueprint_id="100000" type_id="30" level="2"/>
+
+    <blueprint_manufacturing_materials blueprint_id="100000" type_id="20" quantity="2"/>
+    <blueprint_manufacturing_materials blueprint_id="100000" type_id="30" quantity="3"/>
+
+    <blueprint_manufacturing_products blueprint_id="100000" type_id="20" quantity="2"/>
+    <blueprint_manufacturing_products blueprint_id="100000" type_id="30" quantity="3"/>
+
+    <blueprint_manufacturing_skills blueprint_id="100000" type_id="20" level="1"/>
+    <blueprint_manufacturing_skills blueprint_id="100000" type_id="30" level="2"/>
+
+    <type id="100000" name="stuff" group_id="1"/>
+    <type id="100001" name="more stuff" group_id="2"/>
+</dataset>

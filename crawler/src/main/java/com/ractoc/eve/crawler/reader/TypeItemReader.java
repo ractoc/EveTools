@@ -3,31 +3,25 @@ package com.ractoc.eve.crawler.reader;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.ractoc.eve.assets.handler.TypeHandler;
-import com.ractoc.eve.domain.assets.TypeModel;
+import com.ractoc.eve.crawler.model.YamlTypeModel;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-public class TypeItemReader implements ItemReader<TypeModel> {
+public class TypeItemReader implements ItemReader<YamlTypeModel> {
 
     private int nextTypeIndex = 0;
-    private List<TypeModel> types;
+    private List<YamlTypeModel> types;
 
-    @Autowired
-    private TypeHandler handler;
-
-    public TypeModel read() {
+    public YamlTypeModel read() {
         if (types == null) {
-            init();
+            types = fetchTypesFromYML();
         }
-        TypeModel type = null;
+        YamlTypeModel type = null;
         if (nextTypeIndex < types.size()) {
             type = types.get(nextTypeIndex);
             nextTypeIndex++;
@@ -35,23 +29,16 @@ public class TypeItemReader implements ItemReader<TypeModel> {
         return type;
     }
 
-    private void init() {
-        types = fetchTypesFromYML();
-        handler.clearAllTypes();
-    }
-
-    private List<TypeModel> fetchTypesFromYML() {
+    private List<YamlTypeModel> fetchTypesFromYML() {
         try {
-            // FIXME: retreive the filename from a commandline param
-            File file = new File("D:/tmp/sde/fsd/typeIDs.yaml");
+            URL file = this.getClass().getClassLoader().getResource("typeIDs.yaml");
             ObjectMapper om = new ObjectMapper(new YAMLFactory());
-            Map<Integer, TypeModel> bp = om.readValue(file, new TypeReference<Map<Integer, TypeModel>>() {
+            Map<Integer, YamlTypeModel> bp = om.readValue(file, new TypeReference<Map<Integer, YamlTypeModel>>() {
             });
-            bp.values().removeIf(Objects::isNull);
             bp.forEach((key, value) -> value.setId(key));
             return new ArrayList<>(bp.values());
         } catch (IOException e) {
-            throw new SdeReaderException("Unable to read YML file: " + "D:/tmp/sde/fsd/typeIDs.yaml", e);
+            throw new SdeReaderException("Unable to read YML file: typeIDs.yaml", e);
         }
     }
 }

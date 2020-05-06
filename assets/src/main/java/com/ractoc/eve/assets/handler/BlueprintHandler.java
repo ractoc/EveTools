@@ -31,6 +31,7 @@ public class BlueprintHandler {
 
     public void saveBlueprints(List<? extends BlueprintModel> bps) {
         transactionHandler.createAndAccept(tx -> {
+            blueprintService.clearAllBlueprints();
             bps.stream()
                     .map(BlueprintMapper.INSTANCE::modelToDb)
                     .forEach(blueprintService::saveBlueprint);
@@ -67,13 +68,6 @@ public class BlueprintHandler {
                     .map(BlueprintManufacturingSkillMapper.INSTANCE::modelToDb)
                     .forEach(blueprintService::saveManufacturingSkill);
 
-            tx.commit();
-        });
-    }
-
-    public void clearAllBlueprints() {
-        transactionHandler.createAndAccept(tx -> {
-            blueprintService.clearAllBlueprints();
             tx.commit();
         });
     }
@@ -121,6 +115,15 @@ public class BlueprintHandler {
         return blueprintService.getBlueprintsForCharacter(eveUserDetails.getCharId(), eveUserDetails.getAccessToken())
                 .map(BlueprintMapper.INSTANCE::esiToModel)
                 .map(this::addNameToBlueprint)
+                .sorted((b1, b2) -> b1.getName().compareToIgnoreCase(b2.getName()))
+                .collect(Collectors.toList());
+    }
+
+    public List<BlueprintModel> getBlueprintsForCorporation(EveUserDetails eveUserDetails) {
+        return blueprintService.getBlueprintsForCorporation(eveUserDetails.getCharId(), eveUserDetails.getAccessToken())
+                .map(BlueprintMapper.INSTANCE::esiToModel)
+                .map(this::addNameToBlueprint)
+                .sorted((b1, b2) -> b1.getName().compareToIgnoreCase(b2.getName()))
                 .collect(Collectors.toList());
     }
 
@@ -128,6 +131,4 @@ public class BlueprintHandler {
         blueprintModel.setName(typeService.getItemName(blueprintModel.getId()));
         return blueprintModel;
     }
-
-
 }
