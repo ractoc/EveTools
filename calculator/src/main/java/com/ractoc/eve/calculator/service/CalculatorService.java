@@ -1,5 +1,6 @@
 package com.ractoc.eve.calculator.service;
 
+import com.ractoc.eve.assets_client.api.ItemResourceApi;
 import com.ractoc.eve.domain.assets.BlueprintMaterialModel;
 import com.ractoc.eve.domain.assets.BlueprintModel;
 import com.ractoc.eve.domain.assets.ItemModel;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class CalculatorService {
@@ -24,13 +26,23 @@ public class CalculatorService {
     private SkillsApi skillsApi;
     private UniverseApi universeApi;
 
+    private ItemResourceApi itemResourceApi;
+
+    private List<String> playerOwnedStations = Stream.of("Astrahus", "Fortizar", "Keepstar", "Athanor", "Tatara", "Raitaru", "Azbel", "Sotiyo").collect(Collectors.toList());
+
     @Autowired
-    public CalculatorService(MarketApi marketApi, AssetsApi assetsApi, IndustryApi industryApi, SkillsApi skillsApi, UniverseApi universeApi) {
+    public CalculatorService(MarketApi marketApi,
+                             AssetsApi assetsApi,
+                             IndustryApi industryApi,
+                             SkillsApi skillsApi,
+                             UniverseApi universeApi,
+                             ItemResourceApi itemResourceApi) {
         this.marketApi = marketApi;
         this.assetsApi = assetsApi;
         this.industryApi = industryApi;
         this.skillsApi = skillsApi;
         this.universeApi = universeApi;
+        this.itemResourceApi = itemResourceApi;
 
     }
 
@@ -49,9 +61,9 @@ public class CalculatorService {
         bp.setMineralBuyPrice(Precision.round(totalMineralBuyPrice, 2));
     }
 
-    public void calculateItemPrices(ItemModel item, Integer buyRegionId, Long buyLocationId, Integer sellRegionId, Long sellLocationId, Integer runs) {
+    public GetMarketsRegionIdOrders200Ok calculateItemPrices(ItemModel item, Integer buyRegionId, Long buyLocationId, Integer sellRegionId, Long sellLocationId, Integer runs) {
         getBuyPricesForItem(item, buyRegionId, buyLocationId, runs);
-        getSellPricesForItem(item, sellRegionId, sellLocationId, runs);
+        return getSellPricesForItem(item, sellRegionId, sellLocationId, runs);
     }
 
     public void calculateJobInstallationCosts(BlueprintModel blueprint, Integer charId, String token) {
@@ -82,9 +94,18 @@ public class CalculatorService {
         item.setSalesTax(Precision.round(item.getSellPrice() * salesTax, 2));
     }
 
-    public void calculateBrokerFee(ItemModel item, int charId, String token) {
+    public void calculateBrokerFee(ItemModel item, GetMarketsRegionIdOrders200Ok sellOrder, int charId, String token) {
+        float percentage;
+        try {
+            GetUniverseStationsStationIdOk station = universeApi.getUniverseStationsStationId(sellOrder.getLocationId().intValue(), null, null);
+            percentage = station.getReprocessingStationsTake();
+        } catch (ApiException e) {
+            // in case of an error requesting the station, just fall back to the default percentage.
+            percentage = 0.05f;
+        }
+
         Map<Skill, Integer> skillLevels = getSkillsForCharacter(charId, token, Skill.BROKER_RELATIONS);
-        double brokerFee = 0.05 - (0.003 * skillLevels.get(Skill.BROKER_RELATIONS).doubleValue());
+        double brokerFee = percentage - (0.003 * skillLevels.get(Skill.BROKER_RELATIONS).doubleValue());
         item.setBrokerFee(Precision.round(item.getSellPrice() * brokerFee, 2));
     }
 
@@ -212,23 +233,22 @@ public class CalculatorService {
         item.setBuyPrice(-1.0);
     }
 
-    private void getSellPricesForItem(ItemModel item, Integer regionId, Long locationId, Integer runs) {
+    private GetMarketsRegionIdOrders200Ok getSellPricesForItem(ItemModel item, Integer regionId, Long locationId, Integer runs) {
         int retryCount = 0;
         do {
             try {
                 List<GetMarketsRegionIdOrders200Ok> orders = getAllOrdersForLocation("buy", regionId, locationId, item.getId());
                 if (orders.isEmpty()) {
                     item.setSellPrice(-1.0);
-                    return;
+                    return null;
                 }
                 // buy orders mean sell you item, which is done at the highest possible price.
                 // This is why the buyOrder is put into the SellPrice
-                orders.stream()
-                        .mapToDouble(GetMarketsRegionIdOrders200Ok::getPrice)
-                        .max()
-                        .ifPresent(price -> item.setSellPrice(Precision.round(price * runs, 2)));
-                if (item.getSellPrice() != null) {
-                    return;
+                Optional<GetMarketsRegionIdOrders200Ok> maxOrder = orders.stream()
+                        .max(Comparator.comparing(GetMarketsRegionIdOrders200Ok::getPrice));
+                if (maxOrder.isPresent()) {
+                    item.setSellPrice(Precision.round(maxOrder.get().getPrice() * runs, 2));
+                    return maxOrder.get();
                 }
                 retryCount = -1;
             } catch (ApiException e) {
@@ -239,6 +259,7 @@ public class CalculatorService {
             }
         } while (retryCount > 0);
         item.setSellPrice(-1.0);
+        return null;
     }
 
     private List<GetMarketsRegionIdOrders200Ok> getAllOrdersForLocation(String type, Integer regionId, Long locationId, int itemId) throws ApiException {
@@ -254,12 +275,6 @@ public class CalculatorService {
             pageNumber++;
         }
         return orders;
-    }
-
-    private List<GetMarketsRegionIdOrders200Ok> findOrdersForLocation(List<GetMarketsRegionIdOrders200Ok> orders, Long locationId) {
-        return orders.stream()
-                .filter(o -> o.getSystemId().equals(locationId.intValue()))
-                .collect(Collectors.toList());
     }
 
     private int calculateActualQuantity(int runs, int baseQuantity, int materialEfficiency) {

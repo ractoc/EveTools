@@ -7,6 +7,7 @@ import com.ractoc.eve.calculator.service.CalculatorService;
 import com.ractoc.eve.calculator.service.ItemService;
 import com.ractoc.eve.domain.assets.BlueprintModel;
 import com.ractoc.eve.domain.assets.ItemModel;
+import com.ractoc.eve.jesi.model.GetMarketsRegionIdOrders200Ok;
 import com.ractoc.eve.user.filter.EveUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,9 +32,9 @@ public class CalculatorHandler {
         blueprint.setManufacturingProducts(bp.getManufacturingProducts());
         calculatorService.calculateMaterialPrices(blueprint, buyRegionId, buyLocationId, sellRegionId, sellLocationId, runs);
         ItemModel item = ItemMapper.INSTANCE.apiToModel(itemService.getItemForBlueprint(blueprint.getId()));
-        calculatorService.calculateItemPrices(item, buyRegionId, buyLocationId, sellRegionId, sellLocationId, runs);
+        GetMarketsRegionIdOrders200Ok sellOrder = calculatorService.calculateItemPrices(item, buyRegionId, buyLocationId, sellRegionId, sellLocationId, runs);
         calculatorService.calculateSalesTax(item, userDetails.getCharId(), userDetails.getAccessToken());
-        calculatorService.calculateBrokerFee(item, userDetails.getCharId(), userDetails.getAccessToken());
+        calculatorService.calculateBrokerFee(item, sellOrder, userDetails.getCharId(), userDetails.getAccessToken());
         blueprint.setItem(item);
         calculatorService.calculateJobInstallationCosts(blueprint, userDetails.getCharId(), userDetails.getAccessToken());
         // profitability:
@@ -44,9 +45,9 @@ public class CalculatorHandler {
     }
 
     public ItemModel calculateItemPrices(Integer buyRegionId, Long buyLocationId, Integer sellRegionId, Long sellLocationId, ItemModel item, Integer runs, EveUserDetails userDetails) {
-        calculatorService.calculateItemPrices(item, buyRegionId, buyLocationId, sellRegionId, sellLocationId, runs);
+        GetMarketsRegionIdOrders200Ok sellOrder = calculatorService.calculateItemPrices(item, buyRegionId, buyLocationId, sellRegionId, sellLocationId, runs);
         calculatorService.calculateSalesTax(item, userDetails.getCharId(), userDetails.getAccessToken());
-        calculatorService.calculateBrokerFee(item, userDetails.getCharId(), userDetails.getAccessToken());
+        calculatorService.calculateBrokerFee(item, sellOrder, userDetails.getCharId(), userDetails.getAccessToken());
         // profitability:
         // itemBuyPrice < itemSellPrice = just buy and sell the item
         return item;
