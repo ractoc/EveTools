@@ -60,6 +60,10 @@ public class CalculatorService {
     }
 
     public void calculateJobInstallationCosts(BlueprintModel blueprint, Integer charId, String token) {
+        if (blueprint.getLocationId() == null) {
+            blueprint.setJobInstallationCosts(-1);
+            return;
+        }
         int retryCount = 0;
         while (retryCount < 10) {
             try {

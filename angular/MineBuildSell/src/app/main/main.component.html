@@ -15,6 +15,7 @@
               <a class="dropdown-item" ngbDropdownItem routerLink="blueprints/personal">Personal</a>
               <a *ngIf="user.hasRole('director')" class="dropdown-item" ngbDropdownItem
                  routerLink="blueprints/corporate">Corporate</a>
+              <a class="dropdown-item" ngbDropdownItem routerLink="blueprints/all">All</a>
             </div>
           </div>
           <div *ngIf="user">

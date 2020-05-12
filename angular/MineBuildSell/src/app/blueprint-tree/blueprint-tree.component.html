@@ -1,0 +1,15 @@
+<div class="row">
+  <div class="col">
+    <app-market-group-tree rootMarketGroupId="2"
+                           (displayMarketGroupItems)="displayBlueprintList($event)"></app-market-group-tree>
+  </div>
+  <div class="col">
+    <div *ngIf="blueprintList">
+      <ul class="list-group">
+        <li *ngFor="let blueprint of blueprintList" class="list-group-item border-0">
+          <a class="nav-link" routerLink="/blueprint/all/{{blueprint.id}}">{{ blueprint.name }}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

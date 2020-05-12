@@ -14,53 +14,19 @@ export class ItemListComponent implements OnInit {
   constructor(private assetsService: AssetsService, private router: Router) {
   }
 
-  private displayItemsForGroup: MarketGroupModel;
-
   itemList: Array<ItemModel>;
-  marketGroups: Array<MarketGroupModel> = new Array<MarketGroupModel>();
   errorMessage: string;
   expanded: Array<MarketGroupModel> = new Array<MarketGroupModel>();
 
   ngOnInit() {
-    this.assetsService.getMarketGroups(0).subscribe(
-      groups => {
-        this.marketGroups = groups;
-      },
-      error => {
-        if (error.status === 401) {
-          localStorage.setItem('currentPage', '/items');
-          this.router.navigateByUrl('/login');
-        }
-      }
-    );
   }
 
-  marketGroupClass(marketGroup: MarketGroupModel) {
-    return {
-      'list-group-item': true,
-      'border-0': true,
-      active: this.expanded.find(mg => mg === marketGroup)
-    };
-  }
-
-  isExpanded(mgItem: any) {
-    return this.expanded.find(e => e === mgItem) !== undefined;
-  }
-
-  selectMarketGroup(marketGroup: MarketGroupModel) {
-    this.expanded = this.determineExpanded(marketGroup);
-    if (!marketGroup.children) {
-      this.assetsService.getMarketGroups(marketGroup.id).subscribe(
-        groups => {
-          marketGroup.children = groups;
-          console.log('looking up market group', marketGroup.name);
-          console.log('received children listing', marketGroup.children);
-          if (marketGroup.children.length === 0) {
-            this.displayItemList(marketGroup);
-          } else {
-            this.displayItemsForGroup = undefined;
-            this.itemList = undefined;
-          }
+  displayItemList(marketGroup: MarketGroupModel) {
+    if (marketGroup) {
+      this.assetsService.getItemsForMarketGroup(marketGroup).subscribe(
+        items => {
+          console.log('received items', items);
+          this.itemList = items;
         },
         error => {
           if (error.status === 401) {
@@ -70,40 +36,7 @@ export class ItemListComponent implements OnInit {
         }
       );
     } else {
-      if (marketGroup.children.length === 0) {
-        this.displayItemList(marketGroup);
-      } else {
-        this.displayItemsForGroup = undefined;
-      }
+      this.itemList = undefined;
     }
-  }
-
-  collapseId(item: any) {
-    return 'collapse_' + item.id;
-  }
-
-  determineExpanded(marketGroup: MarketGroupModel) {
-    const crumbtrail = new Array<MarketGroupModel>();
-    crumbtrail.push(marketGroup);
-    if (marketGroup.parentGroupId !== 0) {
-      const parent = this.expanded.find(item => item.id === marketGroup.parentGroupId);
-      this.determineExpanded(parent).forEach(item => crumbtrail.push(item));
-    }
-    return crumbtrail;
-  }
-
-  private displayItemList(marketGroup: MarketGroupModel) {
-    this.assetsService.getItemsForMarketGroup(marketGroup).subscribe(
-      items => {
-        console.log('received items', items);
-        this.itemList = items;
-      },
-      error => {
-        if (error.status === 401) {
-          localStorage.setItem('currentPage', '/items');
-          this.router.navigateByUrl('/login');
-        }
-      }
-    );
   }
 }

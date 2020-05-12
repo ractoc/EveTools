@@ -54,6 +54,12 @@
           <table class="table">
             <tbody>
             <tr>
+              <th scope="row">Blueprint Buy Price</th>
+              <td>
+                <div *ngIf="bp.buyPrice >= 0; else nodata">{{bp.buyPrice | number:'.2':'is' }}</div>
+              </td>
+            </tr>
+            <tr>
               <th scope="row">Material Buy Price</th>
               <td>
                 <div *ngIf="bp.mineralBuyPrice >= 0; else nodata">{{bp.mineralBuyPrice | number:'.2':'is' }}</div>

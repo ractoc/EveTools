@@ -30,6 +30,7 @@ public class CalculatorHandler {
         BlueprintModel bp = BlueprintMapper.INSTANCE.apiToModel(blueprintService.getBlueprint(blueprint.getId()));
         blueprint.setManufacturingMaterials(bp.getManufacturingMaterials());
         blueprint.setManufacturingProducts(bp.getManufacturingProducts());
+        blueprint.setBuyPrice(blueprintService.getBlueprintPrice(bp.getId(), buyRegionId, buyLocationId));
         calculatorService.calculateMaterialPrices(blueprint, buyRegionId, buyLocationId, sellRegionId, sellLocationId, runs);
         ItemModel item = ItemMapper.INSTANCE.apiToModel(itemService.getItemForBlueprint(blueprint.getId()));
         GetMarketsRegionIdOrders200Ok sellOrder = calculatorService.calculateItemPrices(item, buyRegionId, buyLocationId, sellRegionId, sellLocationId, runs);

@@ -43,6 +43,24 @@ export class AssetsService {
       );
   }
 
+  getBlueprintById(blueprintId: number): Observable<BlueprintModel> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.userService.getEveState()
+      })
+    };
+    return this.http.get<any>(ASSETS_URI + '/blueprint/' + blueprintId, httpOptions)
+      .pipe(
+        map(result => {
+          if (result.responseCode >= 400) {
+            throw new Error('broken API:' + result.responseCode);
+          } else {
+            return result.blueprint;
+          }
+        })
+      );
+  }
+
   getCorporateBlueprints(): Observable<BlueprintModel[]> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -83,6 +101,15 @@ export class AssetsService {
               this.blueprints = blueprintData;
               observe.next(this.blueprints.find(bp => +bp.id === +blueprintID));
             }
+          },
+          err => {
+            observe.error(err);
+          }
+        );
+      } else if (blueprintType === 'all' && this.blueprints === undefined) {
+        return this.getBlueprintById(blueprintID).subscribe(
+          (blueprintData: BlueprintModel) => {
+            observe.next(blueprintData);
           },
           err => {
             observe.error(err);

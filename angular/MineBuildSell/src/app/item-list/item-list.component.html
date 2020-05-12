@@ -1,10 +1,7 @@
 <div class="row">
   <div class="col">
-    <div *ngIf="marketGroups; else loading">
-      <ul class="list-group">
-        <ng-container *ngTemplateOutlet="margetGroupsTree; context:{ $implicit: marketGroups }"></ng-container>
-      </ul>
-    </div>
+    <app-market-group-tree rootMarketGroupId="0"
+                           (displayMarketGroupItems)="displayItemList($event)"></app-market-group-tree>
   </div>
   <div class="col">
     <div *ngIf="itemList">
@@ -15,22 +12,4 @@
       </ul>
     </div>
   </div>
-
-  <ng-template #margetGroupsTree let-list>
-    <li *ngFor="let item of list" class="list-group-item border-0">
-      <button type="button" [ngClass]="marketGroupClass(item)" (click)="selectMarketGroup(item)"
-              [attr.aria-expanded]="isExpanded(item)" [attr.aria-controls]="collapseId(item)">
-        {{ item.name }}
-      </button>
-      <div *ngIf="item.children" [id]="collapseId(item)" [ngbCollapse]="!isExpanded(item)">
-        <ul *ngIf="item.children.length > 0" class="list-group">
-          <ng-container *ngTemplateOutlet="margetGroupsTree; context:{ $implicit: item.children }"></ng-container>
-        </ul>
-      </div>
-    </li>
-  </ng-template>
-
-  <ng-template #loading>
-    Loading groups...
-  </ng-template>
 </div>
