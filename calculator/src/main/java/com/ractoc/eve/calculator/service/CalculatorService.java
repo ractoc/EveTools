@@ -103,8 +103,6 @@ public class CalculatorService {
             } catch (ApiException apiException) {
                 throw new ServiceException(UNABLE_TO_DETERMINE_BROKER_FEE, e);
             }
-
-
         }
 
         Map<Skill, Integer> skillLevels = getSkillsForCharacter(charId, token, Skill.BROKER_RELATIONS);
@@ -113,10 +111,19 @@ public class CalculatorService {
     }
 
     private Integer getSystemFromLocation(Integer charId, Long locationId, String token) {
+        System.out.println("looging for: charId=" + charId + ", locationId=" + "" + locationId + ", token=" + token);
         int pageNumber = 1;
         do {
-            Optional<Integer> assetLocation = getSystemFromLocationForPageNumber(charId, locationId, token, pageNumber);
-            if (assetLocation.isPresent()) return assetLocation.get();
+            try {
+                Optional<Integer> assetLocation = getSystemFromLocationForPageNumber(charId, locationId, token, pageNumber);
+                if (assetLocation.isPresent()) return assetLocation.get();
+            } catch (NoSuchElementException e) {
+                if (pageNumber == 1) {
+                    throw e;
+                } else {
+                    return -1;
+                }
+            }
             pageNumber++;
         } while (pageNumber < 10000);
         throw new ServiceException("Maximum number of pages exceeded while requesting a System from item location " + locationId);
@@ -127,10 +134,19 @@ public class CalculatorService {
         while (retryCount < 10) {
             try {
                 List<GetCharactersCharacterIdAssets200Ok> assets = assetsApi.getCharactersCharacterIdAssets(charId, null, null, pageNumber, token);
-                if (!assets.isEmpty()) {
-                    OptionalLong assetLocation = assets.stream().filter(a -> a.getItemId().longValue() == locationId.longValue()).mapToLong(GetCharactersCharacterIdAssets200Ok::getLocationId).findFirst();
-                    if (assetLocation.isPresent()) {
+                if (assets.isEmpty()) {
+                    throw new NoSuchElementException("No asset found for location: " + locationId);
+                }
+                OptionalLong assetLocation = assets.stream().filter(a -> a.getLocationId().longValue() == locationId.longValue()).mapToLong(GetCharactersCharacterIdAssets200Ok::getLocationId).findFirst();
+                if (assetLocation.isPresent()) {
+                    try {
                         return Optional.of(universeApi.getUniverseStructuresStructureId(assetLocation.getAsLong(), null, null, token).getSolarSystemId());
+                    } catch (ApiException e) {
+                        if (e.getCode() == 400) {
+                            return Optional.of(universeApi.getUniverseStationsStationId((int) assetLocation.getAsLong(), null, null).getSystemId());
+                        } else {
+                            throw e;
+                        }
                     }
                 }
                 return Optional.empty();
