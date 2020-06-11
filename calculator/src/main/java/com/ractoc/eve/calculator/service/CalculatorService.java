@@ -127,12 +127,11 @@ public class CalculatorService {
         while (retryCount < 10) {
             try {
                 List<GetCharactersCharacterIdAssets200Ok> assets = assetsApi.getCharactersCharacterIdAssets(charId, null, null, pageNumber, token);
-                if (assets.isEmpty()) {
-                    throw new NoSuchElementException("No asset found for location: " + locationId);
-                }
-                OptionalLong assetLocation = assets.stream().filter(a -> a.getItemId().longValue() == locationId.longValue()).mapToLong(GetCharactersCharacterIdAssets200Ok::getLocationId).findFirst();
-                if (assetLocation.isPresent()) {
-                    return Optional.of(universeApi.getUniverseStructuresStructureId(assetLocation.getAsLong(), null, null, token).getSolarSystemId());
+                if (!assets.isEmpty()) {
+                    OptionalLong assetLocation = assets.stream().filter(a -> a.getItemId().longValue() == locationId.longValue()).mapToLong(GetCharactersCharacterIdAssets200Ok::getLocationId).findFirst();
+                    if (assetLocation.isPresent()) {
+                        return Optional.of(universeApi.getUniverseStructuresStructureId(assetLocation.getAsLong(), null, null, token).getSolarSystemId());
+                    }
                 }
                 return Optional.empty();
             } catch (ApiException e) {
@@ -167,7 +166,7 @@ public class CalculatorService {
                 retryCount++;
             }
         } while (retryCount > 0);
-            mat.setBuyPrice(-1.0);
+        mat.setBuyPrice(-1.0);
     }
 
     private void getSellPricesForMaterial(Integer regionId, Long locationId, BlueprintMaterialModel mat) {
