@@ -41,7 +41,7 @@ export class CalculatorService {
     await this.calculateMaterialPrices(bp, buyMarketHub, sellMarketHub, nrRuns);
 
     await this.getBuyPrice(bp.id, buyMarketHub).then(order => {
-      bp.buyPrice = order.price * nrRuns;
+      bp.buyPrice = order.price;
     });
 
     const item: ItemModel = await this.getItemForBlueprint(bp.id).then(result => {
