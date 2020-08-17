@@ -7,7 +7,7 @@ import {BehaviorSubject, Observable, of} from 'rxjs';
 import {User} from '../shared/model/user.model';
 import {environment} from '../../environments/environment';
 
-const USER_URI = 'http://' + environment.apiHost + ':8484/user/api/user';
+const USER_URI = 'http://' + environment.apiHost + ':8484/user/api/userdetails';
 
 @Injectable({
   providedIn: 'root'
@@ -18,27 +18,38 @@ export class UserService {
   private observable: Observable<User>;
   private eveState: string;
 
+  private currentUser: User;
+
   constructor(private http: HttpClient) {
   }
 
-  getUser(eveState: string): Observable<User> {
+  getUser(eveState: string): Observable<any> {
     this.eveState = eveState;
     if (this.observable) {
       return this.observable;
     } else {
       this.observable = this.http.get<any>(USER_URI + '/' + eveState)
-        .pipe(map(result => {
+        .pipe(map(user => {
             this.observable = null;
-            const user = new User(result.eveState, result.name, result.roles);
-            this.user$.next(user);
-            return user;
+            this.currentUser = new User(
+              user.eveState,
+              user.characterName,
+              user.roles,
+              user.charId,
+              user.accessToken
+            );
+            this.user$.next(this.currentUser);
+            return this.currentUser;
           }),
           catchError((error: any) => {
-            console.log('Error while fetching cities: ', error);
             return of(null);
           }));
       return this.observable;
     }
+  }
+
+  getCurrentUser(): User {
+    return this.currentUser;
   }
 
   monitorUser() {
@@ -47,6 +58,7 @@ export class UserService {
 
   logout() {
     this.user$.next(null);
+    this.currentUser = undefined;
   }
 
   getEveState() {

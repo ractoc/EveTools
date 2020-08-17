@@ -5771,43 +5771,43 @@
   parentGroupID: 14
 540:
   descriptionID:
-    de: Mechanisch verbesserter Panzerplatten-Zusatz.
-    en: Mechanically enhanced armor plating augmentation.
-    fr: Revêtement de renforcement du blindage amélioré mécaniquement.
+    de: Panzerungsresistenz-Beschichtungen
+    en: Armor Resistance Coatings
+    fr: Surcouches de résistance de blindage
     ja: 機械的な技術で拡張されたアーマープレート補強。
-    ko: 저항력이 강화된 장갑 플레이팅입니다.
-    ru: Защитное покрытие брони с встроенными механическими системами.
-    zh: 机械性增强装甲附甲性能。
+    ko: 장갑 저항력 코팅
+    ru: Покрытия сопротивляемости брони
+    zh: 装甲抗性涂层
   hasTypes: false
   iconID: 1030
   nameID:
-    de: Resistenzplatten
-    en: Resistance Plating
-    fr: Revêtement de résistance
+    de: Panzerungsresistenz-Beschichtungen
+    en: Armor Resistance Coatings
+    fr: Surcouches de résistance de blindage
     ja: レジスタンスプレート
-    ko: 저항력 플레이팅
-    ru: Защитные покрытия
-    zh: 抗性附甲
+    ko: 장갑 저항력 코팅
+    ru: Покрытия сопротивляемости брони
+    zh: 装甲抗性涂层
   parentGroupID: 14
 541:
   descriptionID:
-    de: Eine fortschrittliche Form von mechanisch verbesserten Panzerplatten-Upgrades.
-    en: An advanced form of mechanically enhanced armor plating upgrades.
-    fr: Une forme avancée de renforcement du blindage amélioré mécaniquement.
+    de: Spannungsunterstützte Panzerungsresistenzmembranen
+    en: Energized Armor Resistance Membranes
+    fr: Membranes de résistance de blindage énergétiques
     ja: 機械的な技術で拡張されたアーマープレートアップグレードの進化形。
-    ko: 최첨단 기술이 적용되어 향상된 장갑 플레이팅 업그레이드입니다.
-    ru: Усовершенствованное защитное покрытие брони с встроенными механическими системами.
-    zh: 一种先进的机械性装甲附甲增强升级。
+    ko: 장갑 저항력 에너지 멤브레인
+    ru: Заряжаемые мембраны сопротивляемости брони
+    zh: 电压装甲抗性薄膜
   hasTypes: false
   iconID: 2066
   nameID:
-    de: Spannungsunterstützte Panzerung
-    en: Energized Plating
-    fr: Revêtement énergétique
+    de: Spannungsunterstützte Panzerungsresistenzmembranen
+    en: Energized Armor Resistance Membranes
+    fr: Membranes de résistance de blindage énergétiques
     ja: 電磁加工プレート
-    ko: 에너지 플레이팅
-    ru: Усиленные защитные покрытия
-    zh: 电压式附甲
+    ko: 장갑 저항력 에너지 멤브레인
+    ru: Заряжаемые мембраны сопротивляемости брони
+    zh: 电压装甲抗性薄膜
   parentGroupID: 14
 542:
   descriptionID:
@@ -10988,7 +10988,7 @@
     ja: ミンマター偵察船設計図。
     ko: 민마타의 리콘 크루저입니다.
     ru: Разведывательные корабли разработки Республики Minmatar.
-    zh: 米玛塔尔侦查舰设计
+    zh: 米玛塔尔侦察舰设计
   hasTypes: true
   iconID: 20968
   nameID:
@@ -20740,43 +20740,43 @@
   parentGroupID: 214
 1543:
   descriptionID:
-    de: Blueprints für spannungsgestützte Panzerung
-    en: Blueprints for Energized Plating
-    fr: Plans de construction de revêtements énergétiques
+    de: Blaupausen für spannungsunterstützte Panzerungsmembranen
+    en: Blueprints for Energized Armor Membranes
+    fr: Plans de construction Membranes de blindage énergétiques
     ja: 電磁加工プレートのブループリント
-    ko: 에너지 플레이팅 블루프린트
-    ru: Описания защитных покрытий повышенной эффективности.
-    zh: 电压式附甲蓝图
+    ko: 장갑 에너지 멤브레인 블루프린트
+    ru: Чертежи для заряжаемых мембран брони
+    zh: 电压装甲薄膜的蓝图
   hasTypes: true
   iconID: 2703
   nameID:
-    de: Spannungsunterstützte Panzerung
-    en: Energized Plating
-    fr: Revêtement énergétique
+    de: Spannungsunterstützte Panzerungsmembranen
+    en: Energized Armor Membranes
+    fr: Membranes de blindage énergétiques
     ja: 電磁加工プレート
-    ko: 에너지 플레이팅
-    ru: Усиленные защитные покрытия
-    zh: 电压式附甲
+    ko: 장갑 에너지 멤브레인
+    ru: Заряжаемые мембраны брони
+    zh: 电压装甲薄膜
   parentGroupID: 214
 1544:
   descriptionID:
-    de: Blueprints für Abwehrpanzerung
-    en: Blueprints for Resistance Plating
-    fr: Plans de construction de revêtements de résistance
+    de: Blaupausen für Panzerungsbeschichtungen
+    en: Blueprints for Armor Coatings
+    fr: Plans de construction de surcouches de blindage
     ja: レジスタンスプレートのブループリント
-    ko: 저항력 플레이트 블루프린트
-    ru: Описания защитных покрытий.
-    zh: 抗性附甲蓝图
+    ko: 장갑 코팅 블루프린트
+    ru: Чертежи для покрытий брони
+    zh: 装甲涂层蓝图
   hasTypes: true
   iconID: 2703
   nameID:
-    de: Resistenzplatten
-    en: Resistance Plating
-    fr: Revêtement de résistance
+    de: Panzerungsbeschichtungen
+    en: Armor Coatings
+    fr: Surcouches de blindage
     ja: レジスタンスプレート
-    ko: 저항력 플레이팅
-    ru: Защитные покрытия
-    zh: 抗性附甲
+    ko: 장갑 코팅
+    ru: Покрытия брони
+    zh: 装甲涂层
   parentGroupID: 214
 1545:
   descriptionID:
@@ -20912,7 +20912,7 @@
     en: Shield Rechargers
     fr: Rechargeurs de bouclier
     ja: シールドリチャージャー
-    ko: 실드 충전장치
+    ko: 실드 회복장치
     ru: Регенераторы щитов
     zh: 护盾回充器
   hasTypes: true
@@ -22551,124 +22551,123 @@
   parentGroupID: 1659
 1665:
   descriptionID:
-    de: Thermalabwehrpanzerung
-    en: Thermal Resistance Plating
-    fr: Revêtement à résistance thermique
+    de: Thermalbeschichtungen
+    en: Thermal Coatings
+    fr: Surcouches thermiques
     ja: サーマルレジスタンスプレート
-    ko: 열 저항력 플레이팅
-    ru: Защитное покрытие с повышенной сопротивляемостью к действию теплового оружия
-    zh: 热能抗性附甲
+    ko: 열 저항력 코팅
+    ru: Термальные покрытия
+    zh: 热能涂层
   hasTypes: true
   iconID: 1394
   nameID:
-    de: Thermalresistenzplatten
-    en: Thermal Resistance Plating
-    fr: Revêtement de résistance thermique
+    de: Thermalbeschichtungen
+    en: Thermal Coatings
+    fr: Surcouches thermiques
     ja: サーマルレジスタンスプレート
-    ko: 열 저항력 플레이팅
-    ru: Антитермические
-    zh: 热能抗性附甲
+    ko: 열 저항력 코팅
+    ru: Термальные покрытия
+    zh: 热能涂层
   parentGroupID: 540
 1666:
   descriptionID:
-    de: Kinetikabwehrpanzerung
-    en: Kinetic Resistance Plating
-    fr: Revêtement à résistance cinétique
+    de: Kinetikbeschichtungen
+    en: Kinetic Coatings
+    fr: Surcouches cinétiques
     ja: キネティックレジスタンスプレート
-    ko: 키네틱 플레이팅
-    ru: Защитное покрытие с повышенной сопротивляемостью к действию кинетического
-      оружия
-    zh: 动能抗性附甲
+    ko: 키네틱 저항력 코팅
+    ru: Кинетические покрытия
+    zh: 动能涂层
   hasTypes: true
   iconID: 1393
   nameID:
-    de: Kinetikresistenzplatten
-    en: Kinetic Resistance Plating
-    fr: Revêtement de résistance cinétique
+    de: Kinetikbeschichtungen
+    en: Kinetic Coatings
+    fr: Surcouches cinétiques
     ja: キネティックレジスタンスプレート
-    ko: 키네틱 플레이팅
-    ru: Антикинетические
-    zh: 动能抗性附甲
+    ko: 키네틱 저항력 코팅
+    ru: Кинетические покрытия
+    zh: 动能涂层
   parentGroupID: 540
 1667:
   descriptionID:
-    de: Explosivabwehrpanzerung
-    en: Explosive Resistance Plating
-    fr: Revêtement à résistance explosive
+    de: Explosionsbeschichtungen
+    en: Explosive Coatings
+    fr: Surcouches explosives
     ja: エクスプローシブレジスタンスプレート
-    ko: 방폭성 플레이팅
-    ru: Защитное покрытие с повышенной сопротивляемостью к действию взрыва
-    zh: 爆炸抗性附甲
+    ko: 폭발 저항력 코팅
+    ru: Взрывные покрытия
+    zh: 爆炸涂层
   hasTypes: true
   iconID: 1395
   nameID:
-    de: Explosionsresistenzplatten
-    en: Explosive Resistance Plating
-    fr: Revêtement de résistance explosive
+    de: Explosionsbeschichtungen
+    en: Explosive Coatings
+    fr: Surcouches explosives
     ja: エクスプローシブレジスタンスプレート
-    ko: 방폭성 플레이팅
-    ru: Антифугасные
-    zh: 爆炸抗性附甲
+    ko: 폭발 저항력 코팅
+    ru: Взрывные покрытия
+    zh: 爆炸涂层
   parentGroupID: 540
 1668:
   descriptionID:
-    de: EM-Abwehrpanzerung
-    en: EM Resistance Plating
-    fr: Revêtement à résistance électromagnétique
+    de: EM-Beschichtungen
+    en: EM Coatings
+    fr: Surcouches EM
     ja: EMレジスタンスプレート
-    ko: EM 저항력 플레이팅
-    ru: Защитное покрытие с повышенной сопротивляемостью к действию ЭМ-оружия
-    zh: 电磁抗性附甲
+    ko: EM 저항력 코팅
+    ru: ЭМ-покрытия
+    zh: 电磁涂层
   hasTypes: true
   iconID: 1396
   nameID:
-    de: EM-Resistenzplatten
-    en: EM Resistance Plating
-    fr: Revêtement de résistance EM
+    de: EM-Beschichtungen
+    en: EM Coatings
+    fr: Surcouches EM
     ja: EMレジスタンスプレート
-    ko: EM 저항력 플레이팅
-    ru: Анти-ЭМ
-    zh: 电磁抗性附甲
+    ko: EM 저항력 코팅
+    ru: ЭМ-покрытия
+    zh: 电磁涂层
   parentGroupID: 540
 1669:
   descriptionID:
-    de: Geschichtete Panzerung
-    en: Layered Plating
-    fr: Revêtement à plusieurs couches
+    de: Mehrschichtige Panzerungsbeschichtungen
+    en: Layered Armor Coatings
+    fr: Surcouches de blindage superposées
     ja: 積層加工プレート
-    ko: 중첩 플레이팅
-    ru: Многослойное защитное покрытие
-    zh: 覆层附甲
+    ko: 중첩 장갑 코팅
+    ru: Многослойные покрытия брони
+    zh: 覆层装甲涂层
   hasTypes: true
   iconID: 1030
   nameID:
-    de: Mehrschichtige Panzerung
-    en: Layered Plating
-    fr: Revêtement superposé
+    de: Mehrschichtige Panzerungsbeschichtungen
+    en: Layered Armor Coatings
+    fr: Surcouches de blindage superposées
     ja: 積層加工プレート
-    ko: 중첩 플레이팅
-    ru: Многослойные защитные покрытия
-    zh: 覆层附甲
+    ko: 중첩 장갑 코팅
+    ru: Многослойные покрытия брони
+    zh: 覆层装甲涂层
   parentGroupID: 14
 1670:
   descriptionID:
-    de: Anpassungsfähige Abwehrpanzerung
-    en: Adaptive Resistance Plating
-    fr: Revêtement à résistance adaptative
+    de: Multispektrum-Beschichtungen
+    en: Multispectrum Coatings
+    fr: Surcouches multispectres
     ja: 適応レジスタンスプレート
-    ko: 적응형 플레이팅
-    ru: Адаптивное покрытие с повышенной сопротивляемостью
-    zh: 适应性抗性附甲
+    ko: 다중스팩트럼 코팅
+    ru: Универсальные покрытия
+    zh: 多谱式涂层
   hasTypes: true
   iconID: 1030
   nameID:
-    de: Anpassungsfähige Resistenzplatten
-    en: Adaptive Resistance Plating
-    fr: Revêtement de résistance adaptative
+    de: Multispektrum-Beschichtungen
+    en: Multispectrum Coatings
+    fr: Surcouches multispectres
     ja: 適応レジスタンスプレート
-    ko: 적응형 플레이팅
-    ru: Универсальные
-    zh: 适应性抗性附甲
+    ko: 다중스팩트럼 코팅
+    ru: Универсальные покрытия
+    zh: 多谱式涂层
   parentGroupID: 540
 1672:
   descriptionID:
@@ -22844,203 +22843,203 @@
   parentGroupID: 535
 1682:
   descriptionID:
-    de: Spannungsunterstützte Explosivpanzerung
-    en: Energized Explosive Plating
-    fr: Revêtement à résistance explosive énergétique
+    de: Spannungsunterstützte explosive Membranen
+    en: Explosive Energized Membranes
+    fr: Membranes énergétiques explosives
     ja: 電磁加工エクスプローシブプレート
-    ko: 에너지 방폭성 플레이팅
-    ru: Защитное покрытие с подкачкой против действия взрыва
-    zh: 电压式爆炸附甲
+    ko: 폭발 저항력 에너지 멤브레인
+    ru: Заряжаемые взрывные мембраны
+    zh: 爆炸电压薄膜
   hasTypes: true
   iconID: 1395
   nameID:
-    de: Spannungsunterstützte Explosionspanzerung
-    en: Energized Explosive Plating
-    fr: Revêtement énergétique explosif
+    de: Spannungsunterstützte explosive Membranen
+    en: Explosive Energized Membranes
+    fr: Membranes énergétiques explosives
     ja: 電磁加工エクスプローシブプレート
-    ko: 에너지 방폭성 플레이팅
-    ru: Антифугасные
-    zh: 电压式爆炸附甲
+    ko: 폭발 저항력 에너지 멤브레인
+    ru: Заряжаемые взрывные мембраны
+    zh: 爆炸电压薄膜
   parentGroupID: 541
 1683:
   descriptionID:
-    de: Spannungsunterstützte Thermalpanzerung
-    en: Energized Thermal Plating
-    fr: Revêtement à résistance thermique énergétique
+    de: Thermale spannungsunterstützte Membranen
+    en: Thermal Energized Membranes
+    fr: Membranes énergétiques thermiques
     ja: 電磁加工サーマルプレート
-    ko: 에너지 내열성 플레이팅
-    ru: Защитное покрытие с подкачкой против действия теплового оружия
-    zh: 电压式热能附甲
+    ko: 열 저항력 에너지 멤브레인
+    ru: Заряжаемые термальные мембраны
+    zh: 热能电压薄膜
   hasTypes: true
   iconID: 1394
   nameID:
-    de: Spannungsunterstützte Thermalpanzerung
-    en: Energized Thermal Plating
-    fr: Revêtement énergétique thermique
+    de: Thermale spannungsunterstützte Membranen
+    en: Thermal Energized Membranes
+    fr: Membranes énergétiques thermiques
     ja: 電磁加工サーマルプレート
-    ko: 에너지 내열성 플레이팅
-    ru: Антитермические
-    zh: 电压式热能附甲
+    ko: 열 저항력 에너지 멤브레인
+    ru: Заряжаемые термальные мембраны
+    zh: 热能电压薄膜
   parentGroupID: 541
 1684:
   descriptionID:
-    de: Spannungsunterstützte EM-Panzerung
-    en: Energized EM Plating
-    fr: Revêtement à résistance électromagnétique énergétique
+    de: Spannungsunterstützte EM-Membranen
+    en: EM Energized Membranes
+    fr: Membranes énergétiques EM
     ja: 電磁加工EMプレート
-    ko: 에너지 EM 플레이팅
-    ru: Защитные покрытия с подкачкой против действия ЭМ-оружия
-    zh: 电压式电磁附甲
+    ko: EM 저항력 에너지 멤브레인
+    ru: Заряжаемые EM-мембраны
+    zh: 电磁电压薄膜
   hasTypes: true
   iconID: 1396
   nameID:
-    de: Spannungsunterstützte EM-Panzerung
-    en: Energized EM Plating
-    fr: Revêtement énergétique EM
+    de: Spannungsunterstützte EM-Membranen
+    en: EM Energized Membranes
+    fr: Membranes énergétiques EM
     ja: 電磁加工EMプレート
-    ko: 에너지 EM 플레이팅
-    ru: Анти-ЭМ
-    zh: 电压式电磁附甲
+    ko: EM 저항력 에너지 멤브레인
+    ru: Заряжаемые EM-мембраны
+    zh: 电磁电压薄膜
   parentGroupID: 541
 1685:
   descriptionID:
-    de: Spannungsunterstützte Kinetikpanzerung
-    en: Energized Kinetic Plating
-    fr: Revêtement à résistance cinétique énergétique
+    de: Kinetische spannungsunterstützte Membranen
+    en: Kinetic Energized Membranes
+    fr: Membranes énergétiques cinétiques
     ja: 電磁加工キネティックプレート
-    ko: 에너지 키네틱 플레이팅
-    ru: Защитное покрытие с подкачкой против действия кинетического оружия
-    zh: 电压式动能附甲
+    ko: 키네틱 저항력 에너지 멤브레인
+    ru: Заряжаемые кинетические мембраны
+    zh: 动能电压薄膜
   hasTypes: true
   iconID: 1393
   nameID:
-    de: Spannungsunterstützte Kinetikpanzerung
-    en: Energized Kinetic Plating
-    fr: Revêtement énergétique cinétique
+    de: Kinetische spannungsunterstützte Membranen
+    en: Kinetic Energized Membranes
+    fr: Membranes énergétiques cinétiques
     ja: 電磁加工キネティックプレート
-    ko: 에너지 키네틱 플레이팅
-    ru: Антикинетические
-    zh: 电压式动能附甲
+    ko: 키네틱 저항력 에너지 멤브레인
+    ru: Заряжаемые кинетические мембраны
+    zh: 动能电压薄膜
   parentGroupID: 541
 1686:
   descriptionID:
-    de: Spannungsunterstützte anpassungsfähige Panzerung
-    en: Energized Adaptive Plating
-    fr: Revêtement à résistance adaptative énergétique
+    de: Spannungsunterstützte Multispektrum-Membranen
+    en: Multispectrum Energized Membranes
+    fr: Membranes énergétiques multispectres
     ja: 電磁加工適応プレート
-    ko: 에너지 적응형 플레이팅
-    ru: Адаптивное защитное покрытие с подкачкой
-    zh: 电压式适应性附甲
+    ko: 다중스팩트럼 에너지 멤브레인
+    ru: Заряжаемые универсальные мембраны
+    zh: 多谱式电压薄膜
   hasTypes: true
   iconID: 2066
   nameID:
-    de: Spannungsunterstützte, anpassungsfähige Panzerung
-    en: Energized Adaptive Plating
-    fr: Revêtement énergétique adaptatif
+    de: Spannungsunterstützte Multispektrum-Membranen
+    en: Multispectrum Energized Membranes
+    fr: Membranes énergétiques multispectres
     ja: 電磁加工適応プレート
-    ko: 에너지 적응형 플레이팅
-    ru: Универсальные
-    zh: 电压式适应性附甲
+    ko: 다중스팩트럼 에너지 멤브레인
+    ru: Заряжаемые универсальные мембраны
+    zh: 多谱式电压薄膜
   parentGroupID: 541
 1687:
   descriptionID:
-    de: Spannungsunterstützte Schichtpanzerung
-    en: Energized Armor Layering
-    fr: Couche de blindage énergétique
+    de: Mehrschichtige spannungsunterstützte Panzerungsmembranen
+    en: Layered Energized Armor Membranes
+    fr: Membranes de blindage énergétiques par couches
     ja: 電磁加工アーマー積層装甲
-    ko: 장갑 강화 에너지 플레이트
-    ru: Многослойное адаптивное покрытие брони
-    zh: 电压式装甲覆层
+    ko: 중첩 장갑 에너지 멤브레인
+    ru: Многослойные заряжаемые мембраны брони
+    zh: 覆层电压装甲薄膜
   hasTypes: true
   iconID: 2066
   nameID:
-    de: Spannungsunterstützte, mehrschichtige Panzerung
-    en: Energized Armor Layering
-    fr: Superposition énergétique de blindage
+    de: Mehrschichtige spannungsunterstützte Panzerungsmembranen
+    en: Layered Energized Armor Membranes
+    fr: Membranes de blindage énergétiques par couches
     ja: 電磁加工アーマー積層装甲
-    ko: 장갑 강화 에너지 플레이트
-    ru: Многослойные усиленные защитные покрытия
-    zh: 电压式装甲覆层
+    ko: 중첩 장갑 에너지 멤브레인
+    ru: Многослойные заряжаемые мембраны брони
+    zh: 覆层电压装甲薄膜
   parentGroupID: 14
 1688:
   descriptionID:
-    de: Thermalresistenzverstärker
-    en: Thermal Resistance Amplifiers
-    fr: Amplificateurs à résistance thermique
+    de: Thermalschildverstärker
+    en: Thermal Shield Amplifiers
+    fr: Amplificateurs de bouclier thermique
     ja: サーマルレジスタンス増幅器
-    ko: 열 저항력 증폭기입니다.
-    ru: Антитепловые энергонезависимые модуляторы полей
-    zh: 热能抗性增效器
+    ko: 열 저항력 실드 증폭기
+    ru: Термальные усилители щитов
+    zh: 热能护盾增效器
   hasTypes: true
   iconID: 1394
   nameID:
-    de: Thermalwiderstandsverstärker
-    en: Thermal Resistance Amplifiers
-    fr: Amplificateurs de résistance thermique
+    de: Thermalschildverstärker
+    en: Thermal Shield Amplifiers
+    fr: Amplificateurs de bouclier thermique
     ja: サーマルレジスタンス増幅器
-    ko: 열 저항력 증폭기
-    ru: Антитермические
-    zh: 热能抗性增效器
+    ko: 열 저항력 실드 증폭기
+    ru: Термальные усилители щитов
+    zh: 热能护盾增效器
   parentGroupID: 550
 1689:
   descriptionID:
-    de: Kinetikresistenzverstärker
-    en: Kinetic Resistance Amplifiers
-    fr: Amplificateurs à résistance cinétique
+    de: Kinetikschildverstärker
+    en: Kinetic Shield Amplifiers
+    fr: Amplificateurs de bouclier cinétique
     ja: キネティックレジスタンス増幅器
-    ko: 키네틱 저항력 증폭기
-    ru: ' Антикинетические энергонезависимые модуляторы полей'
-    zh: 动能抗性增效器
+    ko: 키네틱 저항력 실드 증폭기
+    ru: Кинетические усилители щитов
+    zh: 动能护盾增效器
   hasTypes: true
   iconID: 1393
   nameID:
-    de: Kinetikwiderstandsverstärker
-    en: Kinetic Resistance Amplifiers
-    fr: Amplificateurs de résistance cinétique
+    de: Kinetikschildverstärker
+    en: Kinetic Shield Amplifiers
+    fr: Amplificateurs de bouclier cinétique
     ja: キネティックレジスタンス増幅器
-    ko: 키네틱 저항력 증폭기
-    ru: Антикинетические
-    zh: 动能抗性增效器
+    ko: 키네틱 저항력 실드 증폭기
+    ru: Кинетические усилители щитов
+    zh: 动能护盾增效器
   parentGroupID: 550
 1690:
   descriptionID:
-    de: Explosivabwehrverstärker
-    en: Explosive Resistance Amplifiers
-    fr: Amplificateurs à résistance explosive
+    de: Explosionsschildverstärker
+    en: Explosive Shield Amplifiers
+    fr: Amplificateur de bouclier explosif
     ja: エクスプローシブレジスタンス増幅器
-    ko: 방폭성 증폭기
-    ru: Антивзрывные энергонезависимые модуляторы полей
-    zh: 爆炸抗性增效器
+    ko: 폭발 저항력 실드 증폭기
+    ru: Усилители щитов против взрывного урона
+    zh: 爆炸护盾增效器
   hasTypes: true
   iconID: 1395
   nameID:
-    de: Explosionswiderstandsverstärker
-    en: Explosive Resistance Amplifiers
-    fr: Amplificateurs de résistance aux explosifs
+    de: Explosionsschildverstärker
+    en: Explosive Shield Amplifiers
+    fr: Amplificateur de bouclier explosif
     ja: エクスプローシブレジスタンス増幅器
-    ko: 방폭성 증폭기
-    ru: Антифугасные
-    zh: 爆炸抗性增效器
+    ko: 폭발 저항력 실드 증폭기
+    ru: Усилители щитов против взрывного урона
+    zh: 爆炸护盾增效器
   parentGroupID: 550
 1691:
   descriptionID:
-    de: EM-Resistenzverstärker
-    en: EM Resistance Amplifiers
-    fr: Amplificateurs à résistance électromagnétique
+    de: EM-Schildverstärker
+    en: EM Shield Amplifiers
+    fr: Amplificateurs de bouclier EM
     ja: EMレジスタンス増幅器
-    ko: EM 저항력 증폭기
-    ru: Анти-ЭМ энергонезависимые модуляторы полей
-    zh: 电磁抗性增效器
+    ko: EM 저항력 실드 증폭기
+    ru: ЭМ усилители щитов
+    zh: 电磁护盾增效器
   hasTypes: true
   iconID: 1396
   nameID:
-    de: EM-Widerstandsverstärker
-    en: EM Resistance Amplifiers
-    fr: Amplificateurs de résistance EM
+    de: EM-Schildverstärker
+    en: EM Shield Amplifiers
+    fr: Amplificateurs de bouclier EM
     ja: EMレジスタンス増幅器
-    ko: EM 저항력 증폭기
-    ru: Анти-ЭМ
-    zh: 电磁抗性增效器
+    ko: EM 저항력 실드 증폭기
+    ru: ЭМ усилители щитов
+    zh: 电磁护盾增效器
   parentGroupID: 550
 1692:
   descriptionID:
@@ -23124,23 +23123,23 @@
   parentGroupID: 553
 1696:
   descriptionID:
-    de: Anpassungsfähige Schildverstärker
-    en: Adaptive Shield Hardeners
-    fr: Renforcements de bouclier à résistance adaptative
+    de: Multispektrum-Schildhärter
+    en: Multispectrum Shield Hardeners
+    fr: Renforcements de bouclier multispectre
     ja: 適応シールドハードナー
-    ko: 적응형 실드 강화장치
-    ru: Универсальные модуляторы сопротивляемости полей
-    zh: 适应性护盾增强器
+    ko: 다중스팩트럼 실드 강화장치
+    ru: Многоспектральные усилители щитов
+    zh: 多谱式护盾增强器
   hasTypes: true
   iconID: 81
   nameID:
-    de: Anpassungsfähige Schildhärter
-    en: Adaptive Shield Hardeners
-    fr: Renforcements de bouclier adaptatif
+    de: Multispectrum Shield Hardeners
+    en: Multispectrum Shield Hardeners
+    fr: Renforcements de bouclier multispectre
     ja: 適応シールドハードナー
-    ko: 적응형 실드 강화장치
-    ru: Универсальные
-    zh: 适应性护盾增强器
+    ko: 다중스팩트럼 실드 강화장치
+    ru: Многоспектральные усилители щитов
+    zh: 多谱式护盾增强器
   parentGroupID: 553
 1697:
   descriptionID:
@@ -25466,7 +25465,7 @@
     ja: 特別版電子戦型巡洋艦
     ko: 리콘 크루저
     ru: Малосерийные дозорные корабли
-    zh: 特别版侦查舰
+    zh: 特别版侦察舰
   parentGroupID: 1612
 1838:
   hasTypes: true
@@ -26349,7 +26348,7 @@
     ja: ヤン・ユング文明の遺物。
     ko: 얀 정 문명의 유물입니다.
     ru: Артефакты цивилизации Yan Jung
-    zh: 燕军文明的物品。
+    zh: 殷郡文明的物品。
   hasTypes: true
   iconID: 2890
   nameID:
@@ -26359,7 +26358,7 @@
     ja: ヤン・ユング
     ko: 얀 정
     ru: Ян-Джун
-    zh: 燕军
+    zh: 殷郡
   parentGroupID: 1897
 1905:
   descriptionID:
@@ -32173,7 +32172,7 @@
     fr: Vaisseaux spéciaux de reconnaissance
     ko: 특수 리콘 크루저
     ru: Малосерийные дозорные крейсеры
-    zh: 特别侦查舰
+    zh: 特别侦察舰
   parentGroupID: 2068
 2369:
   hasTypes: false
@@ -33727,14 +33726,14 @@
   parentGroupID: 1031
 2480:
   descriptionID:
-    de: Daten aus der Raumverwerfung des Abgrunds
-    en: Data found in Abyssal Deadspace
-    fr: Données trouvées dans l'abîme Deadspace
-    ko: 어비설 데드스페이스에서 발견되는 트리글라비안 데이터입니다.
-    ru: Данные, которые можно найти в Мёртвой бездне
-    zh: 在深渊空间中发现的数据
+    de: Triglavia-Datenspeichergeräte
+    en: Triglavian Data Storage Devices
+    fr: Dispositifs d'archivage de données triglavian
+    ko: 트리글라비안 데이터 저장장치
+    ru: Триглавские устройства хранения данных
+    zh: 三神裔数据存储设备
   hasTypes: true
-  iconID: 2037
+  iconID: 21982
   nameID:
     de: Triglavia-Daten
     en: Triglavian Data
@@ -34901,4 +34900,207 @@
     ko: 점프 필라멘트
     ru: Прыжковые нити
     zh: 跳跃纤维
+  parentGroupID: 2456
+2728:
+  descriptionID:
+    de: In Vorton-Projektoren verwendete Kondensator-Paket-Ladungen
+    en: Condenser Pack charges used in Vorton Projectors
+    fr: Charges de packs de condensateur utilisées dans les projecteurs de vortons
+    ko: 보르톤 프로젝터에 사용되는 콘덴서 팩 차지입니다.
+    ru: Наборы конденсаторов — заряды, которые используют вортонные проекторы
+    zh: 电弧弦投射器使用的电容包
+  hasTypes: false
+  iconID: 24481
+  nameID:
+    de: Kondensator-Pakete
+    en: Condenser Packs
+    fr: Packs de condensateur
+    ko: 콘덴서 팩
+    ru: Наборы конденсаторов
+    zh: 电容包
+  parentGroupID: 11
+2729:
+  descriptionID:
+    de: Standard-Kondensator-Pakete
+    en: Standard Condenser Packs
+    fr: Packs de condensateur standard
+    ko: 일반 콘덴서 팩
+    ru: Стандартные наборы конденсаторов
+    zh: 标准电容包
+  hasTypes: false
+  iconID: 24481
+  nameID:
+    de: Standard-Kondensator-Pakete
+    en: Standard Condenser Packs
+    fr: Packs de condensateur standard
+    ko: 일반 콘덴서 팩
+    ru: Стандартные наборы конденсаторов
+    zh: 标准电容包
+  parentGroupID: 2728
+2730:
+  descriptionID:
+    de: Fortschrittliche Kondensator-Pakete
+    en: Advanced Condenser Packs
+    fr: Packs de condensateur avancé
+    ko: 상급 콘덴서 팩
+    ru: Улучшенные наборы конденсаторов
+    zh: 高级电容包
+  hasTypes: false
+  iconID: 24480
+  nameID:
+    de: Fortschrittliche Kondensator-Pakete
+    en: Advanced Condenser Packs
+    fr: Packs de condensateur avancé
+    ko: 상급 콘덴서 팩
+    ru: Улучшенные наборы конденсаторов
+    zh: 高级电容包
+  parentGroupID: 2728
+2734:
+  hasTypes: true
+  iconID: 24469
+  nameID:
+    de: Klein
+    en: Small
+    fr: Petit
+    ko: 소형
+    ru: Малые
+    zh: 小型
+  parentGroupID: 2729
+2735:
+  hasTypes: true
+  iconID: 24475
+  nameID:
+    de: Mittelgroß
+    en: Medium
+    fr: Intermédiaire
+    ko: 중형
+    ru: Средние
+    zh: 中型
+  parentGroupID: 2729
+2736:
+  hasTypes: true
+  iconID: 24481
+  nameID:
+    de: Groß
+    en: Large
+    fr: Grand
+    ko: 대형
+    ru: Большие
+    zh: 大型
+  parentGroupID: 2729
+2737:
+  hasTypes: true
+  iconID: 24468
+  nameID:
+    de: Klein
+    en: Small
+    fr: Petit
+    ko: 소형
+    ru: Малые
+    zh: 小型
+  parentGroupID: 2730
+2738:
+  hasTypes: true
+  iconID: 24474
+  nameID:
+    de: Mittelgroß
+    en: Medium
+    fr: Intermédiaire
+    ko: 중형
+    ru: Средние
+    zh: 中型
+  parentGroupID: 2730
+2739:
+  hasTypes: true
+  iconID: 24480
+  nameID:
+    de: Groß
+    en: Large
+    fr: Grand
+    ko: 대형
+    ru: Большие
+    zh: 大型
+  parentGroupID: 2730
+2740:
+  hasTypes: true
+  iconID: 24467
+  nameID:
+    de: Vorton-Tuning-Systeme
+    en: Vorton Tuning Systems
+    fr: Systèmes de réglage des vortons
+    ko: 보르톤 조정 시스템
+    ru: Системы настройки вортонов
+    zh: 电弧弦调谐系统
+  parentGroupID: 143
+2741:
+  descriptionID:
+    de: Vorton-Projektoren von Upwell
+    en: Vorton Projectors made by Upwell
+    fr: Projecteurs de vortons produits par Upwell
+    ko: 업웰 제작 보르톤 프로젝터
+    ru: Вортонные проекторы производства консорциума «Апвелл»
+    zh: 昇威财团制造的电弧弦投射器
+  hasTypes: false
+  iconID: 24466
+  nameID:
+    de: Vorton-Projektoren
+    en: Vorton Projectors
+    fr: Projecteurs de vortons
+    ko: 보르톤 프로젝터
+    ru: Вортонные проекторы
+    zh: 电弧弦投射器
+  parentGroupID: 10
+2742:
+  hasTypes: true
+  iconID: 24464
+  nameID:
+    de: Klein
+    en: Small
+    fr: Petit
+    ko: 소형
+    ru: Малые
+    zh: 小型
+  parentGroupID: 2741
+2743:
+  hasTypes: true
+  iconID: 24465
+  nameID:
+    de: Mittelgroß
+    en: Medium
+    fr: Intermédiaire
+    ko: 중형
+    ru: Средние
+    zh: 中型
+  parentGroupID: 2741
+2744:
+  hasTypes: true
+  iconID: 24466
+  nameID:
+    de: Groß
+    en: Large
+    fr: Grand
+    ko: 대형
+    ru: Большие
+    zh: 大型
+  parentGroupID: 2741
+2747:
+  descriptionID:
+    de: Filamente, die sich für zeitlich begrenzte PvP-Events mit dem Testgelände
+      des Abgrunds verbinden.
+    en: Filaments that connect to the Abyssal Proving Grounds for limited time PVP
+      events.
+    fr: Ce filament se connecte aux sites d'expérimentation abyssaux pendant les événements
+      PVP à durée limitée.
+    ko: 이 필라멘트는 PVP 이벤트가 이루어지는 어비설 격전지로 함대를 전송합니다.
+    ru: Нити, открывающие проход на Испытательный полигон Бездны на время PvP-событий.
+    zh: 使用此纤维可以前往深渊试炼场，进行限时PVP交战。
+  hasTypes: true
+  iconID: 21925
+  nameID:
+    de: Testgelände-Filamente
+    en: Proving Ground Filaments
+    fr: Filaments de site d'expérimentation
+    ko: 격전지 필라멘트
+    ru: Нити испытательного полигона
+    zh: 试炼场纤维
   parentGroupID: 2456

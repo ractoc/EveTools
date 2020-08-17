@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private routeListener$: Subscription;
 
-  public user: User;
+  user: User;
 
   constructor(private userService: UserService,
               private route: ActivatedRoute,
@@ -32,12 +32,15 @@ export class LoginComponent implements OnInit, OnDestroy {
         if (eveState) {
           this.userService.getUser(eveState)
             .subscribe(
-              user => {
-                this.user = user;
-                const currentPage = localStorage.getItem('currentPage');
+              result => {
+                if (result === undefined || result == null) {
+                  this.document.location.href = 'http://' + environment.apiHost + ':8484/user/launchSignOn';
+                }
+                this.user = result;
+                const currentPage = this.localStorageService.get('currentPage');
                 this.localStorageService.set('eve-state', eveState);
                 if (currentPage) {
-                  localStorage.removeItem('currentPage');
+                  this.localStorageService.remove('currentPage');
                   this.router.navigateByUrl(currentPage);
                 } else {
                   this.router.navigate(['home']);

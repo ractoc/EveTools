@@ -3,6 +3,7 @@ import {AssetsService} from '../service/assets.service';
 import {MarketGroupModel} from '../shared/model/marketgroup.model';
 import {Router} from '@angular/router';
 import {ItemModel} from '../shared/model/item.model';
+import {LocalStorageService} from '../service/local-storage.service';
 
 @Component({
   selector: 'app-item-list',
@@ -11,7 +12,9 @@ import {ItemModel} from '../shared/model/item.model';
 })
 export class ItemListComponent implements OnInit {
 
-  constructor(private assetsService: AssetsService, private router: Router) {
+  constructor(private assetsService: AssetsService,
+              private router: Router,
+              private localStorageService: LocalStorageService) {
   }
 
   itemList: Array<ItemModel>;
@@ -25,12 +28,11 @@ export class ItemListComponent implements OnInit {
     if (marketGroup) {
       this.assetsService.getItemsForMarketGroup(marketGroup).subscribe(
         items => {
-          console.log('received items', items);
           this.itemList = items;
         },
         error => {
           if (error.status === 401) {
-            localStorage.setItem('currentPage', '/items');
+            this.localStorageService.set('currentPage', '/items');
             this.router.navigateByUrl('/login');
           }
         }

@@ -24,7 +24,7 @@ export class UniverseService {
   getMarketHubs(): Observable<MarketHubModel[]> {
     const httpOptions = {
       headers: new HttpHeaders({
-        'Authorization': 'Bearer ' + this.userService.getEveState()
+        Authorization: 'Bearer ' + this.userService.getEveState()
       })
     };
     return this.http.get<any>(UNIVERSE_URI + '/marketHubs/', httpOptions)

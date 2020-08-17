@@ -4,6 +4,8 @@ import {AssetsService} from '../service/assets.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {LoginComponent} from '../login/login.component';
+import {LocalStorageService} from '../service/local-storage.service';
+import {UserService} from '../service/user.service';
 
 @Component({
   selector: 'app-blueprint-list',
@@ -20,7 +22,12 @@ export class BlueprintListComponent implements OnInit, OnDestroy {
   search: string;
 
   constructor(
-    private route: ActivatedRoute, private assetsService: AssetsService, private router: Router, private login: LoginComponent) {
+    private route: ActivatedRoute,
+    private assetsService: AssetsService,
+    private router: Router,
+    private login: LoginComponent,
+    private userService: UserService,
+    private localStorageService: LocalStorageService) {
   }
 
   ngOnInit() {
@@ -41,12 +48,13 @@ export class BlueprintListComponent implements OnInit, OnDestroy {
               err => {
                 this.errorMessage = err;
                 if (err.status === 401) {
-                  localStorage.setItem('currentPage', '/blueprints/personal');
+                  this.localStorageService.remove('eve-state');
+                  this.localStorageService.set('currentPage', '/blueprints/personal');
                   this.router.navigateByUrl('/login');
                 }
               }
             );
-          } else if (data.corporate && this.login.user.hasRole('director')) {
+          } else if (data.corporate && this.userService.getCurrentUser().hasRole('director')) {
             this.bpType = 'corporate';
             this.assetsService.getCorporateBlueprints().subscribe(
               (blueprintData: BlueprintModel[]) => {
@@ -60,7 +68,8 @@ export class BlueprintListComponent implements OnInit, OnDestroy {
               err => {
                 this.errorMessage = err;
                 if (err.status === 401) {
-                  localStorage.setItem('currentPage', '/blueprints/corporate');
+                  this.localStorageService.remove('eve-state');
+                  this.localStorageService.set('currentPage', '/blueprints/corporate');
                   this.router.navigateByUrl('/login');
                 }
               }

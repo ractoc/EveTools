@@ -8,6 +8,7 @@ import {UniverseService} from '../service/universe.service';
 import {CalculatorService} from '../service/calculator.service';
 import {AssetsService} from '../service/assets.service';
 import {ItemModel} from '../shared/model/item.model';
+import {LocalStorageService} from '../service/local-storage.service';
 
 @Component({
   selector: 'app-item-details',
@@ -29,7 +30,8 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
               private calculatorService: CalculatorService,
               private route: ActivatedRoute,
               private router: Router,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              private localStorageService: LocalStorageService) {
     this.form = this.formBuilder.group({
       buyMarketHubs: [],
       sellMarketHubs: [],
@@ -42,7 +44,6 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
     this.isCalculated = false;
     this.routeListener$ = this.route.params
       .subscribe((params: any) => {
-          console.log(params);
           if (params.id) {
             this.assetsService.getItem(params.id).subscribe(
               (itemData: ItemModel) => {
@@ -50,7 +51,7 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
               },
               err => {
                 if (err.status === 401) {
-                  localStorage.setItem('currentPage', '/item/' + params.id);
+                  this.localStorageService.set('currentPage', '/item/' + params.id);
                   this.router.navigateByUrl('/login');
                 } else {
                   this.errorMessage = 'Unable to load blueprint';
@@ -87,9 +88,8 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
 
     this.isCalculating = true;
     this.isCalculated = false;
-    this.calculatorService.calculateItem(this.item, buyMarketHub, sellMarketHub, nrRuns).subscribe(
+    this.calculatorService.calculateItem(this.item, buyMarketHub, sellMarketHub, nrRuns).then(
       (itemData: ItemModel) => {
-        console.log('calculated item', itemData);
         this.item = itemData;
         this.isCalculating = false;
         this.isCalculated = true;

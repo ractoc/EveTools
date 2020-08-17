@@ -10,6 +10,7 @@ import {UniverseService} from '../service/universe.service';
 
 import {BlueprintModel} from '../shared/model/blueprint.model';
 import {MarketHubModel} from '../shared/model/markethub.model';
+import {LocalStorageService} from '../service/local-storage.service';
 
 @Component({
   selector: 'app-blueprint-details',
@@ -33,7 +34,8 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
               private calculatorService: CalculatorService,
               private route: ActivatedRoute,
               private router: Router,
-              private formBuilder: FormBuilder
+              private formBuilder: FormBuilder,
+              private localStorageService: LocalStorageService
   ) {
     this.form = this.formBuilder.group({
       buyMarketHubs: [],
@@ -54,7 +56,7 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
               },
               err => {
                 if (err.status === 401) {
-                  localStorage.setItem('currentPage', '/blueprint/' + params.type + '/' + params.id);
+                  this.localStorageService.set('currentPage', '/blueprint/' + params.type + '/' + params.id);
                   this.router.navigateByUrl('/login');
                 } else {
                   this.errorMessage = 'Unable to load blueprint';
@@ -91,7 +93,7 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
 
     this.isCalculating = true;
     this.isCalculated = false;
-    this.calculatorService.calculateBlueprint(this.bp, buyMarketHub, sellMarketHub, nrRuns).subscribe(
+    this.calculatorService.calculateBlueprint(this.bp, buyMarketHub, sellMarketHub, nrRuns).then(
       (blueprintData: BlueprintModel) => {
         this.bp = blueprintData;
         this.isCalculating = false;

@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 
 import {MarketGroupModel} from '../shared/model/marketgroup.model';
 import {AssetsService} from '../service/assets.service';
+import {LocalStorageService} from '../service/local-storage.service';
 
 @Component({
   selector: 'app-market-group-tree',
@@ -18,7 +19,9 @@ export class MarketGroupTreeComponent implements OnInit {
   errorMessage: string;
   expanded: Array<MarketGroupModel> = new Array<MarketGroupModel>();
 
-  constructor(private assetsService: AssetsService, private router: Router) {
+  constructor(private assetsService: AssetsService,
+              private router: Router,
+              private localStorageService: LocalStorageService) {
   }
 
   ngOnInit() {
@@ -28,7 +31,7 @@ export class MarketGroupTreeComponent implements OnInit {
       },
       error => {
         if (error.status === 401) {
-          localStorage.setItem('currentPage', '/items');
+          this.localStorageService.set('currentPage', '/items');
           this.router.navigateByUrl('/login');
         }
       }
@@ -61,7 +64,7 @@ export class MarketGroupTreeComponent implements OnInit {
         },
         error => {
           if (error.status === 401) {
-            localStorage.setItem('currentPage', '/items');
+            this.localStorageService.set('currentPage', '/items');
             this.router.navigateByUrl('/login');
           }
         }
