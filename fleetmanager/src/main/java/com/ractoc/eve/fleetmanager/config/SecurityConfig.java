@@ -84,6 +84,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
+                        .allowedMethods("POST", "OPTIONS", "GET", "DELETE", "PUT")
                         .allowedHeaders("Accept",
                                 "Accept-Language",
                                 "Content-Language",
