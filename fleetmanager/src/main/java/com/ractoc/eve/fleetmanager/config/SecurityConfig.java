@@ -3,6 +3,7 @@ package com.ractoc.eve.fleetmanager.config;
 import com.ractoc.eve.user.filter.UserAuthenticationFilter;
 import com.ractoc.eve.user.filter.UserAuthenticationProvider;
 import com.ractoc.eve.user_client.api.UserResourceApi;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     );
 
     private UserAuthenticationProvider provider;
+
+    @Value("${cors.origins}")
+    private String allowedOrigins;
 
     public SecurityConfig(final UserAuthenticationProvider authenticationProvider) {
         this.provider = authenticationProvider;
@@ -85,6 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedMethods("POST", "OPTIONS", "GET", "DELETE", "PUT")
+                        .allowedOrigins()
                         .allowedHeaders("Accept",
                                 "Accept-Language",
                                 "Content-Language",
