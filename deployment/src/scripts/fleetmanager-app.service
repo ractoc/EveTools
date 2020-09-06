@@ -1,10 +1,10 @@
 [Service]
 WorkingDirectory=/opt/eve
-ExecStart=/opt/eve/calculator.jar
+ExecStart=/opt/eve/fleetmanager.jar
 Restart=always
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=calculator-app
+SyslogIdentifier=fleetmanager-app
 User=eve
 Group=eve
 Environment=NODE_ENV=production
