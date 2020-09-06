@@ -1,0 +1,97 @@
+{
+  "config": {
+    "speedmentVersion": "Speedment:3.2.9-SNAPSHOT",
+    "companyName": "ractoc.com",
+    "appId": "0325269d-9c5c-4958-91e9-b4a62742b4f0",
+    "name": "fleetmanager",
+    "packageLocation": "target/generated-sources/java",
+    "packageName": "com.ractoc.eve.fleetmanager.db",
+    "id": "fleetmanager",
+    "enabled": true,
+    "dbmses": [
+      {
+        "port": 9876,
+        "schemas": [
+          {
+            "tables": [
+              {
+                "primaryKeyColumns": [
+                  {
+                    "name": "id",
+                    "id": "id",
+                    "ordinalPosition": 1
+                  }
+                ],
+                "indexes": [
+                  {
+                    "unique": true,
+                    "name": "PRIMARY",
+                    "indexColumns": [
+                      {
+                        "orderType": "ASC",
+                        "name": "id",
+                        "id": "id",
+                        "ordinalPosition": 1
+                      }
+                    ],
+                    "id": "PRIMARY"
+                  }
+                ],
+                "isView": false,
+                "columns": [
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "name": "id",
+                    "id": "id",
+                    "ordinalPosition": 1
+                  },
+                  {
+                    "databaseType": "java.lang.String",
+                    "nullable": false,
+                    "name": "name",
+                    "id": "name",
+                    "ordinalPosition": 2
+                  },
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "name": "owner",
+                    "id": "owner",
+                    "ordinalPosition": 3
+                  },
+                  {
+                    "databaseType": "java.lang.String",
+                    "nullable": false,
+                    "name": "start",
+                    "id": "start",
+                    "ordinalPosition": 4
+                  },
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "nullable": true,
+                    "name": "duration",
+                    "id": "duration",
+                    "ordinalPosition": 5
+                  }
+                ],
+                "name": "fleet",
+                "id": "fleet"
+              }
+            ],
+            "name": "eve_fleetmanager",
+            "id": "eve_fleetmanager",
+            "enabled": true
+          }
+        ],
+        "name": "fleetmanager",
+        "typeName": "MySQL",
+        "id": "fleetmanager",
+        "enabled": true,
+        "username": "eve"
+      }
+    ]
+  }
+}

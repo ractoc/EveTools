@@ -19,9 +19,9 @@
         <module>user</module>
         <module>user-client</module>
         <module>assets-client</module>
-        <module>calculator</module>
         <module>deployment</module>
         <module>common-test</module>
+        <module>fleetmanager</module>
     </modules>
 
     <properties>

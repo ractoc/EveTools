@@ -16,6 +16,8 @@ import {ItemListComponent} from './item-list/item-list.component';
 import {ItemDetailsComponent} from './item-details/item-details.component';
 import {MarketGroupTreeComponent} from './market-group-tree/market-group-tree.component';
 import {BlueprintTreeComponent} from './blueprint-tree/blueprint-tree.component';
+import {FleetListComponent} from './fleet-list/fleet-list.component';
+import {FleetDetailsComponent} from './fleet-details/fleet-details.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import {BlueprintTreeComponent} from './blueprint-tree/blueprint-tree.component'
     ItemListComponent,
     ItemDetailsComponent,
     MarketGroupTreeComponent,
-    BlueprintTreeComponent
+    BlueprintTreeComponent,
+    FleetListComponent,
+    FleetDetailsComponent
   ],
   imports: [
     NgbModule,

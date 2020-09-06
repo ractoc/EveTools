@@ -7,6 +7,8 @@ import {BlueprintDetailsComponent} from './blueprint-details/blueprint-details.c
 import {ItemListComponent} from './item-list/item-list.component';
 import {ItemDetailsComponent} from './item-details/item-details.component';
 import {BlueprintTreeComponent} from './blueprint-tree/blueprint-tree.component';
+import {FleetListComponent} from './fleet-list/fleet-list.component';
+import {FleetDetailsComponent} from "./fleet-details/fleet-details.component";
 
 export const APP_ROUTES: Routes = [
   {path: '', component: HomeComponent},
@@ -19,5 +21,8 @@ export const APP_ROUTES: Routes = [
   {path: 'blueprint/:type/:id', component: BlueprintDetailsComponent},
   {path: 'items', component: ItemListComponent},
   {path: 'item/:id', component: ItemDetailsComponent},
+  {path: 'fleets', component: FleetListComponent},
+  {path: 'fleet', component: FleetDetailsComponent},
+  {path: 'fleet/:id', component: FleetDetailsComponent},
   {path: '**', redirectTo: 'home'}
 ];

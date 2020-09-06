@@ -1,0 +1,87 @@
+<div *ngIf="fleet; else loading">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" [(ngModel)]="fleet.name" [readOnly]="!editable()"/>
+  </div>
+  <div class="form-group">
+    <label for="startDate">Start Date</label>
+    <div class="input-group">
+      <input type="text" ngbDatepicker #s="ngbDatepicker" [(ngModel)]="startDate" class="form-control" id="startDate"
+             readonly/>
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary calendar" (click)="s.toggle()" type="button"
+                [disabled]="!editable()"></button>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="startTime">Start Time</label>
+    <div class="input-group">
+      <ngb-timepicker [(ngModel)]="startTime" id="startTime" [minuteStep]="15" [disabled]="!editable()"
+                      [spinners]="editable()"></ngb-timepicker>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="duration">Duration</label>
+    <div class="input-group">
+      <select class="custom-select custom-select-sm" id="duration" [(ngModel)]="fleet.duration"
+              [disabled]="!editable()">
+        <option value="-1">Not specified</option>
+        <option value="1">1 hour</option>
+        <option value="2">2 hours</option>
+        <option value="3">3 hours</option>
+        <option value="4">4 hours</option>
+        <option value="5">5 hours</option>
+        <option value="6">6 hours</option>
+        <option value="7">7 hours</option>
+        <option value="8">8 hours</option>
+        <option value="9">9 hours</option>
+        <option value="10">10 hours</option>
+        <option value="11">11 hours</option>
+        <option value="12">12 hours</option>
+        <option value="13">13 hours</option>
+        <option value="14">14 hours</option>
+        <option value="15">15 hours</option>
+        <option value="16">16 hours</option>
+        <option value="17">17 hours</option>
+        <option value="18">18 hours</option>
+        <option value="19">19 hours</option>
+        <option value="20">20 hours</option>
+        <option value="21">21 hours</option>
+        <option value="22">22 hours</option>
+        <option value="23">23 hours</option>
+        <option value="24">24 hours</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group" *ngIf="editable()">
+    <button type="button" class="btn btn-primary" (click)="doSaveFleet()" [disabled]="!validateInput()">Save Fleet
+    </button>
+  </div>
+  <div class="form-group" *ngIf="!editable()">
+    <button type="button" class="btn btn-primary" (click)="doEditFleet()">Edit Fleet</button>
+    <button type="button" class="btn btn-primary" (click)="open(content)">Delete Fleet</button>
+  </div>
+
+  {{closeResult}}
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="deleteConfirmLabel">Confirm Fleet Deletion</h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to permanently delete fleet {{fleet.name}}?
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close('Cancel')">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="modal.close('Delete')">Confirm Delete</button>
+  </div>
+</ng-template>
+
+<ng-template #loading>
+  Loading fleet...
+</ng-template>

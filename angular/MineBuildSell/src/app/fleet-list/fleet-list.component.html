@@ -1,0 +1,20 @@
+<div class="row">
+  <button type="button" class="btn btn-primary" routerLink="/fleet">New Fleet</button>
+</div>
+<div class="row">
+  <div *ngIf="errorMessage">{{errorMessage}}</div>
+  <div *ngIf="fleets; else loading">
+    <div class="list-group list-group-flush">
+      <a *ngFor="let fleet of fleets" [ngClass]="fleetClass(fleet)"
+         [routerLink]="['/fleet', fleet.id]">
+        {{fleet.name}}
+      </a>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <div *ngIf="!errorMessage">
+      Loading fleets...
+    </div>
+  </ng-template>
+</div>
