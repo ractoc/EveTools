@@ -27,7 +27,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>calculator</artifactId>
+            <artifactId>fleetmanager</artifactId>
             <classifier>executable</classifier>
             <version>${project.version}</version>
         </dependency>
