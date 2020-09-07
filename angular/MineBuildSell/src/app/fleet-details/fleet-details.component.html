@@ -58,7 +58,7 @@
     <button type="button" class="btn btn-primary" (click)="doSaveFleet()" [disabled]="!validateInput()">Save Fleet
     </button>
   </div>
-  <div class="form-group" *ngIf="!editable()">
+  <div class="form-group" *ngIf="!editable() && owner()">
     <button type="button" class="btn btn-primary" (click)="doEditFleet()">Edit Fleet</button>
     <button type="button" class="btn btn-primary" (click)="open(content)">Delete Fleet</button>
   </div>

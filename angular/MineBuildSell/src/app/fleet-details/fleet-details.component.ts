@@ -129,6 +129,10 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
     return !(this.fleet && this.fleet.id) || this.editFleet;
   }
 
+  owner() {
+    return this.fleet.owner === this.userService.getCurrentUser().characterId;
+  }
+
   doEditFleet() {
     this.editFleet = true;
   }
