@@ -17,9 +17,6 @@ dbms:
 spring:
   profiles: default
 
-cors:
-  origins: localhost:4200
-
 dbms:
   password: eve
 
@@ -34,9 +31,6 @@ logging:
 ---
 spring:
   profiles: prod
-
-cors:
-  origins: 31.21.178.162:8181
 
 dbms:
   password: Dr!lb00r
