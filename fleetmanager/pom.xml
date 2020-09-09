@@ -123,15 +123,15 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>Add Password Restricted typeMapper</id>
+                        <id>Add start typeMapper</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>edit</goal>
                         </goals>
                         <configuration>
-                            <set>typeMapper:com.speedment.runtime.typemapper.string.YNStringToBooleanMapper</set>
+                            <set>typeMapper:com.speedment.runtime.typemapper.time.TimestampToLongMapper</set>
                             <what>column</what>
-                            <where>name:password_restricted</where>
+                            <where>type:java.sql.timestamp</where>
                         </configuration>
                     </execution>
                     <execution>

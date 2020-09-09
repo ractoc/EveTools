@@ -96,7 +96,7 @@
           </div>
         </span>
       <span *ngIf="!editable()">
-          {{corporationRestricted ? 'Yes' : 'No'}}
+          {{corporationRestricted === 'true' ? 'Yes' : 'No'}}
         </span>
     </div>
   </fieldset>
