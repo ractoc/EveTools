@@ -23,6 +23,11 @@
             <artifactId>user-client</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>j-esi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- microservice dependencies -->
         <dependency>
@@ -115,6 +120,30 @@
                             <set>typeMapper:com.speedment.plugins.enums.StringToEnumTypeMapper</set>
                             <what>column</what>
                             <where>name:fleet_type</where>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Add Password Restricted typeMapper</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>edit</goal>
+                        </goals>
+                        <configuration>
+                            <set>typeMapper:com.speedment.runtime.typemapper.string.YNStringToBooleanMapper</set>
+                            <what>column</what>
+                            <where>name:password_restricted</where>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Add Corporation Restricted typeMapper</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>edit</goal>
+                        </goals>
+                        <configuration>
+                            <set>typeMapper:com.speedment.runtime.typemapper.string.YNStringToBooleanMapper</set>
+                            <what>column</what>
+                            <where>name:corporation_restricted</where>
                         </configuration>
                     </execution>
                     <execution>

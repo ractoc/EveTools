@@ -1,3 +1,5 @@
+import {CharacterModel} from './character.model';
+
 export class FleetModel {
 
   constructor(public id: number,
@@ -6,7 +8,9 @@ export class FleetModel {
               public owner: number,
               public type: string,
               public start: string,
-              public duration: number) {
+              public duration: number,
+              public corporationRestricted: boolean,
+              public invitations: CharacterModel[]) {
   }
 
 }

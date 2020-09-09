@@ -2,7 +2,7 @@
   "config": {
     "speedmentVersion": "Speedment:3.2.9-SNAPSHOT",
     "companyName": "ractoc.com",
-    "appId": "89644254-782b-4781-88d4-a9a198bf3de6",
+    "appId": "6f61b68c-212b-4cf2-8a4a-0882aeb53575",
     "name": "assets",
     "packageLocation": "target/generated-sources/java",
     "packageName": "com.ractoc.eve.assets.db",

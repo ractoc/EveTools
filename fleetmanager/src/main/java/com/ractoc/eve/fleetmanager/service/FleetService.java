@@ -20,8 +20,11 @@ public class FleetService {
         this.fleetManager = fleetManager;
     }
 
-    public Stream<Fleet> getFleets() {
-        return fleetManager.stream();
+    public Stream<Fleet> getFleets(Integer charId, Integer corporationId) {
+        return fleetManager.stream()
+                .filter(fleet -> fleet.getCorporationId().isEmpty() ||
+                        fleet.getCorporationId().getAsInt() == 0 ||
+                        fleet.getCorporationId().getAsInt() == corporationId);
     }
 
     public Optional<Fleet> getFleet(int id) {

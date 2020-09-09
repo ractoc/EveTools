@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ModalDismissReasons, NgbDateStruct, NgbModal, NgbTimeStruct} from '@ng-bootstrap/ng-bootstrap';
+import {NgbDateStruct, NgbModal, NgbTimeStruct} from '@ng-bootstrap/ng-bootstrap';
 import {FleetModel} from '../shared/model/fleet-model';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -20,9 +20,10 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
 
   startDate: NgbDateStruct;
   startTime: NgbTimeStruct;
+  corporationRestricted: string;
 
   editFleet: boolean;
-  closeResult: string;
+  displayPassword: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -45,6 +46,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
                   const start = JSON.parse(fleetData.start);
                   this.startDate = start.date;
                   this.startTime = start.time;
+                  this.corporationRestricted = '' + fleetData.corporationRestricted;
                 }
               },
               err => {
@@ -60,7 +62,15 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
               }
             );
           } else {
-            this.fleet = new FleetModel(undefined, undefined, undefined, undefined, undefined, undefined, -1);
+            this.fleet = new FleetModel(undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              -1,
+              false,
+              []);
             const currentDate = new Date();
             this.startDate = {
               year: currentDate.getFullYear(),
@@ -68,6 +78,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
               day: currentDate.getDate()
             };
             this.startTime = {hour: 0, minute: 0, second: 0};
+            this.corporationRestricted = 'false';
           }
         }
       );
@@ -80,6 +91,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
   doSaveFleet() {
     if (this.validateInput()) {
       this.fleet.start = JSON.stringify({date: this.startDate, time: this.startTime});
+      this.fleet.corporationRestricted = this.corporationRestricted === 'true';
       this.fleetService.saveFleet(this.fleet).subscribe(
         () => {
           this.router.navigateByUrl('/fleets');
@@ -105,20 +117,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
       if (result === 'Delete') {
         this.doDeleteFleet();
       }
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
-  }
-
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
   }
 
   validateInput() {

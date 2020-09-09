@@ -16,4 +16,5 @@ public class FleetModel {
     private Integer owner;
     private String start;
     private Integer duration;
+    private boolean corporationRestricted;
 }

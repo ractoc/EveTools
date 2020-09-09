@@ -2,6 +2,7 @@ package com.ractoc.eve.fleetmanager.controller;
 
 import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.fleetmanager.handler.FleetHandler;
+import com.ractoc.eve.fleetmanager.handler.HandlerException;
 import com.ractoc.eve.fleetmanager.response.BaseResponse;
 import com.ractoc.eve.fleetmanager.response.ErrorResponse;
 import com.ractoc.eve.fleetmanager.response.FleetListResponse;
@@ -22,7 +23,7 @@ import javax.validation.Valid;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@Api(tags = {"Fleet Resource"}, value = "/fleets", produces = "application/json")
+@Api(tags = {"Fleet Resource"}, value = "/", produces = "application/json")
 @SwaggerDefinition(tags = {
         @Tag(name = "Fleet Resource", description = "Main entry point for the Fleet API. " +
                 "Handles all fleet management actions. Aside from the HTTP return codes on the requests, " +
@@ -112,7 +113,7 @@ public class FleetController extends BaseController {
                     fleet,
                     ((EveUserDetails) authentication.getPrincipal()).getCharId());
             return new ResponseEntity<>(new BaseResponse(MOVED_PERMANENTLY.value()), ACCEPTED);
-        } catch (ServiceException e) {
+        } catch (ServiceException | HandlerException e) {
             log.error(e.getMessage(), e);
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
