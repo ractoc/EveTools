@@ -39,7 +39,10 @@
           </div>
         </form>
         <button type="button" (click)="calculate()" [disabled]="isCalculating"
-                [ngClass]="calculateClass()">{{calculateButtonText()}}</button>
+                [ngClass]="calculateClass()">
+          <span *ngIf="isCalculating" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+          {{calculateButtonText()}}
+        </button>
         <div class="card-body" *ngIf="isCalculated">
           <h5>Calculation Results for {{item.name}}</h5>
           <table class="table">
