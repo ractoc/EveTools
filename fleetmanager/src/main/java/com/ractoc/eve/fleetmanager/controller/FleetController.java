@@ -90,7 +90,8 @@ public class FleetController extends BaseController {
         try {
             return new ResponseEntity<>(new FleetResponse(CREATED,
                     fleetHandler.saveFleet(fleet,
-                            ((EveUserDetails) authentication.getPrincipal()).getCharId())),
+                            ((EveUserDetails) authentication.getPrincipal()).getCharId(),
+                            ((EveUserDetails) authentication.getPrincipal()).getAccessToken())),
                     CREATED);
         } catch (ServiceException e) {
             log.error(e.getMessage(), e);

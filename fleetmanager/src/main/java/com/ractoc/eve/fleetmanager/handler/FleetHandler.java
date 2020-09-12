@@ -1,6 +1,7 @@
 package com.ractoc.eve.fleetmanager.handler;
 
 import com.ractoc.eve.domain.fleetmanager.FleetModel;
+import com.ractoc.eve.domain.fleetmanager.InviteModel;
 import com.ractoc.eve.domain.fleetmanager.SimpleFleetModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
 import com.ractoc.eve.fleetmanager.mapper.FleetMapper;
@@ -21,11 +22,13 @@ import java.util.stream.Collectors;
 public class FleetHandler {
 
     private final FleetService fleetService;
+    private final InviteHandler inviteHandler;
     private final CharacterApi characterApi;
 
     @Autowired
-    public FleetHandler(FleetService fleetService, CharacterApi characterApi) {
+    public FleetHandler(FleetService fleetService, InviteHandler inviteHandler, CharacterApi characterApi) {
         this.fleetService = fleetService;
+        this.inviteHandler = inviteHandler;
         this.characterApi = characterApi;
     }
 
@@ -48,9 +51,32 @@ public class FleetHandler {
         return fleet;
     }
 
-    public FleetModel saveFleet(FleetModel fleet, Integer charId) {
+    public FleetModel saveFleet(FleetModel fleet, Integer charId, String accessToken) {
         fleet.setOwner(charId);
-        return FleetMapper.INSTANCE.dbToModel(fleetService.saveFleet(FleetMapper.INSTANCE.modelToDb(fleet)));
+        Fleet dbFleet = FleetMapper.INSTANCE.modelToDb(fleet);
+        FleetModel savedFleet = null;
+        if (fleet.isCorporationRestricted()) {
+            // inject corporation id if needed
+            try {
+                Integer corporationId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+                dbFleet.setCorporationId(corporationId);
+                savedFleet = FleetMapper.INSTANCE.dbToModel(fleetService.saveFleet(dbFleet));
+                // send the invitation
+                inviteHandler.inviteCorporation(
+                        InviteModel.builder()
+                                .fleetId(savedFleet.getId())
+                                .name(savedFleet.getName())
+                                .corporationId(corporationId).build(),
+                        charId,
+                        accessToken);
+            } catch (ApiException e) {
+                throw new HandlerException("Unable to resolve corporationId for character " + charId);
+            }
+        } else {
+            dbFleet.setCorporationId(null);
+            savedFleet = FleetMapper.INSTANCE.dbToModel(fleetService.saveFleet(dbFleet));
+        }
+        return savedFleet;
     }
 
     public FleetModel updateFleet(FleetModel fleet, Integer charId) {

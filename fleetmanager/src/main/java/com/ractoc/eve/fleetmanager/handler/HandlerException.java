@@ -6,4 +6,8 @@ public class HandlerException extends RuntimeException {
     public HandlerException(String msg) {
         super(msg);
     }
+
+    public HandlerException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 }

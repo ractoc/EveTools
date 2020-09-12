@@ -6,6 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ractoc.eve.fleetmanager.db.FleetmanagerApplication;
 import com.ractoc.eve.fleetmanager.db.FleetmanagerApplicationBuilder;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.FleetManager;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesManager;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.RegistrationsManager;
 import com.speedment.runtime.core.component.transaction.TransactionComponent;
 import com.speedment.runtime.core.component.transaction.TransactionHandler;
 import org.slf4j.Logger;
@@ -80,8 +82,18 @@ public class SpeedmentConfiguration {
     }
 
     @Bean
-    public FleetManager getBlueprintManager(FleetmanagerApplication app) {
+    public FleetManager getFleetManager(FleetmanagerApplication app) {
         return app.getOrThrow(FleetManager.class);
+    }
+
+    @Bean
+    public RegistrationsManager getRegistrationsManager(FleetmanagerApplication app) {
+        return app.getOrThrow(RegistrationsManager.class);
+    }
+
+    @Bean
+    public InvitesManager getInvitesManager(FleetmanagerApplication app) {
+        return app.getOrThrow(InvitesManager.class);
     }
 
     @Bean

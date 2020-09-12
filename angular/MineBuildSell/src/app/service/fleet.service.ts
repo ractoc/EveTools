@@ -43,7 +43,7 @@ export class FleetService {
         Authorization: 'Bearer ' + this.userService.getEveState()
       })
     };
-    if (fleet.id) {
+    if (fleet.id) { // update fleet
       return this.http.put<any>(FLEETS_URI + '/' + fleet.id, fleet, httpOptions)
         .pipe(
           map(result => {
@@ -54,7 +54,7 @@ export class FleetService {
             }
           })
         );
-    } else {
+    } else { // create fleet
       return this.http.post<any>(FLEETS_URI + '/', fleet, httpOptions)
         .pipe(
           map(result => {
