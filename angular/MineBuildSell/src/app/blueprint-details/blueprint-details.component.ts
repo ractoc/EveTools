@@ -100,6 +100,7 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
         this.isCalculated = true;
       }).catch(error => {
       this.errorMessage = error.message;
+      this.isCalculating = false;
     });
   }
 

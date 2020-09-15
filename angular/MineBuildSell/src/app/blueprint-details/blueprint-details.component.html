@@ -52,6 +52,9 @@
           <span *ngIf="isCalculating" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
           {{calculateButtonText()}}
         </button>
+        <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
+          {{errorMessage}}
+        </div>
         <div class="card-body" *ngIf="isCalculated">
           <h5>Calculation Results for {{bp.item.name}}</h5>
           <table class="table">
