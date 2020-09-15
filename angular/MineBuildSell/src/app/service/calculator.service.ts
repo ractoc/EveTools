@@ -220,19 +220,28 @@ export class CalculatorService {
           return skill.active_skill_level;
         })
       }
+    ).catch(error => {
+        throw new Error('Unable to fetch data from EVE servers');
+      }
     )
   }
 
   private async getStation(locationId: number): Promise<any> {
     return this.http.get<any>(
       EVE_UNIVERSE_URI + '/stations/' + locationId
-    ).toPromise();
+    ).toPromise().catch(error => {
+        throw new Error('Unable to fetch data from EVE servers');
+      }
+    );
   }
 
   private async getStructure(locationId: number, accessToken: string): Promise<any> {
     return this.http.get<any>(
       EVE_UNIVERSE_URI + '/structures/' + locationId + '?token=' + accessToken
-    ).toPromise();
+    ).toPromise().catch(error => {
+        throw new Error('Unable to fetch data from EVE servers');
+      }
+    );
   }
 
   private async getBuyPrice(typeId: number, buyMarketHub: MarketHubModel): Promise<any> {
@@ -291,7 +300,10 @@ export class CalculatorService {
         keepSearching = ordersData.length;
         const filteredOrders = ordersData.filter(order => order.system_id === locationId);
         return filteredOrders;
-      }).then(data => {
+      }).catch(error => {
+          throw new Error('Unable to fetch data from EVE servers');
+        }
+      ).then(data => {
         return data;
       });
       orders = [...orders, ...orderData];
@@ -354,7 +366,10 @@ export class CalculatorService {
         return data[0];
       }
       return undefined;
-    });
+    }).catch(error => {
+        throw new Error('Unable to fetch data from EVE servers');
+      }
+    );
   }
 
   private async getCostIndice(systemId: number): Promise<number> {
@@ -366,7 +381,10 @@ export class CalculatorService {
         .cost_indices.filter(indice => indice.activity === 'manufacturing')
       const resultingIndice = filteredCostIndeces[0].cost_index;
       return resultingIndice;
-    });
+    }).catch(error => {
+        throw new Error('Unable to fetch data from EVE servers');
+      }
+    );
   }
 
   private setStationId(locationId: number) {

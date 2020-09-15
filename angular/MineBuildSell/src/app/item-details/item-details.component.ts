@@ -93,7 +93,9 @@ export class ItemDetailsComponent implements OnInit, OnDestroy {
         this.item = itemData;
         this.isCalculating = false;
         this.isCalculated = true;
-      });
+      }).catch(error => {
+      this.errorMessage = error.message;
+    });
   }
 
   calculateClass() {

@@ -98,7 +98,9 @@ export class BlueprintDetailsComponent implements OnInit, OnDestroy {
         this.bp = blueprintData;
         this.isCalculating = false;
         this.isCalculated = true;
-      });
+      }).catch(error => {
+      this.errorMessage = error.message;
+    });
   }
 
   calculateClass() {
