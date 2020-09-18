@@ -1,0 +1,28 @@
+<div class="row">
+  <div *ngIf="errorMessage">{{errorMessage}}</div>
+  <div *ngIf="invite; else loading">
+    <h2>
+      Hello {{this.user.name}},
+    </h2>
+    <p>
+      You have been invited to join the fleet event {{invite.fleet.name}}.
+    </p>
+    <p>
+      This event has been planned by {{invite.name}}.
+    </p>
+    <p>
+      It will start at {{displayDate()}} {{displayTime()}} EVE-time.
+      <span *ngIf="invite.fleet.duration > 0">
+        It will run for {{invite.fleet.duration}}.
+      </span>
+    </p>
+    <!--<button type="button" class="btn btn-primary">Accept</button>
+    &nbsp;
+    <button type="button" class="btn btn-secondary">Decline</button>-->
+  </div>
+  <ng-template #loading>
+    <div *ngIf="!errorMessage">
+      Loading invite...
+    </div>
+  </ng-template>
+</div>
