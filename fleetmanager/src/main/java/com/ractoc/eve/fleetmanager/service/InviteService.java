@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites.INVITE_KEY;
+import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites.KEY;
 
 @Service
 public class InviteService {
@@ -51,6 +51,10 @@ public class InviteService {
         }
     }
 
+    public Invites getInvite(String key) {
+        return invitesManager.stream().filter(KEY.equal(key)).findAny().orElseThrow(() -> new ServiceException("Invite not found for jey " + key));
+    }
+
     // needs to be synchronized to make sure there are never any duplicate invite keys.
     private synchronized String invite(Integer fleetId, Integer corporationId, Integer characterId, String name) {
         String inviteKey = generateInviteKey();
@@ -63,14 +67,14 @@ public class InviteService {
             invite.setCharacterId(characterId);
         }
         invite.setName(name);
-        invite.setInviteKey(inviteKey);
+        invite.setKey(inviteKey);
         invitesManager.persist(invite);
         return inviteKey;
     }
 
     private String generateInviteKey() {
         String inviteKey = UUID.randomUUID().toString();
-        if (invitesManager.stream().anyMatch(INVITE_KEY.equal(inviteKey))) {
+        if (invitesManager.stream().anyMatch(KEY.equal(inviteKey))) {
             inviteKey = generateInviteKey();
         }
         return inviteKey;
@@ -102,6 +106,6 @@ public class InviteService {
     }
 
     private String generateLink(String inviteKey) {
-        return String.format("http://31.21.178.162:8181/fleets/register/%s", inviteKey);
+        return String.format("http://31.21.178.162:8181/fleets/invite/%s", inviteKey);
     }
 }

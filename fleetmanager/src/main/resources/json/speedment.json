@@ -2,7 +2,7 @@
   "config": {
     "speedmentVersion": "Speedment:3.2.9-SNAPSHOT",
     "companyName": "ractoc.com",
-    "appId": "8b85ae3f-8019-4949-9096-b579596fb5d3",
+    "appId": "50de3211-55c7-4d87-9a40-32e7ddd59a54",
     "name": "fleetmanager",
     "packageLocation": "target/generated-sources/java",
     "packageName": "com.ractoc.eve.fleetmanager.db",
@@ -91,14 +91,9 @@
               {
                 "primaryKeyColumns": [
                   {
-                    "name": "character_id",
-                    "id": "character_id",
+                    "name": "key",
+                    "id": "key",
                     "ordinalPosition": 1
-                  },
-                  {
-                    "name": "fleet_id",
-                    "id": "fleet_id",
-                    "ordinalPosition": 2
                   }
                 ],
                 "indexes": [
@@ -108,8 +103,8 @@
                     "indexColumns": [
                       {
                         "orderType": "ASC",
-                        "name": "invite_key",
-                        "id": "invite_key",
+                        "name": "key",
+                        "id": "key",
                         "ordinalPosition": 1
                       }
                     ],
@@ -121,15 +116,9 @@
                     "indexColumns": [
                       {
                         "orderType": "ASC",
-                        "name": "character_id",
-                        "id": "character_id",
+                        "name": "key",
+                        "id": "key",
                         "ordinalPosition": 1
-                      },
-                      {
-                        "orderType": "ASC",
-                        "name": "fleet_id",
-                        "id": "fleet_id",
-                        "ordinalPosition": 2
                       }
                     ],
                     "id": "PRIMARY"
@@ -170,8 +159,8 @@
                   {
                     "databaseType": "java.lang.String",
                     "nullable": false,
-                    "name": "invite_key",
-                    "id": "invite_key",
+                    "name": "key",
+                    "id": "key",
                     "ordinalPosition": 5
                   }
                 ],

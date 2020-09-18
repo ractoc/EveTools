@@ -18,6 +18,7 @@ import {MarketGroupTreeComponent} from './market-group-tree/market-group-tree.co
 import {BlueprintTreeComponent} from './blueprint-tree/blueprint-tree.component';
 import {FleetListComponent} from './fleet-list/fleet-list.component';
 import {FleetDetailsComponent} from './fleet-details/fleet-details.component';
+import {InvitationDetailsComponent} from './invitation-details/invitation-details.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import {FleetDetailsComponent} from './fleet-details/fleet-details.component';
     MarketGroupTreeComponent,
     BlueprintTreeComponent,
     FleetListComponent,
-    FleetDetailsComponent
+    FleetDetailsComponent,
+    InvitationDetailsComponent
   ],
   imports: [
     NgbModule,

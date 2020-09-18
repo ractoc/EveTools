@@ -13,8 +13,13 @@ import lombok.*;
 public class InviteModel {
 
     private Integer fleetId;
+    private String key;
     private Integer characterId;
     private Integer corporationId;
     private String name;
+
+    private String characterName;
+    private String corporationName;
+    private FleetModel fleet;
 
 }

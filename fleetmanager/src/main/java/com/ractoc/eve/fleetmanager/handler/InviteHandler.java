@@ -1,17 +1,21 @@
 package com.ractoc.eve.fleetmanager.handler;
 
 import com.ractoc.eve.domain.fleetmanager.InviteModel;
+import com.ractoc.eve.fleetmanager.mapper.FleetMapper;
+import com.ractoc.eve.fleetmanager.mapper.InviteMapper;
 import com.ractoc.eve.fleetmanager.service.FleetService;
 import com.ractoc.eve.fleetmanager.service.InviteService;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.CharacterApi;
 import com.ractoc.eve.jesi.api.CorporationApi;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
+@Slf4j
 public class InviteHandler {
 
     private final InviteService inviteService;
@@ -51,6 +55,26 @@ public class InviteHandler {
         } catch (ApiException e) {
             throw new HandlerException("unable to send create invitation", e);
         }
+    }
+
+    public InviteModel getInvite(String key, int charId) {
+        InviteModel invite = InviteMapper.INSTANCE.dbToModel(inviteService.getInvite(key));
+        try {
+            if (invite.getCharacterId() != 0) {
+                if (invite.getCharacterId() != charId) {
+                    throw new SecurityException("Access Denied");
+                }
+            } else if (invite.getCorporationId() != null) {
+                Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+                if (!invite.getCorporationId().equals(corpId)) {
+                    throw new SecurityException("Access Denied");
+                }
+            }
+            invite.setFleet(FleetMapper.INSTANCE.dbToModel(fleetService.getFleet(invite.getFleetId()).orElseThrow(() -> new HandlerException("Unable to find fleet"))));
+        } catch (ApiException e) {
+            throw new HandlerException("Unable to fetch data from EVE ESI", e);
+        }
+        return invite;
     }
 
     private String getFleetName(Integer fleetId) {

@@ -2,9 +2,7 @@ package com.ractoc.eve.fleetmanager.controller;
 
 import com.ractoc.eve.domain.fleetmanager.InviteModel;
 import com.ractoc.eve.fleetmanager.handler.InviteHandler;
-import com.ractoc.eve.fleetmanager.response.BaseResponse;
-import com.ractoc.eve.fleetmanager.response.ErrorResponse;
-import com.ractoc.eve.fleetmanager.response.InviteResponse;
+import com.ractoc.eve.fleetmanager.response.*;
 import com.ractoc.eve.fleetmanager.service.ServiceException;
 import com.ractoc.eve.user.filter.EveUserDetails;
 import io.swagger.annotations.*;
@@ -14,25 +12,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@Api(tags = {"Invite Resource"}, value = "/", produces = "application/json")
+@Api(tags = {"Invite Resource"}, value = "/invites", produces = "application/json")
 @SwaggerDefinition(tags = {
         @Tag(name = "Invite Resource", description = "Main entry point for the Invite API. " +
                 "Handles all invite actions. Aside from the HTTP return codes on the requests, " +
                 "the response body also contains a HTTP status code which gives additional information.")
 })
 @RestController
-@RequestMapping("/invite")
+@RequestMapping("/invites")
 @Validated
 @Slf4j
 public class InviteController {
@@ -78,6 +72,25 @@ public class InviteController {
                     CREATED);
         } catch (ServiceException e) {
             log.error(e.getMessage(), e);
+            return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(value = "Get Invite by key", response = FleetResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = FleetResponse.class),
+            @ApiResponse(code = 404, message = "Invite not found, or character is not allowed to see the invite data", response = ErrorResponse.class)
+    })
+    @GetMapping(value = "/{key}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> getFleet(@PathVariable("key") String key, @AuthenticationPrincipal Authentication authentication) {
+        try {
+            return new ResponseEntity<>(
+                    new InviteDetailsResponse(OK, inviteHandler.getInvite(key,
+                            ((EveUserDetails) authentication.getPrincipal()).getCharId())
+                    )
+                    , OK);
+        } catch (ServiceException e) {
+            e.printStackTrace();
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
     }

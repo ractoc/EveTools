@@ -8,7 +8,8 @@ import {ItemListComponent} from './item-list/item-list.component';
 import {ItemDetailsComponent} from './item-details/item-details.component';
 import {BlueprintTreeComponent} from './blueprint-tree/blueprint-tree.component';
 import {FleetListComponent} from './fleet-list/fleet-list.component';
-import {FleetDetailsComponent} from "./fleet-details/fleet-details.component";
+import {FleetDetailsComponent} from './fleet-details/fleet-details.component';
+import {InvitationDetailsComponent} from './invitation-details/invitation-details.component';
 
 export const APP_ROUTES: Routes = [
   {path: '', component: HomeComponent},
@@ -24,5 +25,6 @@ export const APP_ROUTES: Routes = [
   {path: 'fleets', component: FleetListComponent},
   {path: 'fleet', component: FleetDetailsComponent},
   {path: 'fleet/:id', component: FleetDetailsComponent},
+  {path: 'fleets/invite/:key', component: InvitationDetailsComponent},
   {path: '**', redirectTo: 'home'}
 ];
