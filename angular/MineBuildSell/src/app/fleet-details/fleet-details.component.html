@@ -102,8 +102,13 @@
   </fieldset>
 </div>
 <div class="form-group" *ngIf="editable()">
-  <button type="button" class="btn btn-primary" (click)="doSaveFleet()" [disabled]="!validateInput()">Save Fleet
-  </button>
+  <div *ngIf="!savingFleet">
+    <button type="button" class="btn btn-primary" (click)="doSaveFleet()" [disabled]="!validateInput()">Save Fleet
+    </button>
+  </div>
+  <div *ngIf="savingFleet">
+    <p>Saving the fleet and sending out invitations. This may take some time depending on the number of invitations.</p>
+  </div>
 </div>
 <div class="form-group" *ngIf="!editable() && owner()">
   <button type="button" class="btn btn-primary" (click)="doEditFleet()">Edit Fleet</button>

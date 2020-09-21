@@ -1,8 +1,8 @@
 import {FleetModel} from './fleet-model';
 
-export class InviteModel {
+export class RegistrationModel {
 
-  constructor(public key: number,
+  constructor(public id: number,
               public fleet: FleetModel,
               public name: string,
               public characterName: string) {

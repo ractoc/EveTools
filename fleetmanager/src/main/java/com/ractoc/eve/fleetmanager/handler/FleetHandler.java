@@ -7,9 +7,12 @@ import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
 import com.ractoc.eve.fleetmanager.mapper.FleetMapper;
 import com.ractoc.eve.fleetmanager.mapper.SimpleFleetMapper;
 import com.ractoc.eve.fleetmanager.service.FleetService;
+import com.ractoc.eve.fleetmanager.service.InviteService;
 import com.ractoc.eve.fleetmanager.service.NoSuchEntryException;
+import com.ractoc.eve.fleetmanager.validator.FleetValidator;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.CharacterApi;
+import com.ractoc.eve.jesi.api.CorporationApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -22,14 +25,18 @@ import java.util.stream.Collectors;
 public class FleetHandler {
 
     private final FleetService fleetService;
-    private final InviteHandler inviteHandler;
+    private final FleetValidator fleetValidator;
+    private final InviteService inviteService;
     private final CharacterApi characterApi;
+    private final CorporationApi corporationApi;
 
     @Autowired
-    public FleetHandler(FleetService fleetService, InviteHandler inviteHandler, CharacterApi characterApi) {
+    public FleetHandler(FleetService fleetService, FleetValidator fleetValidator, InviteService inviteService, CharacterApi characterApi, CorporationApi corporationApi) {
         this.fleetService = fleetService;
-        this.inviteHandler = inviteHandler;
+        this.fleetValidator = fleetValidator;
+        this.inviteService = inviteService;
         this.characterApi = characterApi;
+        this.corporationApi = corporationApi;
     }
 
     // charId will be used to verify permission to display a fleet in the list
@@ -38,23 +45,28 @@ public class FleetHandler {
             Integer corporationId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
             return fleetService.getFleets(charId, corporationId).map(SimpleFleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
         } catch (ApiException e) {
-            throw new HandlerException("Unable to resolve corporationId for character " + charId);
+            throw new HandlerException(String.format("Unable to resolve corporationId for character %d", charId));
         }
     }
 
     // charId will be used to verify permission to access fleet data
     public FleetModel getFleet(Integer id, Integer charId) {
-        Fleet dbFleet = fleetService.getFleet(id)
-                .orElseThrow(() -> new NoSuchEntryException("no fleet found for id " + id));
-        FleetModel fleet = FleetMapper.INSTANCE.dbToModel(dbFleet);
-        fleet.setCorporationRestricted(dbFleet.getCorporationId().isPresent() && dbFleet.getCorporationId().getAsInt() > 0);
-        return fleet;
+//        Fleet dbFleet = fleetService.getFleet(id).orElseThrow(() -> new NoSuchEntryException(String.format("No fleet found for id %d", id)));
+//        FleetModel fleet = FleetMapper.INSTANCE.dbToModel(dbFleet);
+//        if (!fleetValidator.verifyFleet(fleet, charId)) {
+//            throw new NoSuchEntryException(String.format("No fleet found for id %d", id));
+//        }
+//        return fleet;
+        return fleetService.getFleet(id)
+                .map(FleetMapper.INSTANCE::dbToModel)
+                .filter(f -> fleetValidator.verifyFleet(f, charId))
+                .orElseThrow(() -> new NoSuchEntryException(String.format("No fleet found for id %d", id)));
     }
 
     public FleetModel saveFleet(FleetModel fleet, Integer charId, String accessToken) {
         fleet.setOwner(charId);
         Fleet dbFleet = FleetMapper.INSTANCE.modelToDb(fleet);
-        FleetModel savedFleet = null;
+        FleetModel savedFleet;
         if (fleet.isCorporationRestricted()) {
             // inject corporation id if needed
             try {
@@ -62,11 +74,12 @@ public class FleetHandler {
                 dbFleet.setCorporationId(corporationId);
                 savedFleet = FleetMapper.INSTANCE.dbToModel(fleetService.saveFleet(dbFleet));
                 // send the invitation
-                inviteHandler.inviteCorporation(
+                inviteCorporation(
                         InviteModel.builder()
                                 .fleetId(savedFleet.getId())
                                 .name(savedFleet.getName())
                                 .corporationId(corporationId).build(),
+                        fleet,
                         charId,
                         accessToken);
             } catch (ApiException e) {
@@ -79,7 +92,19 @@ public class FleetHandler {
         return savedFleet;
     }
 
-    public FleetModel updateFleet(FleetModel fleet, Integer charId) {
+    public void inviteCorporation(InviteModel invite, FleetModel fleet, Integer charId, String accessToken) {
+        try {
+            String charName = getCharName(charId);
+            String fleetName = fleet.getName();
+            String inviteName = getCorporationName(invite.getCorporationId());
+            String inviteKey = inviteService.inviteCorporation(invite.getFleetId(), invite.getCorporationId(), inviteName);
+            inviteService.sendInviteCorporationMail(charId, charName, fleetName, invite.getCorporationId(), inviteName, inviteKey, accessToken);
+        } catch (ApiException e) {
+            throw new HandlerException("unable to send create invitation", e);
+        }
+    }
+
+    public void updateFleet(FleetModel fleet, Integer charId) {
         Fleet verifyFleet = fleetService.getFleet(fleet.getId()).orElseThrow(() -> new NoSuchEntryException("fleet not found for id " + fleet.getId()));
         if (verifyFleet.getOwner() == charId) {
             Fleet dbFleet = FleetMapper.INSTANCE.modelToDb(fleet);
@@ -94,7 +119,6 @@ public class FleetHandler {
                 dbFleet.setCorporationId(null);
             }
             fleetService.updateFleet(dbFleet);
-            return fleet;
         } else {
             throw new SecurityException("Requesting charId not owner of fleet");
         }
@@ -107,5 +131,13 @@ public class FleetHandler {
         } else {
             throw new SecurityException("Requesting charId not owner of fleet");
         }
+    }
+
+    private String getCharName(Integer characterId) throws ApiException {
+        return characterApi.getCharactersCharacterId(characterId, null, null).getName();
+    }
+
+    private String getCorporationName(Integer corporationId) throws ApiException {
+        return corporationApi.getCorporationsCorporationId(corporationId, null, null).getName();
     }
 }

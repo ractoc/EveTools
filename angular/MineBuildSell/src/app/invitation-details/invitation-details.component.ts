@@ -6,6 +6,8 @@ import {InviteModel} from '../shared/model/invite-model';
 import {InviteService} from '../service/invite.service';
 import {User} from '../shared/model/user.model';
 import {UserService} from '../service/user.service';
+import {RegistrationService} from '../service/registration.service';
+import {RegistrationModel} from '../shared/model/Registration-model';
 
 @Component({
   selector: 'app-invitation-details',
@@ -19,9 +21,11 @@ export class InvitationDetailsComponent implements OnInit, OnDestroy {
   public invite: InviteModel;
   public user: User;
   public start: any;
+  public accepted: boolean;
 
   constructor(
     private inviteService: InviteService,
+    private registrationService: RegistrationService,
     private userService: UserService,
     private route: ActivatedRoute,
     private router: Router,
@@ -79,5 +83,21 @@ export class InvitationDetailsComponent implements OnInit, OnDestroy {
     } else {
       return '' + digit
     }
+  }
+
+  accept() {
+    this.registrationService.registerForFleet(this.invite.fleet.id).subscribe(
+      (registrationData: RegistrationModel) => {
+        this.router.navigateByUrl('/fleets/registration/' + registrationData.id);
+      }
+    );
+  }
+
+  decline() {
+    this.registrationService.declineForFleet(this.invite.fleet.id).subscribe(
+      (registrationData: RegistrationModel) => {
+        this.router.navigateByUrl('/fleets');
+      }
+    );
   }
 }

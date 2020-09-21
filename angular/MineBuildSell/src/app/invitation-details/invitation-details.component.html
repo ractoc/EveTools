@@ -8,7 +8,7 @@
       You have been invited to join the fleet event {{invite.fleet.name}}.
     </p>
     <p>
-      This event has been planned by {{invite.name}}.
+      This event has been planned by {{invite.characterName}}.
     </p>
     <p>
       It will start at {{displayDate()}} {{displayTime()}} EVE-time.
@@ -16,9 +16,9 @@
         It will run for {{invite.fleet.duration}}.
       </span>
     </p>
-    <!--<button type="button" class="btn btn-primary">Accept</button>
+    <button type="button" class="btn btn-primary" (click)="accept()">Accept</button>
     &nbsp;
-    <button type="button" class="btn btn-secondary">Decline</button>-->
+    <button type="button" class="btn btn-secondary" (click)="decline()">Decline</button>
   </div>
   <ng-template #loading>
     <div *ngIf="!errorMessage">

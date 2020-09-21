@@ -1,5 +1,6 @@
 package com.ractoc.eve.fleetmanager.service;
 
+import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.Invites;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesImpl;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesManager;
@@ -12,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.stream.Stream;
 
+import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites.FLEET_ID;
 import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites.KEY;
 
 @Service
@@ -49,6 +52,10 @@ public class InviteService {
         } catch (ApiException e) {
             throw new ServiceException("unable to send invite mail", e);
         }
+    }
+
+    public Stream<Invites> getInvitesForFleet(FleetModel fleet) {
+        return invitesManager.stream().filter(FLEET_ID.equal(fleet.getId()));
     }
 
     public Invites getInvite(String key) {

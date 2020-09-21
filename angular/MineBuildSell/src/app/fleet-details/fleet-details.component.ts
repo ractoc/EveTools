@@ -24,6 +24,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
 
   editFleet: boolean;
   displayPassword: boolean;
+  savingFleet: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -52,10 +53,10 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
               err => {
                 if (err.status === 401) {
                   this.localStorageService.remove('eve-state');
-                  if (this.fleet.id) {
-                    this.localStorageService.set('currentPage', '/fleet/' + this.fleet.id);
+                  if (params.id) {
+                    this.localStorageService.set('currentPage', '/fleet/' + params.id);
                   } else {
-                    this.localStorageService.set('currentPage', '/fleet');
+                    this.localStorageService.set('currentPage', '/fleets');
                   }
                   this.router.navigateByUrl('/login');
                 }
@@ -90,13 +91,16 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
 
   doSaveFleet() {
     if (this.validateInput()) {
+      this.savingFleet = true;
       this.fleet.start = JSON.stringify({date: this.startDate, time: this.startTime});
       this.fleet.corporationRestricted = this.corporationRestricted === 'true';
       this.fleetService.saveFleet(this.fleet).subscribe(
         () => {
           this.router.navigateByUrl('/fleets');
+          this.savingFleet = false;
         },
         err => {
+          this.savingFleet = false;
           if (err.status === 401) {
             this.localStorageService.remove('eve-state');
             if (this.fleet.id) {
@@ -121,7 +125,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
   }
 
   validateInput() {
-    return this.fleet.name && this.startDate && this.startTime;
+    return this.fleet && this.fleet.name && this.startDate && this.startTime;
   }
 
   editable() {

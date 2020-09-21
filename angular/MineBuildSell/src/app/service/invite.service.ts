@@ -31,4 +31,22 @@ export class InviteService {
         })
       );
   }
+
+  declineInvite(key: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.userService.getEveState()
+      })
+    };
+    return this.http.get<any>(INVITES_URI + '/decline/' + key, httpOptions)
+      .pipe(
+        map(result => {
+          if (result.responseCode >= 400) {
+            throw new Error('broken API:' + result.responseCode);
+          } else {
+            return result.invite;
+          }
+        })
+      );
+  }
 }
