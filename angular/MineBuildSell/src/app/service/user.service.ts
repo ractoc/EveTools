@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {catchError, map} from 'rxjs/operators';
 import {BehaviorSubject, Observable, of} from 'rxjs';
@@ -7,7 +7,7 @@ import {BehaviorSubject, Observable, of} from 'rxjs';
 import {User} from '../shared/model/user.model';
 import {environment} from '../../environments/environment';
 
-const USER_URI = 'http://' + environment.apiHost + ':8484/user/api/userdetails';
+const USER_URI = 'http://' + environment.apiHost + ':8484/user/api';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +28,7 @@ export class UserService {
     if (this.observable) {
       return this.observable;
     } else {
-      this.observable = this.http.get<any>(USER_URI + '/' + eveState)
+      this.observable = this.http.get<any>(USER_URI + '/userdetails/' + eveState)
         .pipe(map(user => {
             this.observable = null;
             this.currentUser = new User(
@@ -54,6 +54,25 @@ export class UserService {
 
   monitorUser() {
     return this.user$;
+  }
+
+  switch() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.getEveState(),
+        'Content-Type': 'application/json'
+      })
+    };
+    return this.http.delete<any>(USER_URI + '/user', httpOptions)
+      .pipe(
+        map(result => {
+          if (result.responseCode !== 410) {
+            throw new Error('broken API:' + result.responseCode);
+          } else {
+            return result.responseCode;
+          }
+        })
+      );
   }
 
   logout() {

@@ -45,6 +45,11 @@ public class UserService {
         return userManager.stream().filter(EVE_STATE.equal(eveState)).findAny();
     }
 
+    public void switchUser(String eveState) {
+        User user = getUser(eveState).orElseThrow(() -> new NoSuchEntryException("user not found or userState " + eveState));
+        userManager.remove(user);
+    }
+
     private String generateEveState() {
         String eveState;
         do {

@@ -98,7 +98,10 @@ public class UserHandler {
                                 .eveState(eveState)
                                 .build())
                 .orElseThrow(() -> new AccessDeniedException(eveState));
+    }
 
+    public void switchUser(String eveState) {
+        service.switchUser(eveState);
     }
 
     private Optional<User> getUser(String eveState) {

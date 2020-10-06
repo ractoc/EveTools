@@ -25,9 +25,12 @@
             <a class="nav-link" routerLink="fleets">Fleets</a>
           </div>
         </div>
-        <div *ngIf="user; else login" class="navbar-nav ml-auto my-2 my-lg-0">
-          {{user.name}}
-          <button class="btn btn-outline-success" (click)="logout()">Logout</button>
+        <div *ngIf="user; else login" ngbDropdown>
+          <button class="btn" id="userDropdown" ngbDropdownToggle>{{user.name}}</button>
+          <div ngbDropdownMenu aria-labelledby="bpDropdown">
+            <a class="dropdown-item" ngbDropdownItem (click)="switch()">Switch user</a>
+            <a class="dropdown-item" ngbDropdownItem (click)="logout()">Logout</a>
+          </div>
         </div>
       </nav>
     </div>
