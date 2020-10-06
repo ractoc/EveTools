@@ -49,8 +49,8 @@ public class InviteHandler {
             String charName = getCharName(charId);
             String fleetName = getFleetName(invite.getFleetId(), charId);
             String inviteName = getCorporationName(invite.getCorporationId());
-            String inviteKey = inviteService.inviteCorporation(invite.getFleetId(), invite.getCorporationId(), inviteName);
-            inviteService.sendInviteCorporationMail(charId, charName, fleetName, invite.getCorporationId(), inviteName, inviteKey, accessToken);
+            String inviteKey = inviteService.inviteCorporation(invite.getFleetId(), invite.getCorporationId(), inviteName, invite.getAdditionalInfo());
+            inviteService.sendInviteCorporationMail(charId, charName, fleetName, invite.getCorporationId(), inviteName, inviteKey, invite.getAdditionalInfo(), accessToken);
             return inviteKey;
         } catch (ApiException e) {
             throw new HandlerException("unable to send create invitation", e);
@@ -62,8 +62,8 @@ public class InviteHandler {
             String charName = getCharName(charId);
             String fleetName = getFleetName(invite.getFleetId(), charId);
             String inviteName = getCharName(invite.getCharacterId());
-            String inviteKey = inviteService.inviteCharacter(invite.getFleetId(), invite.getCharacterId(), inviteName);
-            inviteService.sendInviteCharacterMail(charId, charName, fleetName, invite.getCharacterId(), inviteName, inviteKey, accessToken);
+            String inviteKey = inviteService.inviteCharacter(invite.getFleetId(), invite.getCharacterId(), inviteName, invite.getAdditionalInfo());
+            inviteService.sendInviteCharacterMail(charId, charName, fleetName, invite.getCharacterId(), inviteName, inviteKey, invite.getAdditionalInfo(), accessToken);
             return inviteKey;
         } catch (ApiException e) {
             throw new HandlerException("unable to send create invitation", e);

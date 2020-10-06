@@ -51,12 +51,6 @@ public class FleetHandler {
 
     // charId will be used to verify permission to access fleet data
     public FleetModel getFleet(Integer id, Integer charId) {
-//        Fleet dbFleet = fleetService.getFleet(id).orElseThrow(() -> new NoSuchEntryException(String.format("No fleet found for id %d", id)));
-//        FleetModel fleet = FleetMapper.INSTANCE.dbToModel(dbFleet);
-//        if (!fleetValidator.verifyFleet(fleet, charId)) {
-//            throw new NoSuchEntryException(String.format("No fleet found for id %d", id));
-//        }
-//        return fleet;
         return fleetService.getFleet(id)
                 .map(FleetMapper.INSTANCE::dbToModel)
                 .filter(f -> fleetValidator.verifyFleet(f, charId))
@@ -78,7 +72,8 @@ public class FleetHandler {
                         InviteModel.builder()
                                 .fleetId(savedFleet.getId())
                                 .name(savedFleet.getName())
-                                .corporationId(corporationId).build(),
+                                .corporationId(corporationId)
+                                .additionalInfo(fleet.getInviteText()).build(),
                         fleet,
                         charId,
                         accessToken);
@@ -90,18 +85,6 @@ public class FleetHandler {
             savedFleet = FleetMapper.INSTANCE.dbToModel(fleetService.saveFleet(dbFleet));
         }
         return savedFleet;
-    }
-
-    public void inviteCorporation(InviteModel invite, FleetModel fleet, Integer charId, String accessToken) {
-        try {
-            String charName = getCharName(charId);
-            String fleetName = fleet.getName();
-            String inviteName = getCorporationName(invite.getCorporationId());
-            String inviteKey = inviteService.inviteCorporation(invite.getFleetId(), invite.getCorporationId(), inviteName);
-            inviteService.sendInviteCorporationMail(charId, charName, fleetName, invite.getCorporationId(), inviteName, inviteKey, accessToken);
-        } catch (ApiException e) {
-            throw new HandlerException("unable to send create invitation", e);
-        }
     }
 
     public void updateFleet(FleetModel fleet, Integer charId) {
@@ -130,6 +113,18 @@ public class FleetHandler {
             fleetService.deleteFleet(dbFleet);
         } else {
             throw new SecurityException("Requesting charId not owner of fleet");
+        }
+    }
+
+    private void inviteCorporation(InviteModel invite, FleetModel fleet, Integer charId, String accessToken) {
+        try {
+            String charName = getCharName(charId);
+            String fleetName = fleet.getName();
+            String inviteName = getCorporationName(invite.getCorporationId());
+            String inviteKey = inviteService.inviteCorporation(invite.getFleetId(), invite.getCorporationId(), inviteName, invite.getAdditionalInfo());
+            inviteService.sendInviteCorporationMail(charId, charName, fleetName, invite.getCorporationId(), inviteName, inviteKey, invite.getAdditionalInfo(), accessToken);
+        } catch (ApiException e) {
+            throw new HandlerException("unable to send create invitation", e);
         }
     }
 

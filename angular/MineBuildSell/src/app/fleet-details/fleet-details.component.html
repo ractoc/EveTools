@@ -100,6 +100,14 @@
         </span>
     </div>
   </fieldset>
+  <div class="form-group" *ngIf="editable() && corporationRestricted === 'true'">
+    <fieldset class="form-group">
+      <div class="row">
+        <label for="inviteText">Invitation text</label>
+        <textarea class="form-control" id="inviteText" [(ngModel)]="fleet.inviteText"></textarea>
+      </div>
+    </fieldset>
+  </div>
 </div>
 <div class="form-group" *ngIf="editable()">
   <div *ngIf="!savingFleet">

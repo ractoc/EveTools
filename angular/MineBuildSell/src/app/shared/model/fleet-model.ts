@@ -10,7 +10,8 @@ export class FleetModel {
               public start: string,
               public duration: number,
               public corporationRestricted: boolean,
-              public invitations: CharacterModel[]) {
+              public invitations: CharacterModel[],
+              public inviteText: string) {
   }
 
 }

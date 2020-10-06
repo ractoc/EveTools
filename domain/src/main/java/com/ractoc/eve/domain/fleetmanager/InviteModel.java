@@ -17,6 +17,7 @@ public class InviteModel {
     private Integer characterId;
     private Integer corporationId;
     private String name;
+    private String additionalInfo;
 
     private String characterName;
     private String corporationName;

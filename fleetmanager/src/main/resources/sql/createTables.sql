@@ -27,7 +27,7 @@ CREATE TABLE `eve_fleetmanager`.`invites`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
-CREATE TABLE `registrations`
+CREATE TABLE `eve_fleetmanager`.`registrations`
 (
     `character_id` int(11)     NOT NULL,
     `fleet_id`     int(11)     NOT NULL,
@@ -37,3 +37,6 @@ CREATE TABLE `registrations`
     PRIMARY KEY (`character_id`, `fleet_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
+ALTER TABLE `eve_fleetmanager`.`invites`
+    ADD COLUMN `additional_info` VARCHAR(1000) NULL;

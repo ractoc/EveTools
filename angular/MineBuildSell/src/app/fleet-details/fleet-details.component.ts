@@ -71,7 +71,8 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
               undefined,
               -1,
               false,
-              []);
+              [],
+              undefined);
             const currentDate = new Date();
             this.startDate = {
               year: currentDate.getFullYear(),

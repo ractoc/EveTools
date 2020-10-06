@@ -9,6 +9,7 @@ import com.ractoc.eve.jesi.api.MailApi;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailMail;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient.RecipientTypeEnum;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,25 +31,25 @@ public class InviteService {
         this.mailApi = mailApi;
     }
 
-    public String inviteCorporation(Integer fleetId, Integer corporationId, String name) {
-        return invite(fleetId, corporationId, null, name);
+    public String inviteCorporation(Integer fleetId, Integer corporationId, String name, String additionalInfo) {
+        return invite(fleetId, corporationId, null, name, additionalInfo);
     }
 
-    public String inviteCharacter(Integer fleetId, Integer characterId, String name) {
-        return invite(fleetId, null, characterId, name);
+    public String inviteCharacter(Integer fleetId, Integer characterId, String name, String additionalInfo) {
+        return invite(fleetId, null, characterId, name, additionalInfo);
     }
 
-    public void sendInviteCorporationMail(Integer characterId, String charName, String fleetName, Integer recipientId, String recipientName, String inviteKey, String accessToken) {
+    public void sendInviteCorporationMail(Integer characterId, String charName, String fleetName, Integer recipientId, String recipientName, String inviteKey, String additionalInfo, String accessToken) {
         try {
-            sendInviteMail(characterId, charName, fleetName, recipientId, recipientName, RecipientTypeEnum.CORPORATION, inviteKey, accessToken);
+            sendInviteMail(characterId, charName, fleetName, recipientId, recipientName, RecipientTypeEnum.CORPORATION, inviteKey, additionalInfo, accessToken);
         } catch (ApiException e) {
             throw new ServiceException("unable to send invite mail", e);
         }
     }
 
-    public void sendInviteCharacterMail(Integer characterId, String charName, String fleetName, Integer recipientId, String recipientName, String inviteKey, String accessToken) {
+    public void sendInviteCharacterMail(Integer characterId, String charName, String fleetName, Integer recipientId, String recipientName, String inviteKey, String additionalInfo, String accessToken) {
         try {
-            sendInviteMail(characterId, charName, fleetName, recipientId, recipientName, RecipientTypeEnum.CHARACTER, inviteKey, accessToken);
+            sendInviteMail(characterId, charName, fleetName, recipientId, recipientName, RecipientTypeEnum.CHARACTER, inviteKey, additionalInfo, accessToken);
         } catch (ApiException e) {
             throw new ServiceException("unable to send invite mail", e);
         }
@@ -63,7 +64,7 @@ public class InviteService {
     }
 
     // needs to be synchronized to make sure there are never any duplicate invite keys.
-    private synchronized String invite(Integer fleetId, Integer corporationId, Integer characterId, String name) {
+    private synchronized String invite(Integer fleetId, Integer corporationId, Integer characterId, String name, String additionalInfo) {
         String inviteKey = generateInviteKey();
         Invites invite = new InvitesImpl();
         invite.setFleetId(fleetId);
@@ -75,6 +76,7 @@ public class InviteService {
         }
         invite.setName(name);
         invite.setKey(inviteKey);
+        invite.setAdditionalInfo(additionalInfo);
         invitesManager.persist(invite);
         return inviteKey;
     }
@@ -87,12 +89,12 @@ public class InviteService {
         return inviteKey;
     }
 
-    private void sendInviteMail(Integer characterId, String charName, String fleetName, Integer recipientId, String recipientName, RecipientTypeEnum recipientType, String inviteKey, String accessToken) throws ApiException {
-        PostCharactersCharacterIdMailMail mail = generateMail(charName, fleetName, recipientId, recipientName, recipientType, inviteKey);
+    private void sendInviteMail(Integer characterId, String charName, String fleetName, Integer recipientId, String recipientName, RecipientTypeEnum recipientType, String inviteKey, String additionalInfo, String accessToken) throws ApiException {
+        PostCharactersCharacterIdMailMail mail = generateMail(charName, fleetName, recipientId, recipientName, recipientType, additionalInfo, inviteKey);
         mailApi.postCharactersCharacterIdMail(characterId, mail, null, accessToken);
     }
 
-    private PostCharactersCharacterIdMailMail generateMail(String charName, String fleetName, Integer recipientId, String recipientName, RecipientTypeEnum recipientType, String inviteKey) {
+    private PostCharactersCharacterIdMailMail generateMail(String charName, String fleetName, Integer recipientId, String recipientName, RecipientTypeEnum recipientType, String additionalInfo, String inviteKey) {
         PostCharactersCharacterIdMailMail mail = new PostCharactersCharacterIdMailMail();
         PostCharactersCharacterIdMailRecipient recipientItem = new PostCharactersCharacterIdMailRecipient();
         recipientItem.setRecipientId(recipientId);
@@ -102,11 +104,13 @@ public class InviteService {
                         "You have been invited to a fleet event, %s.\n" +
                         "Please visit the following link to register for the event.\n\n" +
                         "%s\n\n" +
+                        "%s" +
                         "I hope to see you there.\n\n" +
                         "%s",
                 recipientName,
                 fleetName,
                 generateLink(inviteKey),
+                generateAdditionalInfoText(additionalInfo),
                 charName));
         mail.setSubject(String.format("Fleet event %s", fleetName));
         return mail;
@@ -114,5 +118,13 @@ public class InviteService {
 
     private String generateLink(String inviteKey) {
         return String.format("http://31.21.178.162:8181/fleets/invite/%s", inviteKey);
+    }
+
+    private String generateAdditionalInfoText(String additionalInfo) {
+        if (StringUtils.isNotBlank(additionalInfo)) {
+            return String.format("%s\n\n", additionalInfo);
+        } else {
+            return "";
+        }
     }
 }

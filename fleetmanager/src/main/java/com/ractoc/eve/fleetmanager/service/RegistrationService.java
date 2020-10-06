@@ -61,7 +61,7 @@ public class RegistrationService {
     public void sendDenyNotification(String fleetName, int characterId, String charName, Integer ownerId, String ownerName, String accessToken) {
         try {
             PostCharactersCharacterIdMailMail mail = generateDenyMail(charName, fleetName, ownerId, ownerName);
-            mailApi.postCharactersCharacterIdMail(characterId, mail, null, accessToken);
+            Integer result = mailApi.postCharactersCharacterIdMail(characterId, mail, null, accessToken);
         } catch (ApiException e) {
             throw new ServiceException("unable to send invite mail", e);
         }
