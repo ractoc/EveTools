@@ -39,17 +39,32 @@ public class FleetHandler {
         this.corporationApi = corporationApi;
     }
 
-    // charId will be used to verify permission to display a fleet in the list
-    public List<SimpleFleetModel> getFleetList(Integer charId) {
+    public List<SimpleFleetModel> getAllFleetList(Integer charId) {
         try {
             Integer corporationId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
-            return fleetService.getFleets(charId, corporationId).map(SimpleFleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+            return fleetService.getAllFleets(corporationId).map(SimpleFleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
         } catch (ApiException e) {
             throw new HandlerException(String.format("Unable to resolve corporationId for character %d", charId));
         }
     }
 
-    // charId will be used to verify permission to access fleet data
+    public List<SimpleFleetModel> getActiveFleetList(Integer charId) {
+        try {
+            Integer corporationId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+            return fleetService.getActiveFleets(corporationId).map(SimpleFleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+        } catch (ApiException e) {
+            throw new HandlerException(String.format("Unable to resolve corporationId for character %d", charId));
+        }
+    }
+
+    public List<SimpleFleetModel> getOwnedFleetsList(Integer charId) {
+        return fleetService.getOwnedFleets(charId).map(SimpleFleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+    }
+
+    public List<SimpleFleetModel> getActiveOwnedFleetsList(Integer charId) {
+        return fleetService.getActiveOwnedFleets(charId).map(SimpleFleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+    }
+
     public FleetModel getFleet(Integer id, Integer charId) {
         return fleetService.getFleet(id)
                 .map(FleetMapper.INSTANCE::dbToModel)

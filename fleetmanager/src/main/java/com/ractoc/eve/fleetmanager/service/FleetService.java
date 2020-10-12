@@ -6,6 +6,9 @@ import com.speedment.runtime.core.exception.SpeedmentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -19,11 +22,43 @@ public class FleetService {
         this.fleetManager = fleetManager;
     }
 
-    public Stream<Fleet> getFleets(Integer charId, Integer corporationId) {
+    public Stream<Fleet> getActiveFleets(Integer corporationId) {
+        return fleetManager.stream()
+                .filter(fleet -> fleet.getCorporationId().isEmpty() ||
+                        fleet.getCorporationId().getAsInt() == 0 ||
+                        fleet.getCorporationId().getAsInt() == corporationId)
+                .filter(fleet -> fleet
+                        .getStartDateTime()
+                        // If there is no actual startDateTime, fake one in the future to ensure the fleet is added to the list
+                        .orElseGet(() -> Timestamp.from(Instant.now().plus(1, ChronoUnit.DAYS)))
+                        .toInstant()
+                        // add all fleets which are starting in the future of currently active
+                        .plus(fleet.getDuration().orElse(0), ChronoUnit.HOURS)
+                        .isAfter(Instant.now()));
+    }
+
+    public Stream<Fleet> getAllFleets(Integer corporationId) {
         return fleetManager.stream()
                 .filter(fleet -> fleet.getCorporationId().isEmpty() ||
                         fleet.getCorporationId().getAsInt() == 0 ||
                         fleet.getCorporationId().getAsInt() == corporationId);
+    }
+
+    public Stream<Fleet> getOwnedFleets(Integer charId) {
+        return fleetManager.stream().filter(fleet -> fleet.getOwner() == charId);
+    }
+
+    public Stream<Fleet> getActiveOwnedFleets(Integer charId) {
+        return fleetManager.stream()
+                .filter(fleet -> fleet.getOwner() == charId)
+                .filter(fleet -> fleet
+                        .getStartDateTime()
+                        // If there is no actual startDateTime, fake one in the future to ensure the fleet is added to the list
+                        .orElseGet(() -> Timestamp.from(Instant.now().plus(1, ChronoUnit.DAYS)))
+                        .toInstant()
+                        // add all fleets which are starting in the future of currently active
+                        .plus(fleet.getDuration().orElse(0), ChronoUnit.HOURS)
+                        .isAfter(Instant.now()));
     }
 
     public Optional<Fleet> getFleet(int id) {

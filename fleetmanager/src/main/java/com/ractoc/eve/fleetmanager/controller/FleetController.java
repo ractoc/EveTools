@@ -48,13 +48,35 @@ public class FleetController extends BaseController {
             @ApiResponse(code = 500, message = "Internal server error")
     })
     @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> getFleets(@AuthenticationPrincipal Authentication authentication) {
+    public ResponseEntity<BaseResponse> getFleets(@AuthenticationPrincipal Authentication authentication,
+                                                  @RequestParam(name = "active", defaultValue = "false", required = false) boolean active,
+                                                  @RequestParam(name = "owned", defaultValue = "false", required = false) boolean owned) {
         try {
-            return new ResponseEntity<>(
-                    new FleetListResponse(OK,
-                            fleetHandler.getFleetList(((EveUserDetails) authentication.getPrincipal()).getCharId())
-                    )
-                    , OK);
+            if (active && owned) {
+                return new ResponseEntity<>(
+                        new FleetListResponse(OK,
+                                fleetHandler.getActiveOwnedFleetsList(((EveUserDetails) authentication.getPrincipal()).getCharId())
+                        )
+                        , OK);
+            } else if (!active && owned) {
+                return new ResponseEntity<>(
+                        new FleetListResponse(OK,
+                                fleetHandler.getOwnedFleetsList(((EveUserDetails) authentication.getPrincipal()).getCharId())
+                        )
+                        , OK);
+            } else if (active) {
+                return new ResponseEntity<>(
+                        new FleetListResponse(OK,
+                                fleetHandler.getActiveFleetList(((EveUserDetails) authentication.getPrincipal()).getCharId())
+                        )
+                        , OK);
+            } else {
+                return new ResponseEntity<>(
+                        new FleetListResponse(OK,
+                                fleetHandler.getAllFleetList(((EveUserDetails) authentication.getPrincipal()).getCharId())
+                        )
+                        , OK);
+            }
         } catch (ServiceException e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
@@ -107,7 +129,7 @@ public class FleetController extends BaseController {
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<BaseResponse> updateFleet(@PathVariable("id") Integer fleetId, @Valid @RequestBody FleetModel fleet, @AuthenticationPrincipal Authentication authentication) {
         try {
-            if (fleet.getId() != fleetId) {
+            if (!fleetId.equals(fleet.getId())) {
                 return new ResponseEntity<>(new ErrorResponse(CONFLICT, "Supplied ID doesn't match fleet id"), BAD_REQUEST);
             }
             fleetHandler.updateFleet(

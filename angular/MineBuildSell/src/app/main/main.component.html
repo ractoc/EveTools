@@ -21,13 +21,19 @@
           <div *ngIf="user">
             <a class="nav-link" routerLink="items">Items</a>
           </div>
-          <div *ngIf="user">
-            <a class="nav-link" routerLink="fleets">Fleets</a>
+          <div *ngIf="user" ngbDropdown>
+            <button class="btn" id="fleetDropdown" ngbDropdownToggle>Fleets</button>
+            <div ngbDropdownMenu aria-labelledby="fleetDropdown">
+              <a class="dropdown-item" ngbDropdownItem routerLink="fleets/all">All fleets</a>
+              <a class="dropdown-item" ngbDropdownItem routerLink="fleets/all/active">All Active fleets</a>
+              <a class="dropdown-item" ngbDropdownItem routerLink="fleets/owned">Owned fleets</a>
+              <a class="dropdown-item" ngbDropdownItem routerLink="fleets/owned/active">Owned Active fleets</a>
+            </div>
           </div>
         </div>
         <div *ngIf="user; else login" ngbDropdown>
           <button class="btn" id="userDropdown" ngbDropdownToggle>{{user.name}}</button>
-          <div ngbDropdownMenu aria-labelledby="bpDropdown">
+          <div ngbDropdownMenu aria-labelledby="userDropdown">
             <a class="dropdown-item" ngbDropdownItem (click)="switch()">Switch user</a>
             <a class="dropdown-item" ngbDropdownItem (click)="logout()">Logout</a>
           </div>
