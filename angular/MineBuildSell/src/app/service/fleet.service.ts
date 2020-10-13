@@ -18,23 +18,23 @@ export class FleetService {
 
   fleets: FleetModel[];
 
-  getFleets(): Observable<FleetModel[]> {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        Authorization: 'Bearer ' + this.userService.getEveState()
-      })
-    };
-    return this.http.get<any>(FLEETS_URI + '/', httpOptions)
-      .pipe(
-        map(result => {
-          if (result.responseCode >= 400) {
-            throw new Error('broken API:' + result.responseCode);
-          } else {
-            this.fleets = result.fleetList;
-            return result.fleetList;
-          }
+    getFleets(owned: boolean, active: boolean): Observable<FleetModel[]> {
+      const httpOptions = {
+        headers: new HttpHeaders({
+          Authorization: 'Bearer ' + this.userService.getEveState()
         })
-      );
+      };
+      return this.http.get<any>(FLEETS_URI + '/?owned=' + owned + '&active=' + active, httpOptions)
+        .pipe(
+          map(result => {
+            if (result.responseCode >= 400) {
+              throw new Error('broken API:' + result.responseCode);
+            } else {
+              this.fleets = result.fleetList;
+              return result.fleetList;
+            }
+          })
+        );
   }
 
   saveFleet(fleet: FleetModel) {
