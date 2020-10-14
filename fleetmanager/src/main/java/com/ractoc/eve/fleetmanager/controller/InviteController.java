@@ -38,9 +38,9 @@ public class InviteController {
         this.inviteHandler = inviteHandler;
     }
 
-    @ApiOperation(value = "Invite corporation.", response = BaseResponse.class, consumes = "application/json", produces = "application/json")
+    @ApiOperation(value = "Invite corporation.", response = InviteResponse.class, consumes = "application/json", produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "The invite was successfully created", response = BaseResponse.class),
+            @ApiResponse(code = 201, message = "The invite was successfully created", response = InviteResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
     @PostMapping(value = "/corporation", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
@@ -57,9 +57,9 @@ public class InviteController {
         }
     }
 
-    @ApiOperation(value = "Invite character.", response = BaseResponse.class, consumes = "application/json", produces = "application/json")
+    @ApiOperation(value = "Invite character.", response = InviteResponse.class, consumes = "application/json", produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "The invite was successfully created", response = BaseResponse.class),
+            @ApiResponse(code = 201, message = "The invite was successfully created", response = InviteResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
     @PostMapping(value = "/character", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
@@ -76,13 +76,31 @@ public class InviteController {
         }
     }
 
-    @ApiOperation(value = "Get Invite by key", response = FleetResponse.class, produces = "application/json")
+    @ApiOperation(value = "Get Invite for character", response = InviteListResponse.class, produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = FleetResponse.class),
+            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = InviteListResponse.class),
+    })
+    @GetMapping(value = "/", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> getInvitesForCharacter(@AuthenticationPrincipal Authentication authentication) {
+        try {
+            return new ResponseEntity<>(
+                    new InviteListResponse(OK, inviteHandler.getInvitesForCharacter(
+                            ((EveUserDetails) authentication.getPrincipal()).getCharId())
+                    )
+                    , OK);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(value = "Get Invite by key", response = InviteDetailsResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = InviteDetailsResponse.class),
             @ApiResponse(code = 404, message = "Invite not found, or character is not allowed to see the invite data", response = ErrorResponse.class)
     })
     @GetMapping(value = "/{key}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> getFleet(@PathVariable("key") String key, @AuthenticationPrincipal Authentication authentication) {
+    public ResponseEntity<BaseResponse> getInvite(@PathVariable("key") String key, @AuthenticationPrincipal Authentication authentication) {
         try {
             return new ResponseEntity<>(
                     new InviteDetailsResponse(OK, inviteHandler.getInvite(key,

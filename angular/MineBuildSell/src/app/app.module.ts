@@ -19,6 +19,7 @@ import {BlueprintTreeComponent} from './blueprint-tree/blueprint-tree.component'
 import {FleetListComponent} from './fleet-list/fleet-list.component';
 import {FleetDetailsComponent} from './fleet-details/fleet-details.component';
 import {InvitationDetailsComponent} from './invitation-details/invitation-details.component';
+import {InvitationListComponent} from './invitation-list/invitation-list.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import {InvitationDetailsComponent} from './invitation-details/invitation-detail
     BlueprintTreeComponent,
     FleetListComponent,
     FleetDetailsComponent,
-    InvitationDetailsComponent
+    InvitationDetailsComponent,
+    InvitationListComponent
   ],
   imports: [
     NgbModule,

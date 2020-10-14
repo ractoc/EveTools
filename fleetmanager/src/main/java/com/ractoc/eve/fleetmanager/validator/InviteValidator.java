@@ -32,7 +32,7 @@ public class InviteValidator {
     public boolean verifyInvite(InviteModel invite, Integer charId) {
         try {
             if (invite.getCharacterId() != 0) {
-                if (invite.getCharacterId() != charId) {
+                if (!invite.getCharacterId().equals(charId)) {
                     return false;
                 }
             } else if (invite.getCorporationId() != null) {

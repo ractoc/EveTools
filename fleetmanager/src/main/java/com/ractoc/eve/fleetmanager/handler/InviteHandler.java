@@ -17,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Validated
 @Slf4j
@@ -83,6 +86,15 @@ public class InviteHandler {
             throw new HandlerException("Unable to fetch data from EVE ESI", e);
         }
         return invite;
+    }
+
+    public List<InviteModel> getInvitesForCharacter(int charId) {
+        try {
+            Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+            return inviteService.getInvitesForCharacter(charId, corpId).map(InviteMapper.INSTANCE::joinToModel).collect(Collectors.toList());
+        } catch (ApiException e) {
+            throw new HandlerException("Unable to fetch data from EVE ESI", e);
+        }
     }
 
     private String getFleetName(Integer fleetId, Integer charId) {

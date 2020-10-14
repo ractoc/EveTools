@@ -14,6 +14,24 @@ export class InviteService {
   constructor(private http: HttpClient, private userService: UserService) {
   }
 
+  getMyInvites() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.userService.getEveState()
+      })
+    };
+    return this.http.get<any>(INVITES_URI + '/', httpOptions)
+      .pipe(
+        map(result => {
+          if (result.responseCode >= 400) {
+            throw new Error('broken API:' + result.responseCode);
+          } else {
+            return result.invites;
+          }
+        })
+      );
+  }
+
   getInvite(key: string) {
     const httpOptions = {
       headers: new HttpHeaders({

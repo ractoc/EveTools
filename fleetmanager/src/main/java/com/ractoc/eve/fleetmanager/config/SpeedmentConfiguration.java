@@ -10,6 +10,7 @@ import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.Invi
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.RegistrationsManager;
 import com.speedment.runtime.core.component.transaction.TransactionComponent;
 import com.speedment.runtime.core.component.transaction.TransactionHandler;
+import com.speedment.runtime.join.JoinBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +53,7 @@ public class SpeedmentConfiguration {
             LOGGER.debug("collation: {}", collation);
             LOGGER.debug("collationBinary: {}", collationBinary);
             return new FleetmanagerApplicationBuilder()
+                    .withBundle(JoinBundle.class)
                     .withIpAddress(host)
                     .withPort(port)
                     .withUsername(username)
@@ -66,6 +68,7 @@ public class SpeedmentConfiguration {
                     .build();
         }
         return new FleetmanagerApplicationBuilder()
+                .withBundle(JoinBundle.class)
                 .withIpAddress(host)
                 .withPort(port)
                 .withUsername(username)

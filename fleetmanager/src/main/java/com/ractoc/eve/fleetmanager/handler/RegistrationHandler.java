@@ -4,6 +4,7 @@ import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.domain.fleetmanager.RegistrationModel;
 import com.ractoc.eve.fleetmanager.mapper.RegistrationMapper;
 import com.ractoc.eve.fleetmanager.model.RegistrationConfirmation;
+import com.ractoc.eve.fleetmanager.service.InviteService;
 import com.ractoc.eve.fleetmanager.service.RegistrationService;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.CharacterApi;
@@ -18,12 +19,15 @@ public class RegistrationHandler {
 
     private final FleetHandler fleetHandler;
     private final RegistrationService registrationService;
+    private final InviteService inviteService;
     private final CharacterApi characterApi;
 
     public RegistrationHandler(RegistrationService registrationService,
+                               InviteService inviteService,
                                FleetHandler fleetHandler,
                                CharacterApi characterApi) {
         this.registrationService = registrationService;
+        this.inviteService = inviteService;
         this.fleetHandler = fleetHandler;
         this.characterApi = characterApi;
     }
@@ -43,9 +47,11 @@ public class RegistrationHandler {
                                 fleetId,
                                 charId,
                                 charName));
+                inviteService.deleteInvitation(fleetId, charId);
                 registrationService.sendRegistrationNotification(fleet.getName(), charId, charName, fleet.getOwner(), ownerName, accessToken);
                 return registration;
             } else {
+                inviteService.deleteInvitation(fleetId, charId);
                 registrationService.sendDenyNotification(fleet.getName(), charId, charName, fleet.getOwner(), ownerName, accessToken);
                 return null;
             }

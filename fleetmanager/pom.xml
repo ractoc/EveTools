@@ -59,6 +59,11 @@
             <version>${speedment.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.speedment.runtime</groupId>
+            <artifactId>runtime-join</artifactId>
+            <version>${speedment.version}</version>
+        </dependency>
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>

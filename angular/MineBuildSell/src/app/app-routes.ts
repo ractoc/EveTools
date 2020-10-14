@@ -10,6 +10,7 @@ import {BlueprintTreeComponent} from './blueprint-tree/blueprint-tree.component'
 import {FleetListComponent} from './fleet-list/fleet-list.component';
 import {FleetDetailsComponent} from './fleet-details/fleet-details.component';
 import {InvitationDetailsComponent} from './invitation-details/invitation-details.component';
+import {InvitationListComponent} from './invitation-list/invitation-list.component';
 
 export const APP_ROUTES: Routes = [
   {path: '', component: HomeComponent},
@@ -28,6 +29,7 @@ export const APP_ROUTES: Routes = [
   {path: 'fleets/owned/active', component: FleetListComponent, data: {owned: true, active: true}},
   {path: 'fleet', component: FleetDetailsComponent},
   {path: 'fleet/:id', component: FleetDetailsComponent},
+  {path: 'fleets/invites', component: InvitationListComponent},
   {path: 'fleets/invite/:key', component: InvitationDetailsComponent},
   {path: '**', redirectTo: 'home'}
 ];

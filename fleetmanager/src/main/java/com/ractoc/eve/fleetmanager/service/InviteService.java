@@ -1,6 +1,8 @@
 package com.ractoc.eve.fleetmanager.service;
 
 import com.ractoc.eve.domain.fleetmanager.FleetModel;
+import com.ractoc.eve.fleetmanager.db.FleetmanagerApplication;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.Invites;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesImpl;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesManager;
@@ -9,6 +11,10 @@ import com.ractoc.eve.jesi.api.MailApi;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailMail;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient.RecipientTypeEnum;
+import com.speedment.common.tuple.Tuple2;
+import com.speedment.common.tuple.Tuples;
+import com.speedment.runtime.join.Join;
+import com.speedment.runtime.join.JoinComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,17 +22,19 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites.FLEET_ID;
-import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites.KEY;
+import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites.*;
 
 @Service
 public class InviteService {
+
+    private final FleetmanagerApplication app;
 
     private final InvitesManager invitesManager;
     private final MailApi mailApi;
 
     @Autowired
-    public InviteService(InvitesManager invitesManager, MailApi mailApi) {
+    public InviteService(FleetmanagerApplication app, InvitesManager invitesManager, MailApi mailApi) {
+        this.app = app;
         this.invitesManager = invitesManager;
         this.mailApi = mailApi;
     }
@@ -61,6 +69,23 @@ public class InviteService {
 
     public Invites getInvite(String key) {
         return invitesManager.stream().filter(KEY.equal(key)).findAny().orElseThrow(() -> new ServiceException("Invite not found for jey " + key));
+    }
+
+    public Stream<Tuple2<Invites, Fleet>> getInvitesForCharacter(Integer characterId, Integer corpId) {
+        JoinComponent joinComponent = app.getOrThrow(JoinComponent.class);
+        Join<Tuple2<Invites, Fleet>> join = joinComponent.from(invitesManager.IDENTIFIER)
+                .where(CHARACTER_ID.equal(characterId).or(CORPORATION_ID.equal(corpId)))
+                .innerJoinOn(Fleet.ID).equal(FLEET_ID)
+                .build(Tuples::of);
+        return join.stream();
+    }
+
+    public void deleteInvitation(Integer fleetId, int charId) {
+        Invites invite = invitesManager.stream()
+                .filter(FLEET_ID.equal(fleetId).and(CHARACTER_ID.equal(charId)))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchEntryException(String.format("No invite found for fleet id %d and character id %d", fleetId, charId)));
+        invitesManager.remove(invite);
     }
 
     // needs to be synchronized to make sure there are never any duplicate invite keys.

@@ -22,12 +22,20 @@
             <a class="nav-link" routerLink="items">Items</a>
           </div>
           <div *ngIf="user" ngbDropdown>
-            <button class="btn" id="fleetDropdown" ngbDropdownToggle>Fleets</button>
-            <div ngbDropdownMenu aria-labelledby="fleetDropdown">
-              <a class="dropdown-item" ngbDropdownItem routerLink="fleets/all">All fleets</a>
-              <a class="dropdown-item" ngbDropdownItem routerLink="fleets/all/active">All Active fleets</a>
-              <a class="dropdown-item" ngbDropdownItem routerLink="fleets/owned">Owned fleets</a>
-              <a class="dropdown-item" ngbDropdownItem routerLink="fleets/owned/active">Owned Active fleets</a>
+            <button class="btn" id="fleetDropdown" ngbDropdownToggle>Fleetmanager</button>
+            <div ngbDropdownMenu aria-labelledby="fleetDropdown" class="dropdown-menu-left">
+              <div ngbDropdown class="dropright sub-menu">
+                <button class="btn" id="fleetFleetDropdown" ngbDropdownToggle>Fleets</button>
+                <div ngbDropdownMenu aria-labelledby="fleetFleetDropdown">
+                  <a class="dropdown-item" ngbDropdownItem routerLink="fleets/all">All fleets</a>
+                  <a class="dropdown-item" ngbDropdownItem routerLink="fleets/all/active">All Active fleets</a>
+                  <a class="dropdown-item" ngbDropdownItem routerLink="fleets/owned">Owned fleets</a>
+                  <a class="dropdown-item" ngbDropdownItem routerLink="fleets/owned/active">Owned Active fleets</a>
+                </div>
+              </div>
+              <div>
+                <a class="dropdown-item" ngbDropdownItem routerLink="fleets/invites">Pending invites</a>
+              </div>
             </div>
           </div>
         </div>
