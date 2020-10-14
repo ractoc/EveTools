@@ -47,11 +47,13 @@ public class RegistrationHandler {
                                 fleetId,
                                 charId,
                                 charName));
-                inviteService.deleteInvitation(fleetId, charId);
+                Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+                inviteService.deleteInvitation(fleetId, charId, corpId);
                 registrationService.sendRegistrationNotification(fleet.getName(), charId, charName, fleet.getOwner(), ownerName, accessToken);
                 return registration;
             } else {
-                inviteService.deleteInvitation(fleetId, charId);
+                Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+                inviteService.deleteInvitation(fleetId, charId, corpId);
                 registrationService.sendDenyNotification(fleet.getName(), charId, charName, fleet.getOwner(), ownerName, accessToken);
                 return null;
             }

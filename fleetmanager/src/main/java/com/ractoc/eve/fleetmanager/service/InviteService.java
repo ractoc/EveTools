@@ -80,9 +80,9 @@ public class InviteService {
         return join.stream();
     }
 
-    public void deleteInvitation(Integer fleetId, int charId) {
+    public void deleteInvitation(Integer fleetId, int charId, int corpId) {
         Invites invite = invitesManager.stream()
-                .filter(FLEET_ID.equal(fleetId).and(CHARACTER_ID.equal(charId)))
+                .filter(FLEET_ID.equal(fleetId).and(CHARACTER_ID.equal(charId).or(CORPORATION_ID.equal(corpId))))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchEntryException(String.format("No invite found for fleet id %d and character id %d", fleetId, charId)));
         invitesManager.remove(invite);
