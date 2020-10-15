@@ -102,7 +102,7 @@ public class InviteHandler {
     public List<InviteModel> getInvitesForFleet(Integer fleetId, int charId) {
         Fleet fleet = fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("fleet not found"));
         if (fleetValidator.verifyFleet(FleetMapper.INSTANCE.dbToModel(fleet), charId)) {
-            return inviteService.getInvitesForFleet(fleetId, charId).map(InviteMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+            return inviteService.getInvitesForFleet(fleetId).map(InviteMapper.INSTANCE::dbToModel).collect(Collectors.toList());
         } else {
             throw new SecurityException("Access Denied");
         }

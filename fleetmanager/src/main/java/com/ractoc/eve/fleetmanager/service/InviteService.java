@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -63,7 +64,7 @@ public class InviteService {
         }
     }
 
-    public Stream<Invites> getInvitesForFleet(Integer fleetId, Integer charId) {
+    public Stream<Invites> getInvitesForFleet(Integer fleetId) {
         return invitesManager.stream().filter(FLEET_ID.equal(fleetId));
     }
 
@@ -85,11 +86,12 @@ public class InviteService {
     }
 
     public void deleteInvitation(Integer fleetId, int charId) {
-        Invites invite = invitesManager.stream()
+        Optional<Invites> invite = invitesManager.stream()
                 .filter(FLEET_ID.equal(fleetId).and(CHARACTER_ID.equal(charId)))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchEntryException(String.format("No invite found for fleet id %d and character id %d", fleetId, charId)));
-        invitesManager.remove(invite);
+                .findFirst();
+        if (invite.isPresent()) {
+            invitesManager.remove(invite.get());
+        }
     }
 
     public void deleteInvitation(Invites invite) {
