@@ -94,6 +94,39 @@ public class InviteController {
         }
     }
 
+    @ApiOperation(value = "Get Invite for character", response = InviteListResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = InviteListResponse.class),
+    })
+    @DeleteMapping(value = "/{key}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> deleteInvite(@PathVariable("key") String key, @AuthenticationPrincipal Authentication authentication) {
+        try {
+            inviteHandler.deleteInvite(key, ((EveUserDetails) authentication.getPrincipal()).getCharId());
+            return new ResponseEntity<>(new BaseResponse(GONE.value()), OK);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(value = "Get Invite for character", response = InviteListResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = InviteListResponse.class),
+    })
+    @GetMapping(value = "/fleet/{fleetId}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> getInvitesForFleet(@PathVariable("fleetId") Integer fleetId, @AuthenticationPrincipal Authentication authentication) {
+        try {
+            return new ResponseEntity<>(
+                    new InviteListResponse(OK, inviteHandler.getInvitesForFleet(fleetId,
+                            ((EveUserDetails) authentication.getPrincipal()).getCharId())
+                    )
+                    , OK);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @ApiOperation(value = "Get Invite by key", response = InviteDetailsResponse.class, produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = InviteDetailsResponse.class),

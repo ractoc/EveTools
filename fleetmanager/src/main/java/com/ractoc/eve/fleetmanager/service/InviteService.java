@@ -63,6 +63,10 @@ public class InviteService {
         }
     }
 
+    public Stream<Invites> getInvitesForFleet(Integer fleetId, Integer charId) {
+        return invitesManager.stream().filter(FLEET_ID.equal(fleetId));
+    }
+
     public Stream<Invites> getInvitesForFleet(FleetModel fleet) {
         return invitesManager.stream().filter(FLEET_ID.equal(fleet.getId()));
     }
@@ -85,6 +89,10 @@ public class InviteService {
                 .filter(FLEET_ID.equal(fleetId).and(CHARACTER_ID.equal(charId).or(CORPORATION_ID.equal(corpId))))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchEntryException(String.format("No invite found for fleet id %d and character id %d", fleetId, charId)));
+        invitesManager.remove(invite);
+    }
+
+    public void deleteInvitation(Invites invite) {
         invitesManager.remove(invite);
     }
 

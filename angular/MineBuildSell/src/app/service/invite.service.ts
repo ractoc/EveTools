@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {UserService} from './user.service';
 import {environment} from '../../environments/environment';
 import {map} from 'rxjs/operators';
+import {FleetModel} from "../shared/model/fleet-model";
 
 const INVITES_URI = 'http://' + environment.apiHost + ':8282/fleets/invites';
 
@@ -21,6 +22,24 @@ export class InviteService {
       })
     };
     return this.http.get<any>(INVITES_URI + '/', httpOptions)
+      .pipe(
+        map(result => {
+          if (result.responseCode >= 400) {
+            throw new Error('broken API:' + result.responseCode);
+          } else {
+            return result.invites;
+          }
+        })
+      );
+  }
+
+  getFleetInvites(fleet: FleetModel) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.userService.getEveState()
+      })
+    };
+    return this.http.get<any>(INVITES_URI + '/fleet/' + fleet.id, httpOptions)
       .pipe(
         map(result => {
           if (result.responseCode >= 400) {
@@ -60,6 +79,24 @@ export class InviteService {
       .pipe(
         map(result => {
           if (result.responseCode >= 400) {
+            throw new Error('broken API:' + result.responseCode);
+          } else {
+            return result.invite;
+          }
+        })
+      );
+  }
+
+  deleteInvitation(key: string) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.userService.getEveState()
+      })
+    };
+    return this.http.delete<any>(INVITES_URI + '/' + key, httpOptions)
+      .pipe(
+        map(result => {
+          if (result.responseCode !== 410) {
             throw new Error('broken API:' + result.responseCode);
           } else {
             return result.invite;

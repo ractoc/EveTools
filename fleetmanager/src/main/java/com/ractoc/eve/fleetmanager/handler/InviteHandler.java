@@ -2,6 +2,8 @@ package com.ractoc.eve.fleetmanager.handler;
 
 import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.domain.fleetmanager.InviteModel;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.Invites;
 import com.ractoc.eve.fleetmanager.mapper.FleetMapper;
 import com.ractoc.eve.fleetmanager.mapper.InviteMapper;
 import com.ractoc.eve.fleetmanager.service.FleetService;
@@ -94,6 +96,25 @@ public class InviteHandler {
             return inviteService.getInvitesForCharacter(charId, corpId).map(InviteMapper.INSTANCE::joinToModel).collect(Collectors.toList());
         } catch (ApiException e) {
             throw new HandlerException("Unable to fetch data from EVE ESI", e);
+        }
+    }
+
+    public List<InviteModel> getInvitesForFleet(Integer fleetId, int charId) {
+        Fleet fleet = fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("fleet not found"));
+        if (fleetValidator.verifyFleet(FleetMapper.INSTANCE.dbToModel(fleet), charId)) {
+            return inviteService.getInvitesForFleet(fleetId, charId).map(InviteMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+        } else {
+            throw new SecurityException("Access Denied");
+        }
+    }
+
+    public void deleteInvite(String key, int charId) {
+        Invites invite = inviteService.getInvite(key);
+        Fleet fleet = fleetService.getFleet(invite.getFleetId()).orElseThrow(() -> new NoSuchEntryException("fleet not found"));
+        if (fleet.getOwner() == charId) {
+            inviteService.deleteInvitation(invite);
+        } else {
+            throw new SecurityException("Access Denied");
         }
     }
 

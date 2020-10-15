@@ -7,6 +7,9 @@ import {FleetService} from '../service/fleet.service';
 import {LoginComponent} from '../login/login.component';
 import {UserService} from '../service/user.service';
 import {LocalStorageService} from '../service/local-storage.service';
+import {InviteModel} from "../shared/model/invite-model";
+import {RegistrationModel} from "../shared/model/Registration-model";
+import {InviteService} from "../service/invite.service";
 
 @Component({
   selector: 'app-fleet-details',
@@ -25,6 +28,8 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
   editFleet: boolean;
   displayPassword: boolean;
   savingFleet: boolean;
+  invitations: InviteModel[];
+  registrations: RegistrationModel[];
 
   constructor(
     private route: ActivatedRoute,
@@ -33,6 +38,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private localStorageService: LocalStorageService,
     private fleetService: FleetService,
+    private inviteService: InviteService,
     private modalService: NgbModal) {
   }
 
@@ -48,6 +54,8 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
                   this.startDate = start.date;
                   this.startTime = start.time;
                   this.corporationRestricted = '' + fleetData.corporationRestricted;
+                  this.loadInvitations();
+                  // loadRegistrations();
                 }
               },
               err => {
@@ -155,6 +163,25 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
             this.localStorageService.set('currentPage', '/fleet');
           }
           this.router.navigateByUrl('/login');
+        }
+      }
+    );
+  }
+
+  deleteInvitation(invitation: InviteModel) {
+    this.inviteService.deleteInvitation(invitation.key).subscribe(
+      () => {
+        this.invitations = undefined;
+        this.loadInvitations();
+      }
+    );
+  }
+
+  private loadInvitations() {
+    this.inviteService.getFleetInvites(this.fleet).subscribe(
+      (inviteData: InviteModel[]) => {
+        if (inviteData && inviteData.length > 0) {
+          this.invitations = inviteData;
         }
       }
     );

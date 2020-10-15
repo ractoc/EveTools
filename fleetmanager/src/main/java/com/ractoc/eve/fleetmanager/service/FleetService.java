@@ -45,12 +45,12 @@ public class FleetService {
     }
 
     public Stream<Fleet> getOwnedFleets(Integer charId) {
-        return fleetManager.stream().filter(fleet -> fleet.getOwner() == charId);
+        return fleetManager.stream().filter(Fleet.OWNER.equal(charId));
     }
 
     public Stream<Fleet> getActiveOwnedFleets(Integer charId) {
         return fleetManager.stream()
-                .filter(fleet -> fleet.getOwner() == charId)
+                .filter(Fleet.OWNER.equal(charId))
                 .filter(fleet -> fleet
                         .getStartDateTime()
                         // If there is no actual startDateTime, fake one in the future to ensure the fleet is added to the list
