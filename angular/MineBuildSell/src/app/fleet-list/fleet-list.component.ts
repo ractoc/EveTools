@@ -57,4 +57,20 @@ export class FleetListComponent implements OnInit {
     };
   }
 
+  displayFleetStart(fleet: FleetModel) {
+    const start = JSON.parse(fleet.start);
+    return this.toDoubleDigits(start.date.day) + '-' +
+      this.toDoubleDigits(start.date.month) + '-' +
+      start.date.year + ' ' +
+      this.toDoubleDigits(start.time.hour) + ':' +
+      this.toDoubleDigits(start.time.minute);
+  }
+
+  toDoubleDigits(digits: number) {
+    if (digits < 10) {
+      return '0' + digits;
+    }
+    return digits;
+  }
+
 }

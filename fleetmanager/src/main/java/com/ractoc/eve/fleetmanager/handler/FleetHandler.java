@@ -2,10 +2,8 @@ package com.ractoc.eve.fleetmanager.handler;
 
 import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.domain.fleetmanager.InviteModel;
-import com.ractoc.eve.domain.fleetmanager.SimpleFleetModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
 import com.ractoc.eve.fleetmanager.mapper.FleetMapper;
-import com.ractoc.eve.fleetmanager.mapper.SimpleFleetMapper;
 import com.ractoc.eve.fleetmanager.service.FleetService;
 import com.ractoc.eve.fleetmanager.service.InviteService;
 import com.ractoc.eve.fleetmanager.service.NoSuchEntryException;
@@ -39,30 +37,30 @@ public class FleetHandler {
         this.corporationApi = corporationApi;
     }
 
-    public List<SimpleFleetModel> getAllFleetList(Integer charId) {
+    public List<FleetModel> getAllFleetList(Integer charId) {
         try {
             Integer corporationId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
-            return fleetService.getAllFleets(corporationId).map(SimpleFleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+            return fleetService.getAllFleets(corporationId).map(FleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
         } catch (ApiException e) {
             throw new HandlerException(String.format("Unable to resolve corporationId for character %d", charId));
         }
     }
 
-    public List<SimpleFleetModel> getActiveFleetList(Integer charId) {
+    public List<FleetModel> getActiveFleetList(Integer charId) {
         try {
             Integer corporationId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
-            return fleetService.getActiveFleets(corporationId).map(SimpleFleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+            return fleetService.getActiveFleets(corporationId).map(FleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
         } catch (ApiException e) {
             throw new HandlerException(String.format("Unable to resolve corporationId for character %d", charId));
         }
     }
 
-    public List<SimpleFleetModel> getOwnedFleetsList(Integer charId) {
-        return fleetService.getOwnedFleets(charId).map(SimpleFleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+    public List<FleetModel> getOwnedFleetsList(Integer charId) {
+        return fleetService.getOwnedFleets(charId).map(FleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
     }
 
-    public List<SimpleFleetModel> getActiveOwnedFleetsList(Integer charId) {
-        return fleetService.getActiveOwnedFleets(charId).map(SimpleFleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+    public List<FleetModel> getActiveOwnedFleetsList(Integer charId) {
+        return fleetService.getActiveOwnedFleets(charId).map(FleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
     }
 
     public FleetModel getFleet(Integer id, Integer charId) {
