@@ -41,17 +41,17 @@ public class RegistrationHandler {
             String ownerName = characterApi.getCharactersCharacterId(fleet.getOwner(),
                     null,
                     null).getName();
+            RegistrationModel registration = RegistrationMapper.INSTANCE.dbToModel(
+                    registrationService.registerForFleet(
+                            fleetId,
+                            charId,
+                            charName,
+                            confirmation.isAccept()));
+            inviteService.deleteInvitation(fleetId, charId);
             if (confirmation.isAccept()) {
-                RegistrationModel registration = RegistrationMapper.INSTANCE.dbToModel(
-                        registrationService.registerForFleet(
-                                fleetId,
-                                charId,
-                                charName));
-                inviteService.deleteInvitation(fleetId, charId);
                 registrationService.sendRegistrationNotification(fleet.getName(), charId, charName, fleet.getOwner(), ownerName, accessToken);
                 return registration;
             } else {
-                inviteService.deleteInvitation(fleetId, charId);
                 registrationService.sendDenyNotification(fleet.getName(), charId, charName, fleet.getOwner(), ownerName, accessToken);
                 return null;
             }

@@ -11,9 +11,11 @@ import com.ractoc.eve.fleetmanager.service.InviteService;
 import com.ractoc.eve.fleetmanager.service.NoSuchEntryException;
 import com.ractoc.eve.fleetmanager.validator.FleetValidator;
 import com.ractoc.eve.fleetmanager.validator.InviteValidator;
+import com.ractoc.eve.fleetmanager.validator.RegistrationValidator;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.CharacterApi;
 import com.ractoc.eve.jesi.api.CorporationApi;
+import com.speedment.common.tuple.Tuple2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class InviteHandler {
     private final FleetService fleetService;
     private final InviteValidator inviteValidator;
     private final FleetValidator fleetValidator;
+    private final RegistrationValidator registrationValidator;
     private final CharacterApi characterApi;
     private final CorporationApi corporationApi;
 
@@ -39,12 +42,14 @@ public class InviteHandler {
                          FleetService fleetService,
                          InviteValidator inviteValidator,
                          FleetValidator fleetValidator,
+                         RegistrationValidator registrationValidator,
                          CharacterApi characterApi,
                          CorporationApi corporationApi) {
         this.inviteService = inviteService;
         this.fleetService = fleetService;
         this.inviteValidator = inviteValidator;
         this.fleetValidator = fleetValidator;
+        this.registrationValidator = registrationValidator;
         this.characterApi = characterApi;
         this.corporationApi = corporationApi;
     }
@@ -93,9 +98,21 @@ public class InviteHandler {
     public List<InviteModel> getInvitesForCharacter(int charId) {
         try {
             Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
-            return inviteService.getInvitesForCharacter(charId, corpId).map(InviteMapper.INSTANCE::joinToModel).collect(Collectors.toList());
+            return inviteService.getInvitesForCharacter(charId, corpId)
+                    .filter(inviteFleet -> this.filterRegistrations(inviteFleet, charId))
+                    .map(InviteMapper.INSTANCE::joinToModel)
+                    .collect(Collectors.toList());
         } catch (ApiException e) {
             throw new HandlerException("Unable to fetch data from EVE ESI", e);
+        }
+    }
+
+    private boolean filterRegistrations(Tuple2<Invites, Fleet> inviteFleet, Integer charId) {
+        // in case of a fleet invite we need to check the registration
+        if (((Invites) inviteFleet.get(0)).getCorporationId() != null) {
+            return !registrationValidator.hasRegistration(((Fleet) inviteFleet.get(1)).getId(), charId);
+        } else {
+            return true;
         }
     }
 

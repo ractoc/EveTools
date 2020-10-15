@@ -11,6 +11,7 @@ import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient.RecipientTypeEnum.CHARACTER;
@@ -31,11 +32,16 @@ public class RegistrationService {
         return registrationsManager.stream().filter(Registrations.FLEET_ID.equal(fleet.getId()));
     }
 
-    public Registrations registerForFleet(Integer fleetId, int charId, String charName) {
+    public Optional<Registrations> getRegistration(int fleetId, Integer charId) {
+        return registrationsManager.stream().filter(Registrations.FLEET_ID.equal(fleetId)).filter(Registrations.CHARACTER_ID.equal(charId)).findFirst();
+    }
+
+    public Registrations registerForFleet(Integer fleetId, int charId, String charName, boolean accept) {
         Registrations registrations = new RegistrationsImpl();
         registrations.setCharacterId(charId);
         registrations.setFleetId(fleetId);
         registrations.setName(charName);
+        registrations.setAccept(accept ? 1 : 0);
         return registrationsManager.persist(registrations);
     }
 
@@ -68,7 +74,7 @@ public class RegistrationService {
     public void sendDenyNotification(String fleetName, int characterId, String charName, Integer ownerId, String ownerName, String accessToken) {
         try {
             PostCharactersCharacterIdMailMail mail = generateDenyMail(charName, fleetName, ownerId, ownerName);
-            Integer result = mailApi.postCharactersCharacterIdMail(characterId, mail, null, accessToken);
+            mailApi.postCharactersCharacterIdMail(characterId, mail, null, accessToken);
         } catch (ApiException e) {
             throw new ServiceException("unable to send invite mail", e);
         }

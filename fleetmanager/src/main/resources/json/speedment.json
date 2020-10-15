@@ -2,7 +2,7 @@
   "config": {
     "speedmentVersion": "Speedment:3.2.9-SNAPSHOT",
     "companyName": "ractoc.com",
-    "appId": "69dc7991-b5c5-473f-a69d-8661ae958f5c",
+    "appId": "9650832c-aa41-426a-94d6-48cc922479a3",
     "name": "fleetmanager",
     "packageLocation": "target/generated-sources/java",
     "packageName": "com.ractoc.eve.fleetmanager.db",
@@ -253,6 +253,14 @@
                     "name": "end",
                     "id": "end",
                     "ordinalPosition": 5
+                  },
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "name": "accept",
+                    "id": "accept",
+                    "ordinalPosition": 6
                   }
                 ],
                 "name": "registrations",

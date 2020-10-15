@@ -39,4 +39,8 @@ public class RegistrationValidator {
     public List<RegistrationModel> getRegistrationsForFleet(FleetModel fleet) {
         return registrationService.getRegistrationsForFleet(fleet).map(RegistrationMapper.INSTANCE::dbToModel).collect(Collectors.toList());
     }
+
+    public boolean hasRegistration(int fleetId, Integer charId) {
+        return registrationService.getRegistration(fleetId, charId).isPresent();
+    }
 }
