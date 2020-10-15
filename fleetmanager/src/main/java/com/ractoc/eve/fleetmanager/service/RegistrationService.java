@@ -1,5 +1,6 @@
 package com.ractoc.eve.fleetmanager.service;
 
+import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.Registrations;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.RegistrationsImpl;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.RegistrationsManager;
@@ -9,6 +10,8 @@ import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailMail;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Stream;
 
 import static com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient.RecipientTypeEnum.CHARACTER;
 
@@ -22,6 +25,10 @@ public class RegistrationService {
     public RegistrationService(RegistrationsManager registrationsManager, MailApi mailApi) {
         this.registrationsManager = registrationsManager;
         this.mailApi = mailApi;
+    }
+
+    public Stream<Registrations> getRegistrationsForFleet(FleetModel fleet) {
+        return registrationsManager.stream().filter(Registrations.FLEET_ID.equal(fleet.getId()));
     }
 
     public Registrations registerForFleet(Integer fleetId, int charId, String charName) {

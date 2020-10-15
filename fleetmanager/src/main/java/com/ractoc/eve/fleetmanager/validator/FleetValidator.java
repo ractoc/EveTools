@@ -8,13 +8,15 @@ import org.springframework.stereotype.Service;
 public class FleetValidator {
 
     private final InviteValidator inviteValidator;
+    private final RegistrationValidator registrationValidator;
 
     @Autowired
-    public FleetValidator(InviteValidator inviteValidator) {
+    public FleetValidator(InviteValidator inviteValidator, RegistrationValidator registrationValidator) {
         this.inviteValidator = inviteValidator;
+        this.registrationValidator = registrationValidator;
     }
 
     public boolean verifyFleet(FleetModel fleet, Integer charId) {
-        return !fleet.isCorporationRestricted() || inviteValidator.verifyFleetInvites(fleet, charId);
+        return fleet.getOwner().equals(charId) || !fleet.isCorporationRestricted() || inviteValidator.verifyFleetInvites(fleet, charId) || registrationValidator.verifyFleetRegistrations(fleet, charId);
     }
 }
