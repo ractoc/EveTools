@@ -7,9 +7,10 @@ import {FleetService} from '../service/fleet.service';
 import {LoginComponent} from '../login/login.component';
 import {UserService} from '../service/user.service';
 import {LocalStorageService} from '../service/local-storage.service';
-import {InviteModel} from "../shared/model/invite-model";
-import {RegistrationModel} from "../shared/model/Registration-model";
-import {InviteService} from "../service/invite.service";
+import {InviteModel} from '../shared/model/invite-model';
+import {RegistrationModel} from '../shared/model/Registration-model';
+import {InviteService} from '../service/invite.service';
+import {EveIconService} from "../service/eve-icon.service";
 
 @Component({
   selector: 'app-fleet-details',
@@ -39,6 +40,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
     private localStorageService: LocalStorageService,
     private fleetService: FleetService,
     private inviteService: InviteService,
+    private eveIconService: EveIconService,
     private modalService: NgbModal) {
   }
 
@@ -185,5 +187,20 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  getInviteeIcon(invitation: InviteModel) {
+    if (!invitation.loadingIcon && !invitation.icon) {
+      invitation.loadingIcon = true;
+      if (invitation.corporationId) {
+        this.eveIconService.getCorporationIcon(invitation.corporationId).toPromise().then(iconData => {
+          invitation.icon = iconData.px64x64;
+        });
+      } else if (invitation.characterId) {
+        this.eveIconService.getCharacterIcon(invitation.characterId).toPromise().then(iconData => {
+          invitation.icon = iconData.px64x64;
+        });
+      }
+    }
   }
 }

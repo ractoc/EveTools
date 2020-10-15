@@ -113,6 +113,8 @@
     <div *ngIf="invitations">
       <div class="list-group list-group-flush">
         <div *ngFor="let invitation of invitations" class="list-group-item">
+          {{getInviteeIcon(invitation)}}
+          <img [src]="invitation.icon" alt="invitee icon"/>
           {{invitation.name}}
           <button class="btn" (click)="deleteInvitation(invitation)">
             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="currentColor"
