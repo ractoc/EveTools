@@ -94,9 +94,9 @@ public class InviteController {
         }
     }
 
-    @ApiOperation(value = "Get Invite for character", response = InviteListResponse.class, produces = "application/json")
+    @ApiOperation(value = "Delete invite", response = BaseResponse.class, produces = "application/json")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = InviteListResponse.class),
+            @ApiResponse(code = 410, message = "Invite removed", response = BaseResponse.class),
     })
     @DeleteMapping(value = "/{key}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<BaseResponse> deleteInvite(@PathVariable("key") String key, @AuthenticationPrincipal Authentication authentication) {
@@ -109,7 +109,7 @@ public class InviteController {
         }
     }
 
-    @ApiOperation(value = "Get Invite for character", response = InviteListResponse.class, produces = "application/json")
+    @ApiOperation(value = "Get Invites for fleet", response = InviteListResponse.class, produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = InviteListResponse.class),
     })

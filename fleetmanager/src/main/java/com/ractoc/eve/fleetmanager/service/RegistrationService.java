@@ -1,6 +1,5 @@
 package com.ractoc.eve.fleetmanager.service;
 
-import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.Registrations;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.RegistrationsImpl;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.RegistrationsManager;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.generated.GeneratedRegistrations.*;
 import static com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient.RecipientTypeEnum.CHARACTER;
 
 @Service
@@ -28,12 +28,12 @@ public class RegistrationService {
         this.mailApi = mailApi;
     }
 
-    public Stream<Registrations> getRegistrationsForFleet(FleetModel fleet) {
-        return registrationsManager.stream().filter(Registrations.FLEET_ID.equal(fleet.getId()));
+    public Stream<Registrations> getRegistrationsForFleet(Integer fleetId) {
+        return registrationsManager.stream().filter(FLEET_ID.equal(fleetId)).filter(ACCEPT.equal(1));
     }
 
-    public Optional<Registrations> getRegistration(int fleetId, Integer charId) {
-        return registrationsManager.stream().filter(Registrations.FLEET_ID.equal(fleetId)).filter(Registrations.CHARACTER_ID.equal(charId)).findFirst();
+    public Optional<Registrations> getRegistration(Integer fleetId, Integer charId) {
+        return registrationsManager.stream().filter(FLEET_ID.equal(fleetId)).filter(CHARACTER_ID.equal(charId)).findFirst();
     }
 
     public Registrations registerForFleet(Integer fleetId, int charId, String charName, boolean accept) {
@@ -95,5 +95,11 @@ public class RegistrationService {
                 charName));
         mail.setSubject(String.format("Fleet event %s", fleetName));
         return mail;
+    }
+
+    public void deleteRegistration(int fleetId, int charId) {
+        Registrations registration = getRegistration(fleetId, charId).orElseThrow(() -> new NoSuchEntryException("Registration not found"));
+        registration.setAccept(0);
+        registrationsManager.update(registration);
     }
 }

@@ -10,7 +10,8 @@ import {LocalStorageService} from '../service/local-storage.service';
 import {InviteModel} from '../shared/model/invite-model';
 import {RegistrationModel} from '../shared/model/Registration-model';
 import {InviteService} from '../service/invite.service';
-import {EveIconService} from "../service/eve-icon.service";
+import {EveIconService} from '../service/eve-icon.service';
+import {RegistrationService} from '../service/registration.service';
 
 @Component({
   selector: 'app-fleet-details',
@@ -40,6 +41,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
     private localStorageService: LocalStorageService,
     private fleetService: FleetService,
     private inviteService: InviteService,
+    private registrationService: RegistrationService,
     private eveIconService: EveIconService,
     private modalService: NgbModal) {
   }
@@ -57,7 +59,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
                   this.startTime = start.time;
                   this.corporationRestricted = '' + fleetData.corporationRestricted;
                   this.loadInvitations();
-                  // loadRegistrations();
+                  this.loadRegistrations();
                 }
               },
               err => {
@@ -179,11 +181,30 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
+  deleteRegistration(registration: RegistrationModel) {
+    this.registrationService.deleteRegistration(registration.fleetId).subscribe(
+      () => {
+        this.registrations = undefined;
+        this.loadRegistrations();
+      }
+    );
+  }
+
   private loadInvitations() {
     this.inviteService.getFleetInvites(this.fleet).subscribe(
       (inviteData: InviteModel[]) => {
         if (inviteData && inviteData.length > 0) {
           this.invitations = inviteData;
+        }
+      }
+    );
+  }
+
+  private loadRegistrations() {
+    this.registrationService.getFleetRegistrations(this.fleet).subscribe(
+      (registrationData: RegistrationModel[]) => {
+        if (registrationData && registrationData.length > 0) {
+          this.registrations = registrationData;
         }
       }
     );
@@ -202,5 +223,20 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
         });
       }
     }
+  }
+
+  getRegistrationIcon(registration: RegistrationModel) {
+    if (!registration.loadingIcon && !registration.icon) {
+      registration.loadingIcon = true;
+      if (registration.characterId) {
+        this.eveIconService.getCharacterIcon(registration.characterId).toPromise().then(iconData => {
+          registration.icon = iconData.px64x64;
+        });
+      }
+    }
+  }
+
+  registrant(registration: RegistrationModel) {
+    return registration.characterId === this.userService.getCurrentUser().characterId;
   }
 }

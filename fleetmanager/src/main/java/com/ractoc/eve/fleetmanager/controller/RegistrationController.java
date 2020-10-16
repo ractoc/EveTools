@@ -2,10 +2,7 @@ package com.ractoc.eve.fleetmanager.controller;
 
 import com.ractoc.eve.fleetmanager.handler.RegistrationHandler;
 import com.ractoc.eve.fleetmanager.model.RegistrationConfirmation;
-import com.ractoc.eve.fleetmanager.response.BaseResponse;
-import com.ractoc.eve.fleetmanager.response.ErrorResponse;
-import com.ractoc.eve.fleetmanager.response.FleetResponse;
-import com.ractoc.eve.fleetmanager.response.RegistrationDetailsResponse;
+import com.ractoc.eve.fleetmanager.response.*;
 import com.ractoc.eve.fleetmanager.service.ServiceException;
 import com.ractoc.eve.user.filter.EveUserDetails;
 import io.swagger.annotations.*;
@@ -17,8 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Api(tags = {"Registration Resource"}, value = "/registrations", produces = "application/json")
@@ -40,6 +36,24 @@ public class RegistrationController {
         this.registrationHandler = registrationHandler;
     }
 
+    @ApiOperation(value = "Get Registrations for fleet", response = InviteListResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = InviteListResponse.class),
+    })
+    @GetMapping(value = "/fleet/{fleetId}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> getRegistrationsForFleet(@PathVariable("fleetId") Integer fleetId, @AuthenticationPrincipal Authentication authentication) {
+        try {
+            return new ResponseEntity<>(
+                    new RegistrationListResponse(OK, registrationHandler.getRegistrationsForFleet(fleetId,
+                            ((EveUserDetails) authentication.getPrincipal()).getCharId())
+                    )
+                    , OK);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @ApiOperation(value = "confirm registration", response = FleetResponse.class, produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Invite successfully accepted or denied.", response = FleetResponse.class),
@@ -55,6 +69,21 @@ public class RegistrationController {
                             ((EveUserDetails) authentication.getPrincipal()).getAccessToken())
                     )
                     , OK);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(value = "Delete registration", response = BaseResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 410, message = "Registration removed", response = BaseResponse.class),
+    })
+    @DeleteMapping(value = "/{fleetId}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> deleteRegistration(@PathVariable("fleetId") Integer fleetId, @AuthenticationPrincipal Authentication authentication) {
+        try {
+            registrationHandler.deleteRegistration(fleetId, ((EveUserDetails) authentication.getPrincipal()).getCharId());
+            return new ResponseEntity<>(new BaseResponse(GONE.value()), OK);
         } catch (ServiceException e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);

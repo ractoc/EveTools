@@ -2,10 +2,13 @@ import {FleetModel} from './fleet-model';
 
 export class RegistrationModel {
 
-  constructor(public id: number,
+  constructor(public fleetId: number,
+              public characterId: number,
               public fleet: FleetModel,
               public name: string,
-              public characterName: string) {
+              public characterName: string,
+              public loadingIcon: boolean,
+              public icon: string) {
   }
 
 }
