@@ -27,7 +27,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/registrations")
 @Validated
 @Slf4j
-public class RegistrationController {
+public class RegistrationController extends BaseController {
 
     private final RegistrationHandler registrationHandler;
 

@@ -38,6 +38,7 @@ export class FleetService {
   }
 
   saveFleet(fleet: FleetModel) {
+      console.log('saving fleet', fleet);
     const httpOptions = {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + this.userService.getEveState()

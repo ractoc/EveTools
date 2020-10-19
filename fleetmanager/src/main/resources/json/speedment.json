@@ -2,7 +2,7 @@
   "config": {
     "speedmentVersion": "Speedment:3.2.9-SNAPSHOT",
     "companyName": "ractoc.com",
-    "appId": "9650832c-aa41-426a-94d6-48cc922479a3",
+    "appId": "1809156b-55f4-4560-84f6-83b36a1f20b1",
     "name": "fleetmanager",
     "packageLocation": "target/generated-sources/java",
     "packageName": "com.ractoc.eve.fleetmanager.db",
@@ -90,6 +90,14 @@
                     "name": "start_date_time",
                     "id": "start_date_time",
                     "ordinalPosition": 7
+                  },
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "name": "type_id",
+                    "id": "type_id",
+                    "ordinalPosition": 8
                   }
                 ],
                 "name": "fleet",
@@ -265,6 +273,71 @@
                 ],
                 "name": "registrations",
                 "id": "registrations"
+              },
+              {
+                "primaryKeyColumns": [
+                  {
+                    "name": "id",
+                    "id": "id",
+                    "ordinalPosition": 1
+                  }
+                ],
+                "indexes": [
+                  {
+                    "unique": true,
+                    "name": "name_UNIQUE",
+                    "indexColumns": [
+                      {
+                        "orderType": "ASC",
+                        "name": "name",
+                        "id": "name",
+                        "ordinalPosition": 1
+                      }
+                    ],
+                    "id": "name_UNIQUE"
+                  },
+                  {
+                    "unique": true,
+                    "name": "PRIMARY",
+                    "indexColumns": [
+                      {
+                        "orderType": "ASC",
+                        "name": "id",
+                        "id": "id",
+                        "ordinalPosition": 1
+                      }
+                    ],
+                    "id": "PRIMARY"
+                  }
+                ],
+                "isView": false,
+                "columns": [
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "autoIncrement": true,
+                    "name": "id",
+                    "id": "id",
+                    "ordinalPosition": 1
+                  },
+                  {
+                    "databaseType": "java.lang.String",
+                    "nullable": false,
+                    "name": "name",
+                    "id": "name",
+                    "ordinalPosition": 2
+                  },
+                  {
+                    "databaseType": "java.lang.String",
+                    "nullable": false,
+                    "name": "description",
+                    "id": "description",
+                    "ordinalPosition": 3
+                  }
+                ],
+                "name": "types",
+                "id": "types"
               }
             ],
             "name": "eve_fleetmanager",

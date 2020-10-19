@@ -12,6 +12,8 @@ import {RegistrationModel} from '../shared/model/Registration-model';
 import {InviteService} from '../service/invite.service';
 import {EveIconService} from '../service/eve-icon.service';
 import {RegistrationService} from '../service/registration.service';
+import {TypeModel} from '../shared/model/type-model';
+import {TypeService} from '../service/type.service';
 
 @Component({
   selector: 'app-fleet-details',
@@ -26,6 +28,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
   startDate: NgbDateStruct;
   startTime: NgbTimeStruct;
   corporationRestricted: string;
+  types: TypeModel[];
 
   editFleet: boolean;
   displayPassword: boolean;
@@ -43,6 +46,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
     private inviteService: InviteService,
     private registrationService: RegistrationService,
     private eveIconService: EveIconService,
+    private typeService: TypeService,
     private modalService: NgbModal) {
   }
 
@@ -50,52 +54,62 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
     this.routeListener$ = this.route.params
       .subscribe((params: any) => {
           if (params.id) {
-            this.fleetService.getFleet(params.id).subscribe(
-              (fleetData: FleetModel) => {
-                if (fleetData) {
-                  this.fleet = fleetData;
-                  const start = JSON.parse(fleetData.start);
-                  this.startDate = start.date;
-                  this.startTime = start.time;
-                  this.corporationRestricted = '' + fleetData.corporationRestricted;
-                  this.loadInvitations();
-                  this.loadRegistrations();
-                }
-              },
-              err => {
-                if (err.status === 401) {
-                  this.localStorageService.remove('eve-state');
-                  if (params.id) {
-                    this.localStorageService.set('currentPage', '/fleet/' + params.id);
-                  } else {
-                    this.localStorageService.set('currentPage', '/fleets');
-                  }
-                  this.router.navigateByUrl('/login');
-                }
-              }
-            );
+            this.loadFleet(params.id);
           } else {
-            this.fleet = new FleetModel(undefined,
-              undefined,
-              undefined,
-              undefined,
-              undefined,
-              undefined,
-              -1,
-              false,
-              [],
-              undefined);
-            const currentDate = new Date();
-            this.startDate = {
-              year: currentDate.getFullYear(),
-              month: currentDate.getMonth() + 1,
-              day: currentDate.getDate()
-            };
-            this.startTime = {hour: 0, minute: 0, second: 0};
-            this.corporationRestricted = 'false';
+            this.initFleetDetails();
           }
         }
       );
+    this.loadTypes();
+  }
+
+  private initFleetDetails() {
+    this.fleet = new FleetModel(undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      -1,
+      false,
+      [],
+      undefined);
+    const currentDate = new Date();
+    this.startDate = {
+      year: currentDate.getFullYear(),
+      month: currentDate.getMonth() + 1,
+      day: currentDate.getDate()
+    };
+    this.startTime = {hour: 0, minute: 0, second: 0};
+    this.corporationRestricted = 'false';
+  }
+
+  private loadFleet(fleetId: number) {
+    this.fleetService.getFleet(fleetId).subscribe(
+      (fleetData: FleetModel) => {
+        if (fleetData) {
+          this.fleet = fleetData;
+          const start = JSON.parse(fleetData.start);
+          this.startDate = start.date;
+          this.startTime = start.time;
+          this.corporationRestricted = '' + fleetData.corporationRestricted;
+          this.loadInvitations();
+          this.loadRegistrations();
+        }
+      },
+      err => {
+        if (err.status === 401) {
+          this.localStorageService.remove('eve-state');
+          if (fleetId) {
+            this.localStorageService.set('currentPage', '/fleet/' + fleetId);
+          } else {
+            this.localStorageService.set('currentPage', '/fleets');
+          }
+          this.router.navigateByUrl('/login');
+        }
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -238,5 +252,14 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
 
   registrant(registration: RegistrationModel) {
     return registration.characterId === this.userService.getCurrentUser().characterId;
+  }
+
+  private loadTypes() {
+    this.typeService.loadTypes().subscribe(
+      (typeData: TypeModel[]) => {
+        console.log('setting types', typeData);
+        this.types = typeData;
+      }
+    );
   }
 }

@@ -3,6 +3,7 @@ package com.ractoc.eve.fleetmanager.controller;
 import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.fleetmanager.handler.FleetHandler;
 import com.ractoc.eve.fleetmanager.handler.HandlerException;
+import com.ractoc.eve.fleetmanager.model.FleetSearchParams;
 import com.ractoc.eve.fleetmanager.response.BaseResponse;
 import com.ractoc.eve.fleetmanager.response.ErrorResponse;
 import com.ractoc.eve.fleetmanager.response.FleetListResponse;
@@ -42,41 +43,20 @@ public class FleetController extends BaseController {
         this.fleetHandler = fleetHandler;
     }
 
-    @ApiOperation(value = "Get fleets allowed for character", response = FleetListResponse.class, produces = "application/json")
+    @ApiOperation(value = "Search fleets", response = FleetListResponse.class, produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = FleetListResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
     @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> getFleets(@AuthenticationPrincipal Authentication authentication,
-                                                  @RequestParam(name = "active", defaultValue = "false", required = false) boolean active,
-                                                  @RequestParam(name = "owned", defaultValue = "false", required = false) boolean owned) {
+    public ResponseEntity<BaseResponse> searchFleets(@AuthenticationPrincipal Authentication authentication,
+                                                     FleetSearchParams params) {
         try {
-            if (active && owned) {
-                return new ResponseEntity<>(
-                        new FleetListResponse(OK,
-                                fleetHandler.getActiveOwnedFleetsList(((EveUserDetails) authentication.getPrincipal()).getCharId())
-                        )
-                        , OK);
-            } else if (!active && owned) {
-                return new ResponseEntity<>(
-                        new FleetListResponse(OK,
-                                fleetHandler.getOwnedFleetsList(((EveUserDetails) authentication.getPrincipal()).getCharId())
-                        )
-                        , OK);
-            } else if (active) {
-                return new ResponseEntity<>(
-                        new FleetListResponse(OK,
-                                fleetHandler.getActiveFleetList(((EveUserDetails) authentication.getPrincipal()).getCharId())
-                        )
-                        , OK);
-            } else {
-                return new ResponseEntity<>(
-                        new FleetListResponse(OK,
-                                fleetHandler.getAllFleetList(((EveUserDetails) authentication.getPrincipal()).getCharId())
-                        )
-                        , OK);
-            }
+            return new ResponseEntity<>(
+                    new FleetListResponse(OK,
+                            fleetHandler.searchFleets(params, ((EveUserDetails) authentication.getPrincipal()).getCharId())
+                    )
+                    , OK);
         } catch (ServiceException e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);

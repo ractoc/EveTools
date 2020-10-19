@@ -9,9 +9,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @ToString
-@ApiModel(value = "Simple Fleet Model", description = "Contains limited Fleet model information for use in listings")
-public class SimpleFleetModel {
+@ApiModel(value = "Type Model", description = "Contains the Type model information")
+public class TypeModel {
     private Integer id;
     private String name;
-    private boolean restricted;
+    private String description;
 }

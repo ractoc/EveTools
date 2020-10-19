@@ -4,6 +4,7 @@ import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.domain.fleetmanager.InviteModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
 import com.ractoc.eve.fleetmanager.mapper.FleetMapper;
+import com.ractoc.eve.fleetmanager.model.FleetSearchParams;
 import com.ractoc.eve.fleetmanager.service.FleetService;
 import com.ractoc.eve.fleetmanager.service.InviteService;
 import com.ractoc.eve.fleetmanager.service.NoSuchEntryException;
@@ -15,8 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Validated
@@ -37,30 +42,37 @@ public class FleetHandler {
         this.corporationApi = corporationApi;
     }
 
-    public List<FleetModel> getAllFleetList(Integer charId) {
+    public List<FleetModel> searchFleets(FleetSearchParams params, int charId) {
         try {
-            Integer corporationId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
-            return fleetService.getAllFleets(corporationId).map(FleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+            Stream<Fleet> results;
+            if (params.isOwned()) {
+                results = fleetService.getOwnedFleets(charId);
+            } else {
+                Integer corporationId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+                results = fleetService.getAllFleets(corporationId);
+            }
+            return results.filter(fleet -> filterSearchParams(fleet, params)).map(FleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
         } catch (ApiException e) {
             throw new HandlerException(String.format("Unable to resolve corporationId for character %d", charId));
         }
     }
 
-    public List<FleetModel> getActiveFleetList(Integer charId) {
-        try {
-            Integer corporationId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
-            return fleetService.getActiveFleets(corporationId).map(FleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
-        } catch (ApiException e) {
-            throw new HandlerException(String.format("Unable to resolve corporationId for character %d", charId));
+    private boolean filterSearchParams(Fleet fleet, FleetSearchParams params) {
+        boolean result = true;
+        if (params.isActive()) {
+            result = fleet
+                    .getStartDateTime()
+                    // If there is no actual startDateTime, fake one in the future to ensure the fleet is added to the list
+                    .orElseGet(() -> Timestamp.from(Instant.now().plus(1, ChronoUnit.DAYS)))
+                    .toInstant()
+                    // add all fleets which are starting in the future of currently active
+                    .plus(fleet.getDuration().orElse(0), ChronoUnit.HOURS)
+                    .isAfter(Instant.now());
         }
-    }
-
-    public List<FleetModel> getOwnedFleetsList(Integer charId) {
-        return fleetService.getOwnedFleets(charId).map(FleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
-    }
-
-    public List<FleetModel> getActiveOwnedFleetsList(Integer charId) {
-        return fleetService.getActiveOwnedFleets(charId).map(FleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+        if (result && params.getTypeId() != null && params.getTypeId() != 0) {
+            result = fleet.getTypeId() == params.getTypeId();
+        }
+        return result;
     }
 
     public FleetModel getFleet(Integer id, Integer charId) {

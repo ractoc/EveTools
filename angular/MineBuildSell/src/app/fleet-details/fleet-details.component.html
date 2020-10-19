@@ -9,6 +9,19 @@
     </span>
   </div>
   <div class="form-group">
+    <label for="type">Type:</label>
+    <span *ngIf="editable()">
+      <select class="custom-select custom-select-sm" id="type" [(ngModel)]="fleet.typeId">
+        <option *ngFor="let type of types" [value]="type.id">
+          {{type.name}}
+        </option>
+      </select>
+    </span>
+    <span *ngIf="!editable()">
+      {{fleet.type.name}}
+    </span>
+  </div>
+  <div class="form-group">
     <label for="startDate">Start Date</label>
     <span *ngIf="editable()">
     <div class="input-group">
@@ -40,8 +53,7 @@
     <label for="duration">Duration</label>
     <span *ngIf="editable()">
     <div class="input-group">
-      <select class="custom-select custom-select-sm" id="duration" [(ngModel)]="fleet.duration"
-              [disabled]="!editable()">
+      <select class="custom-select custom-select-sm" id="duration" [(ngModel)]="fleet.duration">
         <option value="0">Not specified</option>
         <option value="1">1 hour</option>
         <option value="2">2 hours</option>

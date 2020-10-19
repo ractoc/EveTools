@@ -8,6 +8,7 @@ import com.ractoc.eve.fleetmanager.db.FleetmanagerApplicationBuilder;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.FleetManager;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesManager;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.RegistrationsManager;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.types.TypesManager;
 import com.speedment.runtime.core.component.transaction.TransactionComponent;
 import com.speedment.runtime.core.component.transaction.TransactionHandler;
 import com.speedment.runtime.join.JoinBundle;
@@ -97,6 +98,11 @@ public class SpeedmentConfiguration {
     @Bean
     public InvitesManager getInvitesManager(FleetmanagerApplication app) {
         return app.getOrThrow(InvitesManager.class);
+    }
+
+    @Bean
+    public TypesManager getTypesManager(FleetmanagerApplication app) {
+        return app.getOrThrow(TypesManager.class);
     }
 
     @Bean

@@ -1,4 +1,5 @@
 import {CharacterModel} from './character.model';
+import {TypeModel} from './type-model';
 
 export class FleetModel {
 
@@ -6,7 +7,8 @@ export class FleetModel {
               public name: string,
               public locationId: number,
               public owner: number,
-              public type: string,
+              public type: TypeModel,
+              public typeId: number,
               public start: string,
               public duration: number,
               public corporationRestricted: boolean,

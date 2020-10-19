@@ -10,8 +10,8 @@ dbms:
   port: 9876
   schema: eve_fleetmanager
   username: eve
-  collation: utf8mb4_general_ci
-  collation.binary: utf8mb4_bin
+  collation: utf8_general_ci
+  collation.binary: utf8_bin
 
 ---
 spring:
