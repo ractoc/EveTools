@@ -124,8 +124,9 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
       this.fleet.start = JSON.stringify({date: this.startDate, time: this.startTime});
       this.fleet.corporationRestricted = this.corporationRestricted === 'true';
       this.fleetService.saveFleet(this.fleet).subscribe(
-        () => {
-          this.router.navigateByUrl('/fleets');
+        (fleetData: FleetModel) => {
+          this.fleet = fleetData;
+          this.router.navigateByUrl('/fleet/' + this.fleet.id);
           this.savingFleet = false;
         },
         err => {
