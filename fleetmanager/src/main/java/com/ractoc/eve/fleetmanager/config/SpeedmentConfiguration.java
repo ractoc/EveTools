@@ -8,10 +8,14 @@ import com.ractoc.eve.fleetmanager.db.FleetmanagerApplicationBuilder;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.FleetManager;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesManager;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.RegistrationsManager;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role.RoleManager;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role_fleet.RoleFleetManager;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role_types.RoleTypesManager;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.types.TypesManager;
 import com.speedment.runtime.core.component.transaction.TransactionComponent;
 import com.speedment.runtime.core.component.transaction.TransactionHandler;
 import com.speedment.runtime.join.JoinBundle;
+import com.speedment.runtime.join.JoinComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -103,6 +107,26 @@ public class SpeedmentConfiguration {
     @Bean
     public TypesManager getTypesManager(FleetmanagerApplication app) {
         return app.getOrThrow(TypesManager.class);
+    }
+
+    @Bean
+    public RoleManager getRoleManager(FleetmanagerApplication app) {
+        return app.getOrThrow(RoleManager.class);
+    }
+
+    @Bean
+    public RoleTypesManager getRoleTypesManager(FleetmanagerApplication app) {
+        return app.getOrThrow(RoleTypesManager.class);
+    }
+
+    @Bean
+    public JoinComponent getJoinComponent(FleetmanagerApplication app) {
+        return app.getOrThrow(JoinComponent.class);
+    }
+
+    @Bean
+    public RoleFleetManager getRoleFleetManager(FleetmanagerApplication app) {
+        return app.getOrThrow(RoleFleetManager.class);
     }
 
     @Bean

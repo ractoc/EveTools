@@ -14,6 +14,7 @@ import {EveIconService} from '../service/eve-icon.service';
 import {RegistrationService} from '../service/registration.service';
 import {TypeModel} from '../shared/model/type-model';
 import {TypeService} from '../service/type.service';
+import {RoleModel} from "../shared/model/role.model";
 
 @Component({
   selector: 'app-fleet-details',
@@ -74,6 +75,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
       -1,
       false,
       [],
+      undefined,
       undefined);
     const currentDate = new Date();
     this.startDate = {
@@ -261,5 +263,51 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
         this.types = typeData;
       }
     );
+  }
+
+  onSelectRole(role: RoleModel, checked: boolean) {
+    console.log(role.id + '=' + checked);
+    if (!this.fleet.roles) {
+      this.fleet.roles = [];
+    }
+    if (checked) {
+      if (!this.fleet.roles.some(r => r.id === role.id)) {
+        this.fleet.roles.push(role);
+      }
+    } else {
+      this.fleet.roles = this.fleet.roles.filter(r => r.id !== role.id);
+    }
+  }
+
+  roleSelected(roleId: number) {
+    if (this.fleet.roles) {
+      for (const fleetRole of this.fleet.roles) {
+        if (fleetRole.id === roleId) {
+          return true;
+        }
+      }
+    }
+    return undefined;
+  }
+
+  roleAmount(roleId: number) {
+    if (this.fleet.roles) {
+      for (const fleetRole of this.fleet.roles) {
+        if (fleetRole.id === roleId) {
+          return fleetRole.amount ? fleetRole.amount : 0;
+        }
+      }
+    }
+    return 0;
+  }
+
+  setFleetRoleAmount(roleId: number, amount: number) {
+    if (this.fleet.roles) {
+      for (const fleetRole of this.fleet.roles) {
+        if (fleetRole.id === roleId) {
+          fleetRole.amount = amount;
+        }
+      }
+    }
   }
 }

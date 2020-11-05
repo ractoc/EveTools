@@ -2,6 +2,8 @@ package com.ractoc.eve.fleetmanager.service;
 
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.FleetManager;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role_fleet.RoleFleet;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role_fleet.RoleFleetManager;
 import com.speedment.runtime.core.exception.SpeedmentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,10 +18,13 @@ import java.util.stream.Stream;
 public class FleetService {
 
     private final FleetManager fleetManager;
+    private final RoleFleetManager roleFleetManager;
 
     @Autowired
-    public FleetService(FleetManager fleetManager) {
+    public FleetService(FleetManager fleetManager,
+                        RoleFleetManager roleFleetManager) {
         this.fleetManager = fleetManager;
+        this.roleFleetManager = roleFleetManager;
     }
 
     public Stream<Fleet> getActiveFleets(Integer corporationId) {
@@ -88,6 +93,34 @@ public class FleetService {
             fleetManager.remove(fleet);
         } catch (SpeedmentException e) {
             throw new ServiceException("Unable to delete fleet " + fleet.getId(), e);
+        }
+    }
+
+    public Stream<RoleFleet> getFleetRoles(Integer fleetId) {
+        return roleFleetManager.stream().filter(RoleFleet.FLEET_ID.equal(fleetId));
+    }
+
+    public void saveRole(RoleFleet roleFleet) {
+        try {
+            roleFleetManager.persist(roleFleet);
+        } catch (SpeedmentException e) {
+            throw new ServiceException("Unable to save roleFleet" + roleFleet.getRoleId() + "-" + roleFleet.getFleetId(), e);
+        }
+    }
+
+    public void updateRole(RoleFleet roleFleet) {
+        try {
+            roleFleetManager.update(roleFleet);
+        } catch (SpeedmentException e) {
+            throw new ServiceException("Unable to update roleFleet" + roleFleet.getRoleId() + "-" + roleFleet.getFleetId(), e);
+        }
+    }
+
+    public void deleteRole(RoleFleet roleFleet) {
+        try {
+            roleFleetManager.remove(roleFleet);
+        } catch (SpeedmentException e) {
+            throw new ServiceException("Unable to delete roleFleet" + roleFleet.getRoleId() + "-" + roleFleet.getFleetId(), e);
         }
     }
 }

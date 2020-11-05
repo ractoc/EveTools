@@ -69,11 +69,17 @@ public interface FleetMapper extends BaseMapper {
         return type;
     }
 
+    @Named("typeToTypeId")
+    static int typeToTypeId(TypeModel type) {
+        return type.getId();
+    }
+
     private static TypeService getTypeService() {
         return SpringContext.getBean(TypeService.class);
     }
 
     @Mapping(source = "start", target = "startDateTime", qualifiedByName = "startToTimeStamp")
+    @Mapping(source = "type", target = "typeId", qualifiedByName = "typeToTypeId")
     FleetImpl modelToDb(FleetModel model);
 
     @Mapping(source = "corporationId", target = "corporationRestricted", qualifiedByName = "corporationIdToCorporationRestricted")

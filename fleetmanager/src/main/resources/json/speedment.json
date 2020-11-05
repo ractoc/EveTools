@@ -2,7 +2,7 @@
   "config": {
     "speedmentVersion": "Speedment:3.2.9-SNAPSHOT",
     "companyName": "ractoc.com",
-    "appId": "1809156b-55f4-4560-84f6-83b36a1f20b1",
+    "appId": "269ccf1c-2057-4511-a36e-1fb840ed5d18",
     "name": "fleetmanager",
     "packageLocation": "target/generated-sources/java",
     "packageName": "com.ractoc.eve.fleetmanager.db",
@@ -269,10 +269,247 @@
                     "name": "accept",
                     "id": "accept",
                     "ordinalPosition": 6
+                  },
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "nullable": true,
+                    "name": "role_id",
+                    "id": "role_id",
+                    "ordinalPosition": 7
                   }
                 ],
                 "name": "registrations",
                 "id": "registrations"
+              },
+              {
+                "primaryKeyColumns": [
+                  {
+                    "name": "id",
+                    "id": "id",
+                    "ordinalPosition": 1
+                  }
+                ],
+                "indexes": [
+                  {
+                    "unique": true,
+                    "name": "name_UNIQUE",
+                    "indexColumns": [
+                      {
+                        "orderType": "ASC",
+                        "name": "name",
+                        "id": "name",
+                        "ordinalPosition": 1
+                      }
+                    ],
+                    "id": "name_UNIQUE"
+                  },
+                  {
+                    "unique": true,
+                    "name": "PRIMARY",
+                    "indexColumns": [
+                      {
+                        "orderType": "ASC",
+                        "name": "id",
+                        "id": "id",
+                        "ordinalPosition": 1
+                      }
+                    ],
+                    "id": "PRIMARY"
+                  }
+                ],
+                "isView": false,
+                "columns": [
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "autoIncrement": true,
+                    "name": "id",
+                    "id": "id",
+                    "ordinalPosition": 1
+                  },
+                  {
+                    "databaseType": "java.lang.String",
+                    "nullable": false,
+                    "name": "name",
+                    "id": "name",
+                    "ordinalPosition": 2
+                  },
+                  {
+                    "databaseType": "java.lang.String",
+                    "nullable": false,
+                    "name": "description",
+                    "id": "description",
+                    "ordinalPosition": 3
+                  }
+                ],
+                "name": "role",
+                "id": "role"
+              },
+              {
+                "primaryKeyColumns": [
+                  {
+                    "name": "fleet_id",
+                    "id": "fleet_id",
+                    "ordinalPosition": 2
+                  },
+                  {
+                    "name": "role_id",
+                    "id": "role_id",
+                    "ordinalPosition": 1
+                  }
+                ],
+                "indexes": [
+                  {
+                    "unique": true,
+                    "name": "PRIMARY",
+                    "indexColumns": [
+                      {
+                        "orderType": "ASC",
+                        "name": "role_id",
+                        "id": "role_id",
+                        "ordinalPosition": 1
+                      },
+                      {
+                        "orderType": "ASC",
+                        "name": "fleet_id",
+                        "id": "fleet_id",
+                        "ordinalPosition": 2
+                      }
+                    ],
+                    "id": "PRIMARY"
+                  }
+                ],
+                "isView": false,
+                "columns": [
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "name": "role_id",
+                    "id": "role_id",
+                    "ordinalPosition": 1
+                  },
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "name": "fleet_id",
+                    "id": "fleet_id",
+                    "ordinalPosition": 2
+                  },
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "name": "number",
+                    "id": "number",
+                    "ordinalPosition": 3
+                  }
+                ],
+                "name": "role_fleet",
+                "id": "role_fleet"
+              },
+              {
+                "foreignKeys": [
+                  {
+                    "foreignKeyColumns": [
+                      {
+                        "foreignDatabaseName": "fleetmanager",
+                        "foreignSchemaName": "eve_fleetmanager",
+                        "name": "role_id",
+                        "foreignColumnName": "id",
+                        "id": "role_id",
+                        "foreignTableName": "role",
+                        "ordinalPosition": 1
+                      }
+                    ],
+                    "name": "fk_role_types_role",
+                    "id": "fk_role_types_role"
+                  },
+                  {
+                    "foreignKeyColumns": [
+                      {
+                        "foreignDatabaseName": "fleetmanager",
+                        "foreignSchemaName": "eve_fleetmanager",
+                        "name": "type_id",
+                        "foreignColumnName": "id",
+                        "id": "type_id",
+                        "foreignTableName": "types",
+                        "ordinalPosition": 1
+                      }
+                    ],
+                    "name": "fk_role_types_types",
+                    "id": "fk_role_types_types"
+                  }
+                ],
+                "primaryKeyColumns": [
+                  {
+                    "name": "role_id",
+                    "id": "role_id",
+                    "ordinalPosition": 1
+                  },
+                  {
+                    "name": "type_id",
+                    "id": "type_id",
+                    "ordinalPosition": 2
+                  }
+                ],
+                "indexes": [
+                  {
+                    "unique": true,
+                    "name": "PRIMARY",
+                    "indexColumns": [
+                      {
+                        "orderType": "ASC",
+                        "name": "role_id",
+                        "id": "role_id",
+                        "ordinalPosition": 1
+                      },
+                      {
+                        "orderType": "ASC",
+                        "name": "type_id",
+                        "id": "type_id",
+                        "ordinalPosition": 2
+                      }
+                    ],
+                    "id": "PRIMARY"
+                  },
+                  {
+                    "unique": false,
+                    "name": "fk_role_types_types_idx",
+                    "indexColumns": [
+                      {
+                        "orderType": "ASC",
+                        "name": "type_id",
+                        "id": "type_id",
+                        "ordinalPosition": 1
+                      }
+                    ],
+                    "id": "fk_role_types_types_idx"
+                  }
+                ],
+                "isView": false,
+                "columns": [
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "name": "role_id",
+                    "id": "role_id",
+                    "ordinalPosition": 1
+                  },
+                  {
+                    "databaseType": "java.lang.Integer",
+                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable": false,
+                    "name": "type_id",
+                    "id": "type_id",
+                    "ordinalPosition": 2
+                  }
+                ],
+                "name": "role_types",
+                "id": "role_types"
               },
               {
                 "primaryKeyColumns": [

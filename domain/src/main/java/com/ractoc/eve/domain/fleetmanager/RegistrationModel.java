@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@ApiModel(value = "Invite Model", description = "Contains the Fleet Invitation model information")
+@ApiModel(value = "Registration Model", description = "Contains the Fleet Registration model information")
 public class RegistrationModel {
 
     private Integer fleetId;

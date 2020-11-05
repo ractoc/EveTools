@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.types.generated.GeneratedTypes.ID;
+import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.types.generated.GeneratedTypes.NAME;
+
 @Service
 public class TypeService {
 
@@ -19,10 +22,10 @@ public class TypeService {
     }
 
     public Stream<Types> getTypes() {
-        return typesManager.stream().sorted(Types.NAME);
+        return typesManager.stream().sorted(NAME);
     }
 
     public Optional<Types> getTypesById(Integer typeId) {
-        return typesManager.stream().filter(Types.ID.equal(typeId)).findFirst();
+        return typesManager.stream().filter(ID.equal(typeId)).findFirst();
     }
 }

@@ -102,4 +102,8 @@ public class RegistrationService {
         registration.setAccept(0);
         registrationsManager.update(registration);
     }
+
+    public void deleteRegistration(Registrations registration) {
+        registrationsManager.remove(registration);
+    }
 }

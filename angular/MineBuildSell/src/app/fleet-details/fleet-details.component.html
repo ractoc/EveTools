@@ -11,8 +11,8 @@
   <div class="form-group">
     <label for="type">Type:</label>
     <span *ngIf="editable()">
-      <select class="custom-select custom-select-sm" id="type" [(ngModel)]="fleet.typeId">
-        <option *ngFor="let type of types" [value]="type.id">
+      <select class="custom-select custom-select-sm" id="type" [(ngModel)]="fleet.type">
+        <option *ngFor="let type of types" [ngValue]="type">
           {{type.name}}
         </option>
       </select>
@@ -84,6 +84,23 @@
     </span>
     <span *ngIf="!editable()">
       {{fleet.duration > 0 ? fleet.duration : 'Not Specified'}}
+    </span>
+  </div>
+  <div class="form-group" *ngIf="fleet.type && fleet.id">
+    <label for="roles">Roles:</label>
+    <span *ngIf="editable()">
+      <div *ngFor="let role of fleet.type.roles">
+        <input type="checkbox" id="roles" (change)="onSelectRole(role, $event.target.checked)"
+               checked="{{roleSelected(role.id)}}"/>
+        <span title="{{role.description}}">&nbsp;{{role.name}}</span>&nbsp;
+        <input type="text" value="{{roleAmount(role.id)}}" (change)="setFleetRoleAmount(role.id, $event.target.value)"/> positions
+      </div>
+    </span>
+    <span *ngIf="!editable()">
+      <div *ngFor="let role of fleet.roles">
+        <span title="{{role.description}}">&nbsp;{{role.name}}</span>
+        &nbsp;{{role.amount}} positions
+      </div>
     </span>
   </div>
   <fieldset class="form-group">

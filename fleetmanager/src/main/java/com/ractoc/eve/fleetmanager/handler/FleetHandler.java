@@ -2,12 +2,16 @@ package com.ractoc.eve.fleetmanager.handler;
 
 import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.domain.fleetmanager.InviteModel;
+import com.ractoc.eve.domain.fleetmanager.RoleModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role_fleet.RoleFleet;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role_fleet.RoleFleetImpl;
 import com.ractoc.eve.fleetmanager.mapper.FleetMapper;
 import com.ractoc.eve.fleetmanager.model.FleetSearchParams;
 import com.ractoc.eve.fleetmanager.service.FleetService;
 import com.ractoc.eve.fleetmanager.service.InviteService;
 import com.ractoc.eve.fleetmanager.service.NoSuchEntryException;
+import com.ractoc.eve.fleetmanager.service.RegistrationService;
 import com.ractoc.eve.fleetmanager.validator.FleetValidator;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.CharacterApi;
@@ -20,6 +24,8 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.OptionalInt;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,14 +36,21 @@ public class FleetHandler {
     private final FleetService fleetService;
     private final FleetValidator fleetValidator;
     private final InviteService inviteService;
+    private final RegistrationService registrationService;
     private final CharacterApi characterApi;
     private final CorporationApi corporationApi;
 
     @Autowired
-    public FleetHandler(FleetService fleetService, FleetValidator fleetValidator, InviteService inviteService, CharacterApi characterApi, CorporationApi corporationApi) {
+    public FleetHandler(FleetService fleetService,
+                        FleetValidator fleetValidator,
+                        InviteService inviteService,
+                        RegistrationService registrationService,
+                        CharacterApi characterApi,
+                        CorporationApi corporationApi) {
         this.fleetService = fleetService;
         this.fleetValidator = fleetValidator;
         this.inviteService = inviteService;
+        this.registrationService = registrationService;
         this.characterApi = characterApi;
         this.corporationApi = corporationApi;
     }
@@ -76,10 +89,24 @@ public class FleetHandler {
     }
 
     public FleetModel getFleet(Integer id, Integer charId) {
-        return fleetService.getFleet(id)
+        FleetModel fleet = fleetService.getFleet(id)
                 .map(FleetMapper.INSTANCE::dbToModel)
                 .filter(f -> fleetValidator.verifyFleet(f, charId))
                 .orElseThrow(() -> new NoSuchEntryException(String.format("No fleet found for id %d", id)));
+        fleet.setRoles(fleetService.getFleetRoles(id).map(role -> fleetRoleToRoleModel(role, fleet.getType().getRoles())).collect(Collectors.toList()));
+        return fleet;
+    }
+
+    private RoleModel fleetRoleToRoleModel(RoleFleet fleetRole, List<RoleModel> roles) {
+        return RoleModel.builder()
+                .id(fleetRole.getRoleId())
+                .amount(fleetRole.getNumber())
+                .name(roles.stream()
+                        .filter(r -> fleetRole.getRoleId() == r.getId())
+                        .map(r -> r.getName())
+                        .findFirst()
+                        .orElseThrow(() -> new NoSuchEntryException("role not found")))
+                .build();
     }
 
     public FleetModel saveFleet(FleetModel fleet, Integer charId, String accessToken) {
@@ -112,29 +139,91 @@ public class FleetHandler {
         return savedFleet;
     }
 
-    public void updateFleet(FleetModel fleet, Integer charId) {
+    private RoleFleet createRoleFleet(Integer fleetId, RoleModel role) {
+        RoleFleet roleFleet = new RoleFleetImpl();
+        roleFleet.setFleetId(fleetId);
+        roleFleet.setRoleId(role.getId());
+        roleFleet.setNumber(role.getAmount());
+        return roleFleet;
+    }
+
+    public void updateFleet(FleetModel fleet, Integer charId, String accessToken) {
         Fleet verifyFleet = fleetService.getFleet(fleet.getId()).orElseThrow(() -> new NoSuchEntryException("fleet not found for id " + fleet.getId()));
         if (verifyFleet.getOwner() == charId) {
             Fleet dbFleet = FleetMapper.INSTANCE.modelToDb(fleet);
             if (fleet.isCorporationRestricted()) {
                 // inject corporation id if needed
-                try {
-                    dbFleet.setCorporationId(characterApi.getCharactersCharacterId(charId, null, null).getCorporationId());
-                } catch (ApiException e) {
-                    throw new HandlerException("Unable to resolve corporationId for character " + charId);
+                if (!dbFleet.getCorporationId().isPresent()) {
+                    try {
+                        Integer corporationId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+                        dbFleet.setCorporationId(corporationId);
+                        // send the invitation
+                        inviteCorporation(
+                                InviteModel.builder()
+                                        .fleetId(fleet.getId())
+                                        .name(fleet.getName())
+                                        .corporationId(corporationId)
+                                        .additionalInfo(fleet.getInviteText()).build(),
+                                fleet,
+                                charId,
+                                accessToken);
+                    } catch (ApiException e) {
+                        throw new HandlerException("Unable to resolve corporationId for character " + charId);
+                    }
                 }
             } else {
                 dbFleet.setCorporationId(null);
             }
             fleetService.updateFleet(dbFleet);
+            // update fleet roles
+            updateFleetRoles(dbFleet.getId(), fleet.getRoles());
         } else {
             throw new SecurityException("Requesting charId not owner of fleet");
         }
     }
 
-    public void deleteFleet(Integer id, Integer charId) {
-        Fleet dbFleet = fleetService.getFleet(id).orElseThrow(() -> new NoSuchEntryException("fleet not found for id " + id));
+    private void updateFleetRoles(int fleetId, List<RoleModel> roles) {
+        // get current fleet roles
+        List<RoleFleet> currentRoles = fleetService.getFleetRoles(fleetId).collect(Collectors.toList());
+        Set<Integer> currentRoleIds = currentRoles.stream().map(role -> role.getRoleId()).collect(Collectors.toSet());
+        // get new role ids
+        Set<Integer> newRoleIds = roles.stream().map(role -> role.getId()).collect(Collectors.toSet());
+        // get fleet roles with pilots, not supported yet
+        Set<Integer> registeredRoleIds = registrationService.getRegistrationsForFleet(fleetId)
+                .map(r -> r.getRoleId())
+                .filter(OptionalInt::isPresent)
+                .map(OptionalInt::getAsInt)
+                .collect(Collectors.toSet());
+
+        // update amount of current fleet roles according to new fleet roles
+        roles.stream().filter(r -> currentRoleIds.contains(r.getId())).map(r -> this.mapRoleFleet(fleetId, r)).forEach(fleetService::updateRole);
+        // add new fleet roles not in current fleet roles
+        roles.stream().filter(r -> !currentRoleIds.contains(r.getId())).map(r -> this.mapRoleFleet(fleetId, r)).forEach(fleetService::saveRole);
+        // remove current fleet roles with no pilots not in new fleet roles
+        currentRoles.stream()
+                .filter(r -> !newRoleIds.contains(r.getRoleId()))
+                .filter(r -> !registeredRoleIds.contains(r.getRoleId()))
+                .forEach(fleetService::deleteRole);
+    }
+
+    private RoleFleet mapRoleFleet(int fleetId, RoleModel roleModel) {
+        RoleFleet roleFleet = new RoleFleetImpl();
+        roleFleet.setRoleId(roleModel.getId());
+        roleFleet.setFleetId(fleetId);
+        roleFleet.setNumber(roleModel.getAmount());
+        return roleFleet;
+    }
+
+    public void deleteFleet(Integer fleetId, Integer charId) {
+        Fleet dbFleet = fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("fleet not found for id " + fleetId));
         if (dbFleet.getOwner() == charId) {
+            // remove invites
+            inviteService.getInvitesForFleet(fleetId).forEach(inviteService::deleteInvitation);
+            // remove registrations
+            registrationService.getRegistrationsForFleet(fleetId).forEach(registrationService::deleteRegistration);
+            // remove roles
+            fleetService.getFleetRoles(fleetId).forEach(fleetService::deleteRole);
+            // remove fleet
             fleetService.deleteFleet(dbFleet);
         } else {
             throw new SecurityException("Requesting charId not owner of fleet");

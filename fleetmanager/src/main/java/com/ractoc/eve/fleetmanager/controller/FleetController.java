@@ -114,7 +114,8 @@ public class FleetController extends BaseController {
             }
             fleetHandler.updateFleet(
                     fleet,
-                    ((EveUserDetails) authentication.getPrincipal()).getCharId());
+                    ((EveUserDetails) authentication.getPrincipal()).getCharId(),
+                    ((EveUserDetails) authentication.getPrincipal()).getAccessToken());
             return new ResponseEntity<>(new BaseResponse(MOVED_PERMANENTLY.value()), ACCEPTED);
         } catch (ServiceException | HandlerException e) {
             log.error(e.getMessage(), e);

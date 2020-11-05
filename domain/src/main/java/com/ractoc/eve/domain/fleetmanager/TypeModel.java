@@ -3,6 +3,8 @@ package com.ractoc.eve.domain.fleetmanager;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,4 +16,6 @@ public class TypeModel {
     private Integer id;
     private String name;
     private String description;
+
+    private List<RoleModel> roles;
 }

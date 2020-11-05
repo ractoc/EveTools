@@ -1,7 +1,6 @@
 package com.ractoc.eve.fleetmanager.service;
 
 import com.ractoc.eve.domain.fleetmanager.FleetModel;
-import com.ractoc.eve.fleetmanager.db.FleetmanagerApplication;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.Invites;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesImpl;
@@ -23,20 +22,22 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.generated.GeneratedFleet.ID;
+import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesManager.IDENTIFIER;
 import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites.*;
 
 @Service
 public class InviteService {
 
-    private final FleetmanagerApplication app;
-
     private final InvitesManager invitesManager;
+    private final JoinComponent joinComponent;
+
     private final MailApi mailApi;
 
     @Autowired
-    public InviteService(FleetmanagerApplication app, InvitesManager invitesManager, MailApi mailApi) {
-        this.app = app;
+    public InviteService(InvitesManager invitesManager, JoinComponent joinComponent, MailApi mailApi) {
         this.invitesManager = invitesManager;
+        this.joinComponent = joinComponent;
         this.mailApi = mailApi;
     }
 
@@ -77,10 +78,9 @@ public class InviteService {
     }
 
     public Stream<Tuple2<Invites, Fleet>> getInvitesForCharacter(Integer characterId, Integer corpId) {
-        JoinComponent joinComponent = app.getOrThrow(JoinComponent.class);
-        Join<Tuple2<Invites, Fleet>> join = joinComponent.from(invitesManager.IDENTIFIER)
+        Join<Tuple2<Invites, Fleet>> join = joinComponent.from(IDENTIFIER)
                 .where(CHARACTER_ID.equal(characterId).or(CORPORATION_ID.equal(corpId)))
-                .innerJoinOn(Fleet.ID).equal(FLEET_ID)
+                .innerJoinOn(ID).equal(FLEET_ID)
                 .build(Tuples::of);
         return join.stream();
     }
@@ -89,9 +89,7 @@ public class InviteService {
         Optional<Invites> invite = invitesManager.stream()
                 .filter(FLEET_ID.equal(fleetId).and(CHARACTER_ID.equal(charId)))
                 .findFirst();
-        if (invite.isPresent()) {
-            invitesManager.remove(invite.get());
-        }
+        invite.ifPresent(invitesManager::remove);
     }
 
     public void deleteInvitation(Invites invite) {
@@ -135,12 +133,12 @@ public class InviteService {
         recipientItem.setRecipientId(recipientId);
         recipientItem.setRecipientType(recipientType);
         mail.addRecipientsItem(recipientItem);
-        mail.setBody(String.format("Hello %s,\n\n" +
-                        "You have been invited to a fleet event, %s.\n" +
-                        "Please visit the following link to register for the event.\n\n" +
-                        "%s\n\n" +
+        mail.setBody(String.format("Hello %s,%n%n" +
+                        "You have been invited to a fleet event, %s.%n" +
+                        "Please visit the following link to register for the event.%n%n" +
+                        "%s%n%n" +
                         "%s" +
-                        "I hope to see you there.\n\n" +
+                        "I hope to see you there.%n%n" +
                         "%s",
                 recipientName,
                 fleetName,
@@ -157,7 +155,7 @@ public class InviteService {
 
     private String generateAdditionalInfoText(String additionalInfo) {
         if (StringUtils.isNotBlank(additionalInfo)) {
-            return String.format("%s\n\n", additionalInfo);
+            return additionalInfo + "%n%n";
         } else {
             return "";
         }
