@@ -1,13 +1,12 @@
 package com.ractoc.eve.domain.fleetmanager;
 
 import io.swagger.annotations.ApiModel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @ToString
 @ApiModel(value = "Role Model", description = "Contains the Fleet Role model information")
