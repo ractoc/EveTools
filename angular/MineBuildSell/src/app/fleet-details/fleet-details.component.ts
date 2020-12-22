@@ -264,7 +264,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
   doRegister() {
     this.registrationService.registerForFleet(this.fleet.id).subscribe(
       (registrationData: RegistrationModel) => {
-        this.router.navigateByUrl('/fleets/registration/' + registrationData.fleetId);
+        this.router.navigateByUrl('/fleets/registration/' + registrationData.fleetId + '/' + registrationData.characterId);
       }
     );
   }
