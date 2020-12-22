@@ -2,7 +2,7 @@
   "config": {
     "speedmentVersion": "Speedment:3.2.9-SNAPSHOT",
     "companyName": "ractoc.com",
-    "appId": "f2ae4c53-e2ba-4577-a026-071c3a718457",
+    "appId": "568267a2-13cd-4220-9699-84e5ecf7d2ce",
     "name": "fleetmanager",
     "packageLocation": "target/generated-sources/java",
     "packageName": "com.ractoc.eve.fleetmanager.db",
@@ -249,14 +249,14 @@
                     "ordinalPosition": 3
                   },
                   {
-                    "databaseType": "java.sql.Timestamp",
+                    "databaseType": "java.lang.String",
                     "nullable": true,
                     "name": "start",
                     "id": "start",
                     "ordinalPosition": 4
                   },
                   {
-                    "databaseType": "java.sql.Timestamp",
+                    "databaseType": "java.lang.String",
                     "nullable": true,
                     "name": "end",
                     "id": "end",
@@ -276,6 +276,20 @@
                     "name": "role_id",
                     "id": "role_id",
                     "ordinalPosition": 7
+                  },
+                  {
+                    "databaseType": "java.sql.Timestamp",
+                    "nullable": true,
+                    "name": "start_date_time",
+                    "id": "start_date_time",
+                    "ordinalPosition": 8
+                  },
+                  {
+                    "databaseType": "java.sql.Timestamp",
+                    "nullable": true,
+                    "name": "end_date_time",
+                    "id": "end_date_time",
+                    "ordinalPosition": 9
                   }
                 ],
                 "name": "registrations",

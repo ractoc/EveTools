@@ -1,0 +1,58 @@
+<div *ngIf="registration; else loading">
+  <div class="form-group">
+    Fleet Name: {{fleet.name}}
+  </div>
+  <div class="form-group">
+    Fleet Type: {{fleet.type.name}}
+  </div>
+  <div class="form-group">
+    Fleet Start:
+    {{fleetStartDate.month}}-{{fleetStartDate.day}}-{{fleetStartDate.year}}
+    {{fleetStartTime.hour}}:{{fleetStartTime.minute}}
+  </div>
+  <div class="form-group">
+    Fleet Duration: {{fleet.duration > 0 ? fleet.duration : 'Not Specified'}}
+  </div>
+  <div class="form-group">
+    Pilot Start:
+    <span *ngIf="pilotStartDate">
+      {{pilotStartDate.month}}-{{pilotStartDate.day}}-{{pilotStartDate.year}}
+      {{pilotStartTime.hour}}:{{pilotStartTime.minute}}
+    </span>
+    <button type="button" class="btn btn-secondary" *ngIf="registrant()"
+            (click)="start()">Start
+    </button>
+  </div>
+  <div class="form-group">
+    Pilot End:
+    <span *ngIf="pilotEndDate">
+      {{pilotEndDate.month}}-{{pilotEndDate.day}}-{{pilotEndDate.year}}
+      {{pilotEndTime.hour}}:{{pilotEndTime.minute}}
+    </span>
+    <span *ngIf="pilotStartDate">
+      <button type="button" class="btn btn-secondary" *ngIf="registrant()"
+              (click)="end()">End</button>
+    </span>
+  </div>
+  <div class="form-group">
+    <label for="roles">Roles:</label>
+    <div *ngIf="registrant()">
+      <div *ngFor="let role of fleet.roles">
+        <input type="radio" id="roles" (change)="onSelectRole(role)"
+               [checked]="roleSelected(role.id)"/>
+        <span title="{{role.description}}">&nbsp;{{role.name}}</span>&nbsp;
+        {{role.amount}} positions
+      </div>
+    </div>
+    <div *ngIf="!registrant()">
+      {{role(registration.roleId).name}}
+    </div>
+  </div>
+  <div class="form-group" *ngIf="fleet.inviteText">
+    {{fleet.inviteText}}
+  </div>
+</div>
+
+<ng-template #loading>
+  Loading registration...
+</ng-template>

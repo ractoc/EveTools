@@ -20,6 +20,7 @@ import {FleetListComponent} from './fleet-list/fleet-list.component';
 import {FleetDetailsComponent} from './fleet-details/fleet-details.component';
 import {InvitationDetailsComponent} from './invitation-details/invitation-details.component';
 import {InvitationListComponent} from './invitation-list/invitation-list.component';
+import {RegistrationDetailsComponent} from './registration-details/registration-details.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import {InvitationListComponent} from './invitation-list/invitation-list.compone
     FleetListComponent,
     FleetDetailsComponent,
     InvitationDetailsComponent,
-    InvitationListComponent
+    InvitationListComponent,
+    RegistrationDetailsComponent
   ],
   imports: [
     NgbModule,

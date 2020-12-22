@@ -8,7 +8,10 @@ export class RegistrationModel {
               public name: string,
               public characterName: string,
               public loadingIcon: boolean,
-              public icon: string) {
+              public icon: string,
+              public roleId: number,
+              public start: string,
+              public end: string) {
   }
 
 }

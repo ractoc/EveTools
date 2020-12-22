@@ -14,6 +14,10 @@ public class RegistrationModel {
     private Integer fleetId;
     private Integer characterId;
     private String name;
+    private Integer roleId;
+
+    private String start;
+    private String end;
 
     private String fleetOwner;
     private String corporationName;

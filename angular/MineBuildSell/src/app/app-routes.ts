@@ -11,6 +11,7 @@ import {FleetListComponent} from './fleet-list/fleet-list.component';
 import {FleetDetailsComponent} from './fleet-details/fleet-details.component';
 import {InvitationDetailsComponent} from './invitation-details/invitation-details.component';
 import {InvitationListComponent} from './invitation-list/invitation-list.component';
+import {RegistrationDetailsComponent} from "./registration-details/registration-details.component";
 
 export const APP_ROUTES: Routes = [
   {path: '', component: HomeComponent},
@@ -31,5 +32,6 @@ export const APP_ROUTES: Routes = [
   {path: 'fleet/:id', component: FleetDetailsComponent},
   {path: 'fleets/invites', component: InvitationListComponent},
   {path: 'fleets/invite/:key', component: InvitationDetailsComponent},
+  {path: 'fleets/registration/:fleetId/:charId', component: RegistrationDetailsComponent},
   {path: '**', redirectTo: 'home'}
 ];

@@ -22,7 +22,7 @@
     </span>
   </div>
   <div class="form-group">
-    <label for="startDate">Start Date</label>
+    <label for="startDate">Start Date:</label>
     <span *ngIf="editable()">
     <div class="input-group">
       <input type="text" ngbDatepicker #s="ngbDatepicker" [(ngModel)]="startDate" class="form-control" id="startDate"
@@ -38,7 +38,7 @@
     </span>
   </div>
   <div class="form-group">
-    <label for="startTime">Start Time</label>
+    <label for="startTime">Start Time:</label>
     <span *ngIf="editable()">
     <div class="input-group">
       <ngb-timepicker [(ngModel)]="startTime" id="startTime" [minuteStep]="15" [disabled]="!editable()"
@@ -50,7 +50,7 @@
     </span>
   </div>
   <div class="form-group">
-    <label for="duration">Duration</label>
+    <label for="duration">Duration:</label>
     <span *ngIf="editable()">
     <div class="input-group">
       <select class="custom-select custom-select-sm" id="duration" [(ngModel)]="fleet.duration">
@@ -137,7 +137,7 @@
       </div>
     </fieldset>
   </div>
-  <div class="form-group" *ngIf="owner()">
+  <div class="form-group">
     <label for="name">Invites:</label>
     <div *ngIf="invitations">
       <div class="list-group list-group-flush">
@@ -156,14 +156,16 @@
       </div>
     </div>
   </div>
-  <div class="form-group" *ngIf="owner()">
+  <div class="form-group">
     <label for="name">Registrations:</label>
     <div *ngIf="registrations">
       <div class="list-group list-group-flush">
         <div *ngFor="let registration of registrations" class="list-group-item">
           {{getRegistrationIcon(registration)}}
-          <img [src]="registration.icon" alt="invitee icon"/>
-          {{registration.name}}
+          <a routerLink="/fleets/registration/{{fleet.id}}/{{registration.characterId}}">
+            <img [src]="registration.icon" alt="invitee icon"/>
+            {{registration.name}}
+          </a>
           <button class="btn" (click)="deleteRegistration(registration)" *ngIf="registrant(registration)">
             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="currentColor"
                  xmlns="http://www.w3.org/2000/svg">
@@ -188,6 +190,9 @@
   <div class="form-group" *ngIf="!editable() && owner()">
     <button type="button" class="btn btn-primary" (click)="doEditFleet()">Edit Fleet</button>
     <button type="button" class="btn btn-primary" (click)="open(content)">Delete Fleet</button>
+  </div>
+  <div class="form-group" *ngIf="!owner() && !registered() && fleet">
+    <button type="button" class="btn btn-primary" (click)="doRegister()">Register</button>
   </div>
 </div>
 

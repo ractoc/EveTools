@@ -29,7 +29,16 @@ public class RegistrationService {
     }
 
     public Stream<Registrations> getRegistrationsForFleet(Integer fleetId) {
-        return registrationsManager.stream().filter(FLEET_ID.equal(fleetId)).filter(ACCEPT.equal(1));
+        return registrationsManager.stream().filter(FLEET_ID.equal(fleetId).and(ACCEPT.equal(1)));
+    }
+
+    public Registrations getRegistrationsForFleetForCharacter(Integer fleetId, Integer characterId) {
+        return registrationsManager.stream()
+                .filter(FLEET_ID.equal(fleetId)
+                        .and(CHARACTER_ID.equal(characterId)
+                                .and(ACCEPT.equal(1))))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchEntryException("Registration not found"));
     }
 
     public Optional<Registrations> getRegistration(Integer fleetId, Integer charId) {
@@ -95,6 +104,12 @@ public class RegistrationService {
                 charName));
         mail.setSubject(String.format("Fleet event %s", fleetName));
         return mail;
+    }
+
+    public Registrations updateRegistration(Registrations registration) {
+        // since an update can only ever be done on an active registration, the accept is forced to 1
+        registration.setAccept(1);
+        return registrationsManager.update(registration);
     }
 
     public void deleteRegistration(int fleetId, int charId) {

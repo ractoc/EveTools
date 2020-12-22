@@ -14,7 +14,7 @@ import {EveIconService} from '../service/eve-icon.service';
 import {RegistrationService} from '../service/registration.service';
 import {TypeModel} from '../shared/model/type-model';
 import {TypeService} from '../service/type.service';
-import {RoleModel} from "../shared/model/role.model";
+import {RoleModel} from '../shared/model/role.model';
 
 @Component({
   selector: 'app-fleet-details',
@@ -255,6 +255,18 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
 
   registrant(registration: RegistrationModel) {
     return registration.characterId === this.userService.getCurrentUser().characterId;
+  }
+
+  registered() {
+    return this.registrations && this.registrations.find(reg => this.registrant(reg));
+  }
+
+  doRegister() {
+    this.registrationService.registerForFleet(this.fleet.id).subscribe(
+      (registrationData: RegistrationModel) => {
+        this.router.navigateByUrl('/fleets/registration/' + registrationData.fleetId);
+      }
+    );
   }
 
   private loadTypes() {

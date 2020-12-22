@@ -88,7 +88,7 @@ export class InvitationDetailsComponent implements OnInit, OnDestroy {
   accept() {
     this.registrationService.registerForFleet(this.invite.fleet.id).subscribe(
       (registrationData: RegistrationModel) => {
-        this.router.navigateByUrl('/fleets/registration/' + registrationData.fleetId);
+        this.router.navigateByUrl('/fleets/registration/' + registrationData.fleetId + '/' + registrationData.characterId);
       }
     );
   }
