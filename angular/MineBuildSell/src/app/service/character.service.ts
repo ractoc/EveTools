@@ -25,6 +25,7 @@ export class CharacterService {
             id: characterId,
             name: result.name,
             type: 'character',
+            corporationId: result.corporation_id,
             portrait: undefined
           }
         }

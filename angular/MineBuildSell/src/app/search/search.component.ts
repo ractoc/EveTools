@@ -3,6 +3,7 @@ import {SearchResultModel} from '../shared/model/searchResult.model';
 import {SearchService} from "../service/search.service";
 import {CharacterService} from "../service/character.service";
 import {CorporationService} from "../service/corporation.service";
+import {UserService} from "../service/user.service";
 
 @Component({
   selector: 'app-search',
@@ -25,7 +26,8 @@ export class SearchComponent implements OnInit {
 
   constructor(private searchService: SearchService,
               private characterService: CharacterService,
-              private corporationService: CorporationService) {
+              private corporationService: CorporationService,
+              private userService: UserService) {
   }
 
   ngOnInit(): void {
@@ -67,5 +69,13 @@ export class SearchComponent implements OnInit {
 
   selectEntry(result: SearchResultModel) {
     this.searchResult.emit(result);
+  }
+
+  selectMyCorporation() {
+    this.characterService.getCharacter(this.userService.getCurrentUser().characterId).subscribe(character => {
+      this.corporationService.getCorporation(character.corporationId).subscribe(corporation => {
+        this.searchResult.emit(corporation);
+      })
+    })
   }
 }
