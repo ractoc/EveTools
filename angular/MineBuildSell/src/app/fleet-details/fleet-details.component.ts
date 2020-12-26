@@ -16,7 +16,8 @@ import {TypeModel} from '../shared/model/type-model';
 import {TypeService} from '../service/type.service';
 import {RoleModel} from '../shared/model/role.model';
 import {SearchResultModel} from '../shared/model/searchResult.model';
-import {CharacterService} from "../service/character.service";
+import {CharacterService} from '../service/character.service';
+import {CorporationService} from '../service/corporation.service';
 
 @Component({
   selector: 'app-fleet-details',
@@ -51,7 +52,8 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
     private eveIconService: EveIconService,
     private typeService: TypeService,
     private modalService: NgbModal,
-    private characterService: CharacterService) {
+    private characterService: CharacterService,
+    private corporationService: CorporationService) {
   }
 
   ngOnInit(): void {
@@ -164,13 +166,23 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
   searchResult(searchResult: SearchResultModel) {
     this.inviteService.addInvitation(this.fleet.id, searchResult.type, searchResult.id, searchResult.name).subscribe(inviteKey => {
       this.inviteService.getInvite(inviteKey).subscribe(invite => {
-        this.invitations.push(invite);
-        this.characterService.getPortrait(invite.id).subscribe(portrait => {
-          invite.icon = portrait;
-        });
+        this.addInviteToList(invite);
       });
     });
     this.modalService.dismissAll();
+  }
+
+  private addInviteToList(invite: InviteModel) {
+    this.invitations.push(invite);
+    if (invite.type === 'character') {
+      this.characterService.getPortrait(invite.id).subscribe(portrait => {
+        invite.icon = portrait;
+      });
+    } else if (invite.type === 'corporation') {
+      this.corporationService.getIcon(invite.id).subscribe(icon => {
+        invite.icon = icon;
+      });
+    }
   }
 
   validateInput() {
@@ -211,7 +223,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
   deleteInvitation(invitation: InviteModel) {
     this.inviteService.deleteInvitation(invitation.key).subscribe(
       () => {
-        this.invitations = undefined;
+        this.invitations = [];
         this.loadInvitations();
       }
     );
@@ -220,7 +232,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
   deleteRegistration(registration: RegistrationModel) {
     this.registrationService.deleteRegistration(registration.fleetId).subscribe(
       () => {
-        this.registrations = undefined;
+        this.registrations = [];
         this.loadRegistrations();
       }
     );
@@ -231,10 +243,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
       (inviteData: InviteModel[]) => {
         if (inviteData && inviteData.length > 0) {
           for (const invite of inviteData) {
-            this.invitations.push(invite);
-            this.characterService.getPortrait(invite.id).subscribe(portrait => {
-              invite.icon = portrait;
-            });
+            this.addInviteToList(invite);
           }
         } else {
           this.invitations = [];

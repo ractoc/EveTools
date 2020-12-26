@@ -7,7 +7,8 @@ export class InviteModel {
               public name: string,
               public additionalInfo: string,
               public id: number,
-              public icon: string) {
+              public icon: string,
+              public type: string) {
   }
 
 }

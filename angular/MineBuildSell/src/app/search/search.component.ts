@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SearchResultModel} from '../shared/model/searchResult.model';
 import {SearchService} from "../service/search.service";
 import {CharacterService} from "../service/character.service";
+import {CorporationService} from "../service/corporation.service";
 
 @Component({
   selector: 'app-search',
@@ -23,7 +24,8 @@ export class SearchComponent implements OnInit {
   searchResultList: SearchResultModel[] = [];
 
   constructor(private searchService: SearchService,
-              private characterService: CharacterService) {
+              private characterService: CharacterService,
+              private corporationService: CorporationService) {
   }
 
   ngOnInit(): void {
@@ -34,19 +36,33 @@ export class SearchComponent implements OnInit {
   }
 
   doSearch() {
-    if (this.searchType === this.TYPE_CHARACTER) {
-      this.searchService.searchCharacters(this.search).subscribe(characterIds => {
-        for (const characterId of characterIds) {
-          console.log('characterId', characterId);
-          this.characterService.getCharacter(characterId).subscribe(character => {
-            this.characterService.getPortrait(characterId).subscribe(portrait => {
-              character.portrait = portrait;
-            })
-            this.searchResultList.push(character);
-          })
+    this.searchService.search(this.search, this.searchType).subscribe(idList => {
+      for (const id of idList) {
+        if (this.searchType === this.TYPE_CHARACTER) {
+          this.loadCharacter(id);
+        } else if (this.searchType === this.TYPE_CORPORATION) {
+          this.loadCorporation(id);
         }
+      }
+    })
+  }
+
+  private loadCharacter(id) {
+    this.characterService.getCharacter(id).subscribe(character => {
+      this.characterService.getPortrait(id).subscribe(portrait => {
+        character.portrait = portrait;
       })
-    }
+      this.searchResultList.push(character);
+    })
+  }
+
+  private loadCorporation(id) {
+    this.corporationService.getCorporation(id).subscribe(corporation => {
+      this.corporationService.getIcon(id).subscribe(portrait => {
+        corporation.portrait = portrait;
+      })
+      this.searchResultList.push(corporation);
+    })
   }
 
   selectEntry(result: SearchResultModel) {

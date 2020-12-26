@@ -31,6 +31,9 @@ public class InviteValidator {
 
     public boolean verifyInvite(InviteModel invite, Integer charId) {
         try {
+            if (invite.getFleet() != null && invite.getFleet().getOwner().equals(charId)) {
+                return true;
+            }
             if (invite.getType().equals(InviteModel.TYPE_CHARACTER)) {
                 return invite.getId().equals(charId);
             } else if (invite.getType().equals(InviteModel.TYPE_CORPORATION)) {

@@ -65,11 +65,11 @@ public class InviteHandler {
 
     public InviteModel getInvite(String key, int charId) {
         InviteModel invite = InviteMapper.INSTANCE.dbToModel(inviteService.getInvite(key));
+        FleetModel fleet = getFleet(invite.getFleetId(), charId);
+        invite.setFleet(fleet);
         if (!inviteValidator.verifyInvite(invite, charId)) {
             throw new SecurityException(ACCESS_DENIED);
         }
-        FleetModel fleet = getFleet(invite.getFleetId(), charId);
-        invite.setFleet(fleet);
         return invite;
     }
 

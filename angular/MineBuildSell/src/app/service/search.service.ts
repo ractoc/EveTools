@@ -12,17 +12,22 @@ export class SearchService {
   constructor(private http: HttpClient) {
   }
 
-  searchCharacters(searchString: string) {
+  search(searchString: string, type: string) {
     return this.http.get<any>(
       EVE_SEARCH_URI +
-      '?categories=character' +
+      '?categories=' + type +
       '&search=' + searchString
     ).pipe(
       map(result => {
         if (result.responseCode >= 400) {
           throw new Error('broken API:' + result.responseCode);
         } else {
-          return result.character;
+          console.log('list', result[type]);
+          if (type === 'character') {
+            return result.character;
+          } else if (type === 'corporation') {
+            return result.corporation;
+          }
         }
       })
     );
