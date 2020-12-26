@@ -18,7 +18,7 @@ public class FleetValidator {
 
     public boolean verifyFleet(FleetModel fleet, Integer charId) {
         return fleet.getOwner().equals(charId) ||
-                !fleet.isCorporationRestricted() ||
+                !fleet.isRestricted() ||
                 inviteValidator.verifyFleetInvites(fleet, charId) ||
                 registrationValidator.verifyFleetRegistrations(fleet, charId);
     }

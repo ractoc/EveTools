@@ -31,15 +31,11 @@ public class InviteValidator {
 
     public boolean verifyInvite(InviteModel invite, Integer charId) {
         try {
-            if (invite.getCharacterId() != 0) {
-                if (!invite.getCharacterId().equals(charId)) {
-                    return false;
-                }
-            } else if (invite.getCorporationId() != null) {
+            if (invite.getType().equals(InviteModel.TYPE_CHARACTER)) {
+                return invite.getId().equals(charId);
+            } else if (invite.getType().equals(InviteModel.TYPE_CORPORATION)) {
                 Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
-                if (!invite.getCorporationId().equals(corpId)) {
-                    return false;
-                }
+                return invite.getId().equals(corpId);
             }
             return true;
         } catch (ApiException e) {

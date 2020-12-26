@@ -1,6 +1,6 @@
 import {CharacterModel} from './character.model';
 import {TypeModel} from './type-model';
-import {RoleModel} from "./role.model";
+import {RoleModel} from './role.model';
 
 export class FleetModel {
 
@@ -12,7 +12,7 @@ export class FleetModel {
               public typeId: number,
               public start: string,
               public duration: number,
-              public corporationRestricted: boolean,
+              public restricted: boolean,
               public invitations: CharacterModel[],
               public inviteText: string,
               public roles: RoleModel[]) {

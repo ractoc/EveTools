@@ -43,30 +43,11 @@ public class InviteController {
             @ApiResponse(code = 201, message = "The invite was successfully created", response = InviteResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    @PostMapping(value = "/corporation", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> inviteCorporation(@Valid @RequestBody InviteModel invite, @AuthenticationPrincipal Authentication authentication) {
+    @PostMapping(value = "/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> invite(@Valid @RequestBody InviteModel invite, @AuthenticationPrincipal Authentication authentication) {
         try {
             return new ResponseEntity<>(new InviteResponse(CREATED,
-                    inviteHandler.inviteCorporation(invite,
-                            ((EveUserDetails) authentication.getPrincipal()).getCharId(),
-                            ((EveUserDetails) authentication.getPrincipal()).getAccessToken())),
-                    CREATED);
-        } catch (ServiceException e) {
-            log.error(e.getMessage(), e);
-            return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @ApiOperation(value = "Invite character.", response = InviteResponse.class, consumes = "application/json", produces = "application/json")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "The invite was successfully created", response = InviteResponse.class),
-            @ApiResponse(code = 500, message = "Internal server error")
-    })
-    @PostMapping(value = "/character", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> inviteCharacter(@Valid @RequestBody InviteModel invite, @AuthenticationPrincipal Authentication authentication) {
-        try {
-            return new ResponseEntity<>(new InviteResponse(CREATED,
-                    inviteHandler.inviteCharacter(invite,
+                    inviteHandler.invite(invite,
                             ((EveUserDetails) authentication.getPrincipal()).getCharId(),
                             ((EveUserDetails) authentication.getPrincipal()).getAccessToken())),
                     CREATED);

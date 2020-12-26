@@ -69,6 +69,25 @@ export class InviteService {
       );
   }
 
+  addInvitation(fleetId: number, type: string, id: number, name: string) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.userService.getEveState()
+      })
+    };
+    console.log('adding invite', {type, id, fleetId});
+    return this.http.post<any>(INVITES_URI + '/', {type, id, fleetId, name}, httpOptions)
+      .pipe(
+        map(result => {
+          if (result.responseCode >= 400) {
+            throw new Error('broken API:' + result.responseCode);
+          } else {
+            return result.inviteKey;
+          }
+        })
+      );
+  }
+
   declineInvite(key: number) {
     const httpOptions = {
       headers: new HttpHeaders({

@@ -1,0 +1,40 @@
+<div>
+  <div class="form-group">
+    <fieldset class="form-group" *ngIf="this.searchCharacter && this.searchCorporation">
+      <div class="row" *ngIf="this.searchCharacter && this.searchCorporation">
+        <legend class="col-form-label col-sm-2 pt-0">Search for</legend>
+        <div class="col-sm-10">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="searchType" id="typeCharacter"
+                   value="{{TYPE_CHARACTER}}" [(ngModel)]="searchType"/>
+            <label class="form-check-label" for="typeCharacter">
+              Character
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="searchType" id="typeCorporation"
+                   value="{{TYPE_CORPORATION}}" [(ngModel)]="searchType"/>
+            <label class="form-check-label" for="typeCorporation">
+              Corporation
+            </label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    <div class="form-group">
+      <label for="search">Search for:</label>
+      <input type="text" class="form-control" id="search" [(ngModel)]="search"/>
+    </div>
+    <div class="form-group">
+      <button type="button" class="btn btn-primary" [disabled]="!searchEnabled()" (click)="doSearch()">Search</button>
+    </div>
+  </div>
+  <div id="searchResult">
+    <div *ngFor="let result of searchResultList">
+      <a (click)="selectEntry(result)">
+        <img *ngIf="result.portrait" src="{{result.portrait}}"/>
+        {{result.name}}
+      </a>
+    </div>
+  </div>
+</div>

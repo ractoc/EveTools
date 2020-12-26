@@ -21,7 +21,8 @@ public class FleetModel {
     @NonNull
     private String start;
     private Integer duration;
-    private boolean corporationRestricted;
+
+    private boolean restricted = false;
 
     @NonNull
     private Integer typeId;

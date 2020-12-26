@@ -15,6 +15,8 @@ import {RegistrationService} from '../service/registration.service';
 import {TypeModel} from '../shared/model/type-model';
 import {TypeService} from '../service/type.service';
 import {RoleModel} from '../shared/model/role.model';
+import {SearchResultModel} from '../shared/model/searchResult.model';
+import {CharacterService} from "../service/character.service";
 
 @Component({
   selector: 'app-fleet-details',
@@ -28,14 +30,14 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
 
   startDate: NgbDateStruct;
   startTime: NgbTimeStruct;
-  corporationRestricted: string;
+  restricted: string;
   types: TypeModel[];
 
   editFleet: boolean;
   displayPassword: boolean;
   savingFleet: boolean;
-  invitations: InviteModel[];
-  registrations: RegistrationModel[];
+  invitations: InviteModel[] = [];
+  registrations: RegistrationModel[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -48,7 +50,8 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
     private registrationService: RegistrationService,
     private eveIconService: EveIconService,
     private typeService: TypeService,
-    private modalService: NgbModal) {
+    private modalService: NgbModal,
+    private characterService: CharacterService) {
   }
 
   ngOnInit(): void {
@@ -84,7 +87,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
       day: currentDate.getDate()
     };
     this.startTime = {hour: 0, minute: 0, second: 0};
-    this.corporationRestricted = 'false';
+    this.restricted = 'false';
   }
 
   private loadFleet(fleetId: number) {
@@ -95,7 +98,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
           const start = JSON.parse(fleetData.start);
           this.startDate = start.date;
           this.startTime = start.time;
-          this.corporationRestricted = '' + fleetData.corporationRestricted;
+          this.restricted = '' + fleetData.restricted;
           this.loadInvitations();
           this.loadRegistrations();
         }
@@ -122,7 +125,7 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
     if (this.validateInput()) {
       this.savingFleet = true;
       this.fleet.start = JSON.stringify({date: this.startDate, time: this.startTime});
-      this.fleet.corporationRestricted = this.corporationRestricted === 'true';
+      this.fleet.restricted = this.restricted === 'true';
       this.fleetService.saveFleet(this.fleet).subscribe(
         (fleetData: FleetModel) => {
           this.fleet = fleetData;
@@ -146,12 +149,28 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  open(content) {
+  openDelete(content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
       if (result === 'Delete') {
         this.doDeleteFleet();
       }
     });
+  }
+
+  openSearch(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
+  }
+
+  searchResult(searchResult: SearchResultModel) {
+    this.inviteService.addInvitation(this.fleet.id, searchResult.type, searchResult.id, searchResult.name).subscribe(inviteKey => {
+      this.inviteService.getInvite(inviteKey).subscribe(invite => {
+        this.invitations.push(invite);
+        this.characterService.getPortrait(invite.id).subscribe(portrait => {
+          invite.icon = portrait;
+        });
+      });
+    });
+    this.modalService.dismissAll();
   }
 
   validateInput() {
@@ -211,7 +230,14 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
     this.inviteService.getFleetInvites(this.fleet).subscribe(
       (inviteData: InviteModel[]) => {
         if (inviteData && inviteData.length > 0) {
-          this.invitations = inviteData;
+          for (const invite of inviteData) {
+            this.invitations.push(invite);
+            this.characterService.getPortrait(invite.id).subscribe(portrait => {
+              invite.icon = portrait;
+            });
+          }
+        } else {
+          this.invitations = [];
         }
       }
     );
@@ -225,21 +251,6 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
         }
       }
     );
-  }
-
-  getInviteeIcon(invitation: InviteModel) {
-    if (!invitation.loadingIcon && !invitation.icon) {
-      invitation.loadingIcon = true;
-      if (invitation.corporationId) {
-        this.eveIconService.getCorporationIcon(invitation.corporationId).toPromise().then(iconData => {
-          invitation.icon = iconData.px64x64;
-        });
-      } else if (invitation.characterId) {
-        this.eveIconService.getCharacterIcon(invitation.characterId).toPromise().then(iconData => {
-          invitation.icon = iconData.px64x64;
-        });
-      }
-    }
   }
 
   getRegistrationIcon(registration: RegistrationModel) {

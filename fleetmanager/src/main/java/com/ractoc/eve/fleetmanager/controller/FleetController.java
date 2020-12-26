@@ -92,8 +92,7 @@ public class FleetController extends BaseController {
         try {
             return new ResponseEntity<>(new FleetResponse(CREATED,
                     fleetHandler.saveFleet(fleet,
-                            ((EveUserDetails) authentication.getPrincipal()).getCharId(),
-                            ((EveUserDetails) authentication.getPrincipal()).getAccessToken())),
+                            ((EveUserDetails) authentication.getPrincipal()).getCharId())),
                     CREATED);
         } catch (ServiceException e) {
             log.error(e.getMessage(), e);
@@ -114,8 +113,7 @@ public class FleetController extends BaseController {
             }
             fleetHandler.updateFleet(
                     fleet,
-                    ((EveUserDetails) authentication.getPrincipal()).getCharId(),
-                    ((EveUserDetails) authentication.getPrincipal()).getAccessToken());
+                    ((EveUserDetails) authentication.getPrincipal()).getCharId());
             return new ResponseEntity<>(new BaseResponse(MOVED_PERMANENTLY.value()), ACCEPTED);
         } catch (ServiceException | HandlerException e) {
             log.error(e.getMessage(), e);

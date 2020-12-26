@@ -10,8 +10,8 @@ import {environment} from '../../environments/environment';
 import {ItemModel} from '../shared/model/item.model';
 import {BlueprintModel} from '../shared/model/blueprint.model';
 
-const ASSETS_URI = 'http://' + environment.apiHost + ':8787/assets'
-const EVE_MARKET_URI = 'https://esi.evetech.net/latest/markets'
+const ASSETS_URI = 'http://' + environment.apiHost + ':8787/assets';
+const EVE_MARKET_URI = 'https://esi.evetech.net/latest/markets';
 const EVE_CHARACTER_URI = 'https://esi.evetech.net/latest/characters';
 const EVE_UNIVERSE_URI = 'https://esi.evetech.net/latest/universe';
 const EVE_INDUSTRY_URI = 'https://esi.evetech.net/latest/industry'

@@ -15,16 +15,10 @@ import org.mapstruct.factory.Mappers;
 
 import java.sql.Timestamp;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 @Mapper
 public interface FleetMapper extends BaseMapper {
     FleetMapper INSTANCE = Mappers.getMapper(FleetMapper.class);
-
-    @Named("corporationIdToCorporationRestricted")
-    static boolean corporationIdToCorporationRestricted(OptionalInt corporationId) {
-        return corporationId.isPresent() && corporationId.getAsInt() > 0;
-    }
 
     @Named("startToTimeStamp")
     static Timestamp startToTimeStamp(String dateTime) {
@@ -34,8 +28,7 @@ public interface FleetMapper extends BaseMapper {
     @Named("typeIdToType")
     static TypeModel typeIdToType(int typeId) {
         Optional<Types> types = getTypeService().getTypesById(typeId);
-        TypeModel type = types.map(TypeMapper.INSTANCE::dbToModel).orElseGet(null);
-        return type;
+        return types.map(TypeMapper.INSTANCE::dbToModel).orElse(null);
     }
 
     @Named("typeToTypeId")
@@ -47,11 +40,13 @@ public interface FleetMapper extends BaseMapper {
         return SpringContext.getBean(TypeService.class);
     }
 
+    @Mapping(target = "corporationId", ignore = true)
     @Mapping(source = "start", target = "startDateTime", qualifiedByName = "startToTimeStamp")
     @Mapping(source = "type", target = "typeId", qualifiedByName = "typeToTypeId")
     FleetImpl modelToDb(FleetModel model);
 
-    @Mapping(source = "corporationId", target = "corporationRestricted", qualifiedByName = "corporationIdToCorporationRestricted")
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "inviteText", ignore = true)
     @Mapping(source = "typeId", target = "type", qualifiedByName = "typeIdToType")
     FleetModel dbToModel(Fleet fleet);
 }

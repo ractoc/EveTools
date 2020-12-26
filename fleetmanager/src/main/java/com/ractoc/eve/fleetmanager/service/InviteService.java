@@ -2,9 +2,11 @@ package com.ractoc.eve.fleetmanager.service;
 
 import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.generated.GeneratedFleet;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.Invites;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesImpl;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesManager;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.MailApi;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailMail;
@@ -18,13 +20,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.generated.GeneratedFleet.ID;
 import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesManager.IDENTIFIER;
-import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites.*;
+import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites.FLEET_ID;
+import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites.KEY;
 
 @Service
 public class InviteService {
@@ -41,30 +44,6 @@ public class InviteService {
         this.mailApi = mailApi;
     }
 
-    public String inviteCorporation(Integer fleetId, Integer corporationId, String name, String additionalInfo) {
-        return invite(fleetId, corporationId, null, name, additionalInfo);
-    }
-
-    public String inviteCharacter(Integer fleetId, Integer characterId, String name, String additionalInfo) {
-        return invite(fleetId, null, characterId, name, additionalInfo);
-    }
-
-    public void sendInviteCorporationMail(Integer characterId, String charName, String fleetName, Integer recipientId, String recipientName, String inviteKey, String additionalInfo, String accessToken) {
-        try {
-            sendInviteMail(characterId, charName, fleetName, recipientId, recipientName, RecipientTypeEnum.CORPORATION, inviteKey, additionalInfo, accessToken);
-        } catch (ApiException e) {
-            throw new ServiceException("unable to send invite mail", e);
-        }
-    }
-
-    public void sendInviteCharacterMail(Integer characterId, String charName, String fleetName, Integer recipientId, String recipientName, String inviteKey, String additionalInfo, String accessToken) {
-        try {
-            sendInviteMail(characterId, charName, fleetName, recipientId, recipientName, RecipientTypeEnum.CHARACTER, inviteKey, additionalInfo, accessToken);
-        } catch (ApiException e) {
-            throw new ServiceException("unable to send invite mail", e);
-        }
-    }
-
     public Stream<Invites> getInvitesForFleet(Integer fleetId) {
         return invitesManager.stream().filter(FLEET_ID.equal(fleetId));
     }
@@ -79,15 +58,15 @@ public class InviteService {
 
     public Stream<Tuple2<Invites, Fleet>> getInvitesForCharacter(Integer characterId, Integer corpId) {
         Join<Tuple2<Invites, Fleet>> join = joinComponent.from(IDENTIFIER)
-                .where(CHARACTER_ID.equal(characterId).or(CORPORATION_ID.equal(corpId)))
-                .innerJoinOn(ID).equal(FLEET_ID)
+                .where(GeneratedInvites.ID.equal(characterId).or(GeneratedInvites.ID.equal(corpId)))
+                .innerJoinOn(GeneratedFleet.ID).equal(FLEET_ID)
                 .build(Tuples::of);
         return join.stream();
     }
 
-    public void deleteInvitation(Integer fleetId, int charId) {
+    public void deleteInvitation(Integer fleetId, int id) {
         Optional<Invites> invite = invitesManager.stream()
-                .filter(FLEET_ID.equal(fleetId).and(CHARACTER_ID.equal(charId)))
+                .filter(FLEET_ID.equal(fleetId).and(GeneratedInvites.ID.equal(id)))
                 .findFirst();
         invite.ifPresent(invitesManager::remove);
     }
@@ -97,16 +76,12 @@ public class InviteService {
     }
 
     // needs to be synchronized to make sure there are never any duplicate invite keys.
-    private synchronized String invite(Integer fleetId, Integer corporationId, Integer characterId, String name, String additionalInfo) {
+    public synchronized String invite(Integer fleetId, Integer id, String type, String name, String additionalInfo) {
         String inviteKey = generateInviteKey();
         Invites invite = new InvitesImpl();
         invite.setFleetId(fleetId);
-        if (corporationId != null) {
-            invite.setCorporationId(corporationId);
-        }
-        if (characterId != null) {
-            invite.setCharacterId(characterId);
-        }
+        invite.setId(id);
+        invite.setType(type);
         invite.setName(name);
         invite.setKey(inviteKey);
         invite.setAdditionalInfo(additionalInfo);
@@ -122,9 +97,23 @@ public class InviteService {
         return inviteKey;
     }
 
-    private void sendInviteMail(Integer characterId, String charName, String fleetName, Integer recipientId, String recipientName, RecipientTypeEnum recipientType, String inviteKey, String additionalInfo, String accessToken) throws ApiException {
-        PostCharactersCharacterIdMailMail mail = generateMail(charName, fleetName, recipientId, recipientName, recipientType, additionalInfo, inviteKey);
-        mailApi.postCharactersCharacterIdMail(characterId, mail, null, accessToken);
+    public void sendInviteMail(Integer charId,
+                               String charName,
+                               String fleetName,
+                               Integer id,
+                               String type,
+                               String name,
+                               String inviteKey,
+                               String additionalInfo,
+                               String accessToken) throws ApiException {
+        PostCharactersCharacterIdMailMail mail = generateMail(charName,
+                fleetName,
+                id,
+                name,
+                RecipientTypeEnum.fromValue(type.toLowerCase(Locale.ROOT)),
+                additionalInfo,
+                inviteKey);
+        mailApi.postCharactersCharacterIdMail(charId, mail, null, accessToken);
     }
 
     private PostCharactersCharacterIdMailMail generateMail(String charName, String fleetName, Integer recipientId, String recipientName, RecipientTypeEnum recipientType, String additionalInfo, String inviteKey) {

@@ -21,6 +21,7 @@ import {FleetDetailsComponent} from './fleet-details/fleet-details.component';
 import {InvitationDetailsComponent} from './invitation-details/invitation-details.component';
 import {InvitationListComponent} from './invitation-list/invitation-list.component';
 import {RegistrationDetailsComponent} from './registration-details/registration-details.component';
+import {SearchComponent} from './search/search.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import {RegistrationDetailsComponent} from './registration-details/registration-
     FleetDetailsComponent,
     InvitationDetailsComponent,
     InvitationListComponent,
-    RegistrationDetailsComponent
+    RegistrationDetailsComponent,
+    SearchComponent
   ],
   imports: [
     NgbModule,

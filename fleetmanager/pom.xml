@@ -203,7 +203,7 @@
                                 </description>
                             </info>
                             <outputFormats>json</outputFormats>
-                            <swaggerDirectory>${build.directory}/generated/swagger</swaggerDirectory>
+                            <swaggerDirectory>${project.build.directory}/generated/swagger</swaggerDirectory>
                         </apiSource>
                     </apiSources>
                 </configuration>
