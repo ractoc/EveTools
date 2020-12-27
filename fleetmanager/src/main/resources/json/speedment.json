@@ -2,7 +2,7 @@
   "config": {
     "speedmentVersion": "Speedment:3.2.9-SNAPSHOT",
     "companyName": "ractoc.com",
-    "appId": "ff07b77e-944e-492e-9c92-05755969c4a9",
+    "appId": "e3023ed0-5b23-421a-8c05-a8291a7ed634",
     "name": "fleetmanager",
     "packageLocation": "target/generated-sources/java",
     "packageName": "com.ractoc.eve.fleetmanager.db",
@@ -101,10 +101,11 @@
                   },
                   {
                     "databaseType": "java.lang.String",
-                    "nullable": true,
+                    "nullable": false,
                     "name": "restricted",
                     "id": "restricted",
-                    "ordinalPosition": 9
+                    "ordinalPosition": 9,
+                    "typeMapper": "com.speedment.runtime.typemapper.string.TrueFalseStringToBooleanMapper"
                   }
                 ],
                 "name": "fleet",

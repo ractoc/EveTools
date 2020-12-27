@@ -154,9 +154,9 @@
                             <goal>edit</goal>
                         </goals>
                         <configuration>
-                            <set>typeMapper:com.speedment.runtime.typemapper.string.YNStringToBooleanMapper</set>
+                            <set>typeMapper:com.speedment.runtime.typemapper.string.TrueFalseStringToBooleanMapper</set>
                             <what>column</what>
-                            <where>name:corporation_restricted</where>
+                            <where>name:restricted</where>
                         </configuration>
                     </execution>
                     <execution>
