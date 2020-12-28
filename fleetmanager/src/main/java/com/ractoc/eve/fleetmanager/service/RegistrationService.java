@@ -29,14 +29,14 @@ public class RegistrationService {
     }
 
     public Stream<Registrations> getRegistrationsForFleet(Integer fleetId) {
-        return registrationsManager.stream().filter(FLEET_ID.equal(fleetId).and(ACCEPT.equal(1)));
+        return registrationsManager.stream().filter(FLEET_ID.equal(fleetId).and(ACCEPT.equal(true)));
     }
 
     public Registrations getRegistrationsForFleetForCharacter(Integer fleetId, Integer characterId) {
         return registrationsManager.stream()
                 .filter(FLEET_ID.equal(fleetId)
                         .and(CHARACTER_ID.equal(characterId)
-                                .and(ACCEPT.equal(1))))
+                                .and(ACCEPT.equal(true))))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchEntryException("Registration not found"));
     }
@@ -50,7 +50,7 @@ public class RegistrationService {
         registrations.setCharacterId(charId);
         registrations.setFleetId(fleetId);
         registrations.setName(charName);
-        registrations.setAccept(accept ? 1 : 0);
+        registrations.setAccept(accept);
         return registrationsManager.persist(registrations);
     }
 
@@ -107,14 +107,16 @@ public class RegistrationService {
     }
 
     public Registrations updateRegistration(Registrations registration) {
-        // since an update can only ever be done on an active registration, the accept is forced to 1
-        registration.setAccept(1);
+        registration.setAccept(
+                getRegistration(registration.getFleetId(), registration.getCharacterId())
+                        .orElseThrow(() -> new NoSuchEntryException("No existing registration to update"))
+                        .getAccept());
         return registrationsManager.update(registration);
     }
 
     public void deleteRegistration(int fleetId, int charId) {
         Registrations registration = getRegistration(fleetId, charId).orElseThrow(() -> new NoSuchEntryException("Registration not found"));
-        registration.setAccept(0);
+        registration.setAccept(false);
         registrationsManager.update(registration);
     }
 

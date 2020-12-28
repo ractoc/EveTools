@@ -55,8 +55,9 @@ public class InviteHandler {
         try {
             String charName = getCharName(charId);
             String fleetName = getFleetName(invite.getFleetId(), charId);
-            String inviteKey = inviteService.invite(invite.getFleetId(), invite.getId(), invite.getType(), invite.getName(), invite.getAdditionalInfo());
-            inviteService.sendInviteMail(charId, charName, fleetName, invite.getId(), invite.getType(), invite.getName(), inviteKey, invite.getAdditionalInfo(), accessToken);
+            Fleet fleet = fleetService.getFleet(invite.getFleetId()).orElseThrow(() -> new NoSuchEntryException("No fleet found linked to invitation."));
+            String inviteKey = inviteService.invite(invite.getFleetId(), invite.getId(), invite.getType(), invite.getName());
+            inviteService.sendInviteMail(charId, charName, fleetName, invite.getId(), invite.getType(), invite.getName(), inviteKey, fleet.getDescription().orElse(""), accessToken);
             return inviteKey;
         } catch (ApiException e) {
             throw new HandlerException("unable to send create invitation", e);

@@ -8,6 +8,7 @@ import {User} from '../shared/model/user.model';
 import {UserService} from '../service/user.service';
 import {RegistrationService} from '../service/registration.service';
 import {RegistrationModel} from '../shared/model/Registration-model';
+import {CharacterService} from '../service/character.service';
 
 @Component({
   selector: 'app-invitation-details',
@@ -15,6 +16,17 @@ import {RegistrationModel} from '../shared/model/Registration-model';
   styleUrls: ['./invitation-details.component.css']
 })
 export class InvitationDetailsComponent implements OnInit, OnDestroy {
+
+  constructor(
+      private inviteService: InviteService,
+      private registrationService: RegistrationService,
+      private userService: UserService,
+      private characterService: CharacterService,
+      private route: ActivatedRoute,
+      private router: Router,
+      private localStorageService: LocalStorageService) {
+  }
+
   private routeListener$: Subscription;
 
   public errorMessage: string;
@@ -22,27 +34,30 @@ export class InvitationDetailsComponent implements OnInit, OnDestroy {
   public user: User;
   public start: any;
   public accepted: boolean;
+  public fleetOwner: any;
 
-  constructor(
-    private inviteService: InviteService,
-    private registrationService: RegistrationService,
-    private userService: UserService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private localStorageService: LocalStorageService) {
+  static prefixZero(digit: number) {
+    if (digit < 10) {
+      return '0' + digit;
+    } else {
+      return '' + digit
+    }
   }
 
   ngOnInit(): void {
     this.errorMessage = undefined;
     this.routeListener$ = this.route.params
-      .subscribe((params: any) => {
+        .subscribe((params: any) => {
           if (params.key) {
             this.inviteService.getInvite(params.key).subscribe(
-              (inviteData: InviteModel) => {
-                this.invite = inviteData;
-                this.start = JSON.parse(inviteData.fleet.start)
-                this.user = this.userService.getCurrentUser();
-              },
+                (inviteData: InviteModel) => {
+                  this.invite = inviteData;
+                  this.start = JSON.parse(inviteData.fleet.start)
+                  this.user = this.userService.getCurrentUser();
+                  this.characterService.getCharacter(this.invite.fleet.owner).subscribe(character => {
+                    this.fleetOwner = character;
+                  })
+                },
               err => {
                 console.log('error opening invite details')
                 if (err.status === 401) {
@@ -64,25 +79,17 @@ export class InvitationDetailsComponent implements OnInit, OnDestroy {
   }
 
   displayDate() {
-    return this.prefixZero(this.start.date.day)
-      + '-'
-      + this.prefixZero(this.start.date.month)
-      + '-'
-      + this.prefixZero(this.start.date.year);
+    return InvitationDetailsComponent.prefixZero(this.start.date.day)
+        + '-'
+        + InvitationDetailsComponent.prefixZero(this.start.date.month)
+        + '-'
+        + InvitationDetailsComponent.prefixZero(this.start.date.year);
   }
 
   displayTime() {
-    return this.prefixZero(this.start.time.hour)
-      + ':'
-      + this.prefixZero(this.start.time.minute)
-  }
-
-  private prefixZero(digit: number) {
-    if (digit < 10) {
-      return '0' + digit;
-    } else {
-      return '' + digit
-    }
+    return InvitationDetailsComponent.prefixZero(this.start.time.hour)
+        + ':'
+        + InvitationDetailsComponent.prefixZero(this.start.time.minute)
   }
 
   accept() {

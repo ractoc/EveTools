@@ -17,6 +17,9 @@ public class FleetModel {
     private Integer id;
     @NonNull
     private String name;
+    @Length(max = 1000, message = "Description can not exceed a 1000 characters")
+    private String description;
+
     private Integer owner;
     @NonNull
     private String start;
@@ -29,6 +32,4 @@ public class FleetModel {
     private TypeModel type;
     private List<RoleModel> roles;
 
-    @Length(max = 1000, message = "invite text can not exceed a 1000 characters")
-    private String inviteText;
 }

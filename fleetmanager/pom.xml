@@ -148,7 +148,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>Add Corporation Restricted typeMapper</id>
+                        <id>Add Restricted typeMapper</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>edit</goal>
@@ -157,6 +157,20 @@
                             <set>typeMapper:com.speedment.runtime.typemapper.string.TrueFalseStringToBooleanMapper</set>
                             <what>column</what>
                             <where>name:restricted</where>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Add registration Accept typeMapper</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>edit</goal>
+                        </goals>
+                        <configuration>
+                            <set>
+                                typeMapper:com.speedment.runtime.typemapper.integer.PrimitiveIntegerZeroOneToBooleanMapper
+                            </set>
+                            <what>column</what>
+                            <where>name:accept</where>
                         </configuration>
                     </execution>
                     <execution>

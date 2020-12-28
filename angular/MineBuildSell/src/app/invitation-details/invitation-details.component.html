@@ -7,17 +7,17 @@
     <p>
       You have been invited to join the fleet event {{invite.fleet.name}}.
     </p>
+    <p *ngIf="invite.fleet.description">
+      {{invite.fleet.description}}
+    </p>
     <p>
-      This event has been planned by {{invite.name}}.
+      This event has been planned by {{fleetOwner.name}}.
     </p>
     <p>
       It will start at {{displayDate()}} {{displayTime()}} EVE-time.
       <span *ngIf="invite.fleet.duration > 0">
-        It will run for {{invite.fleet.duration}}.
+        It will run for {{invite.fleet.duration}} hours.
       </span>
-    </p>
-    <p>
-      {{invite.additionalInfo}}
     </p>
     <button type="button" class="btn btn-primary" (click)="accept()">Accept</button>
     &nbsp;

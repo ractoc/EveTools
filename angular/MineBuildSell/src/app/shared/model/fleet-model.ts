@@ -6,6 +6,7 @@ export class FleetModel {
 
   constructor(public id: number,
               public name: string,
+              public description: string,
               public locationId: number,
               public owner: number,
               public type: TypeModel,
@@ -14,7 +15,6 @@ export class FleetModel {
               public duration: number,
               public restricted: boolean,
               public invitations: CharacterModel[],
-              public inviteText: string,
               public roles: RoleModel[]) {
   }
 

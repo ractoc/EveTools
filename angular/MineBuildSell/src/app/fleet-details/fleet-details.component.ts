@@ -77,10 +77,10 @@ export class FleetDetailsComponent implements OnInit, OnDestroy {
       undefined,
       undefined,
       undefined,
+      undefined,
       -1,
       false,
       [],
-      undefined,
       undefined);
     const currentDate = new Date();
     this.startDate = {

@@ -19,6 +19,8 @@ public class RegistrationModel {
     private String start;
     private String end;
 
+    private boolean accept;
+
     private String fleetOwner;
     private String corporationName;
     private FleetModel fleet;

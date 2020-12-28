@@ -76,7 +76,7 @@ public class InviteService {
     }
 
     // needs to be synchronized to make sure there are never any duplicate invite keys.
-    public synchronized String invite(Integer fleetId, Integer id, String type, String name, String additionalInfo) {
+    public synchronized String invite(Integer fleetId, Integer id, String type, String name) {
         String inviteKey = generateInviteKey();
         Invites invite = new InvitesImpl();
         invite.setFleetId(fleetId);
@@ -84,7 +84,6 @@ public class InviteService {
         invite.setType(type);
         invite.setName(name);
         invite.setKey(inviteKey);
-        invite.setAdditionalInfo(additionalInfo);
         invitesManager.persist(invite);
         return inviteKey;
     }

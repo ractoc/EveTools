@@ -5,6 +5,9 @@
   <div class="form-group">
     Fleet Type: {{fleet.type.name}}
   </div>
+  <div class="form-group" *ngIf="fleet.description">
+    {{fleet.description}}
+  </div>
   <div class="form-group">
     Fleet Start:
     {{fleetStartDate.month}}-{{fleetStartDate.day}}-{{fleetStartDate.year}}
@@ -47,9 +50,6 @@
     <div *ngIf="!registrant()">
       {{role(registration.roleId).name}}
     </div>
-  </div>
-  <div class="form-group" *ngIf="fleet.inviteText">
-    {{fleet.inviteText}}
   </div>
 </div>
 

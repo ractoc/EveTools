@@ -25,7 +25,7 @@ public class RegistrationValidator {
 
     public boolean verifyRegistration(RegistrationModel registration, Integer charId) {
         if (registration.getCharacterId() != 0) {
-            if (!registration.getCharacterId().equals(charId)) {
+            if (!registration.getCharacterId().equals(charId) || !registration.isAccept()) {
                 return false;
             }
         }

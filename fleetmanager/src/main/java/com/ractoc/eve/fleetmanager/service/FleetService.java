@@ -14,6 +14,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.generated.GeneratedFleet.OWNER;
+
 @Service
 public class FleetService {
 
@@ -27,11 +29,8 @@ public class FleetService {
         this.roleFleetManager = roleFleetManager;
     }
 
-    public Stream<Fleet> getActiveFleets(Integer corporationId) {
+    public Stream<Fleet> getActiveFleets() {
         return fleetManager.stream()
-                .filter(fleet -> fleet.getCorporationId().isEmpty() ||
-                        fleet.getCorporationId().getAsInt() == 0 ||
-                        fleet.getCorporationId().getAsInt() == corporationId)
                 .filter(fleet -> fleet
                         .getStartDateTime()
                         // If there is no actual startDateTime, fake one in the future to ensure the fleet is added to the list
@@ -42,20 +41,17 @@ public class FleetService {
                         .isAfter(Instant.now()));
     }
 
-    public Stream<Fleet> getAllFleets(Integer corporationId) {
-        return fleetManager.stream()
-                .filter(fleet -> fleet.getCorporationId().isEmpty() ||
-                        fleet.getCorporationId().getAsInt() == 0 ||
-                        fleet.getCorporationId().getAsInt() == corporationId);
+    public Stream<Fleet> getAllFleets() {
+        return fleetManager.stream();
     }
 
     public Stream<Fleet> getOwnedFleets(Integer charId) {
-        return fleetManager.stream().filter(Fleet.OWNER.equal(charId));
+        return fleetManager.stream().filter(OWNER.equal(charId));
     }
 
     public Stream<Fleet> getActiveOwnedFleets(Integer charId) {
         return fleetManager.stream()
-                .filter(Fleet.OWNER.equal(charId))
+                .filter(OWNER.equal(charId))
                 .filter(fleet -> fleet
                         .getStartDateTime()
                         // If there is no actual startDateTime, fake one in the future to ensure the fleet is added to the list

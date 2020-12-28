@@ -2,7 +2,7 @@
   "config": {
     "speedmentVersion": "Speedment:3.2.9-SNAPSHOT",
     "companyName": "ractoc.com",
-    "appId": "e3023ed0-5b23-421a-8c05-a8291a7ed634",
+    "appId": "7536f03e-8eb7-4262-8ea4-cc449fb192f4",
     "name": "fleetmanager",
     "packageLocation": "target/generated-sources/java",
     "packageName": "com.ractoc.eve.fleetmanager.db",
@@ -78,18 +78,11 @@
                     "ordinalPosition": 5
                   },
                   {
-                    "databaseType": "java.lang.Integer",
-                    "nullable": true,
-                    "name": "corporation_id",
-                    "id": "corporation_id",
-                    "ordinalPosition": 6
-                  },
-                  {
                     "databaseType": "java.sql.Timestamp",
                     "nullable": true,
                     "name": "start_date_time",
                     "id": "start_date_time",
-                    "ordinalPosition": 7
+                    "ordinalPosition": 6
                   },
                   {
                     "databaseType": "java.lang.Integer",
@@ -97,15 +90,22 @@
                     "nullable": false,
                     "name": "type_id",
                     "id": "type_id",
-                    "ordinalPosition": 8
+                    "ordinalPosition": 7
                   },
                   {
                     "databaseType": "java.lang.String",
                     "nullable": false,
                     "name": "restricted",
                     "id": "restricted",
-                    "ordinalPosition": 9,
+                    "ordinalPosition": 8,
                     "typeMapper": "com.speedment.runtime.typemapper.string.TrueFalseStringToBooleanMapper"
+                  },
+                  {
+                    "databaseType": "java.lang.String",
+                    "nullable": true,
+                    "name": "description",
+                    "id": "description",
+                    "ordinalPosition": 9
                   }
                 ],
                 "name": "fleet",
@@ -186,13 +186,6 @@
                     "name": "key",
                     "id": "key",
                     "ordinalPosition": 5
-                  },
-                  {
-                    "databaseType": "java.lang.String",
-                    "nullable": true,
-                    "name": "additional_info",
-                    "id": "additional_info",
-                    "ordinalPosition": 6
                   }
                 ],
                 "name": "invites",
@@ -273,7 +266,7 @@
                   },
                   {
                     "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "typeMapper": "com.speedment.runtime.typemapper.integer.PrimitiveIntegerZeroOneToBooleanMapper",
                     "nullable": false,
                     "name": "accept",
                     "id": "accept",
