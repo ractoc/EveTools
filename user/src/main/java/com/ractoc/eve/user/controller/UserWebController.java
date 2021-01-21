@@ -42,11 +42,11 @@ public class UserWebController {
     }
 
     @GetMapping(value = "/launchSignOn")
-    public String launchSignOn(HttpServletRequest request, @CookieValue(value = "eve-state", defaultValue = "") String eveState) {
+    public String launchSignOn(@CookieValue(value = "eve-state", defaultValue = "") String eveState) {
         if (eveState.isEmpty()) {
-            return initiateLogin(request);
+            return initiateLogin();
         }
-        return refreshToken(request, eveState);
+        return refreshToken(eveState);
     }
 
     @GetMapping(value = "/eveCallBack")
@@ -58,16 +58,16 @@ public class UserWebController {
         formData.add("code", code);
         OAuthToken accessToken = client.target("https://login.eveonline.com/v2/oauth/token")
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.form(formData), new GenericType<OAuthToken>() {
+                .post(Entity.form(formData), new GenericType<>() {
                 });
 
-        handler.storeEveUserRegistration(eveState, accessToken, RequestUtils.getRemoteIP(request));
+        handler.storeEveUserRegistration(eveState, accessToken);
 
         return REDIRECT + frontendUrl + "/" + eveState;
     }
 
-    private String initiateLogin(HttpServletRequest request) {
-        String eveState = handler.initiateLogin(RequestUtils.getRemoteIP(request));
+    private String initiateLogin() {
+        String eveState = handler.initiateLogin();
         return "redirect:https://login.eveonline.com/v2/oauth/authorize/"
                 + "?response_type=code"
                 + "&redirect_uri=" + clientUrl
@@ -76,7 +76,7 @@ public class UserWebController {
                 + "&state=" + eveState;
     }
 
-    private String refreshToken(HttpServletRequest request, String eveState) {
+    private String refreshToken(String eveState) {
         try {
             String refreshToken = handler.getRefreshTokenForState(eveState);
             MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
@@ -84,14 +84,14 @@ public class UserWebController {
             formData.add("refresh_token", refreshToken);
             OAuthToken oAuthToken = client.target("https://login.eveonline.com/v2/oauth/token")
                     .request(MediaType.APPLICATION_JSON_TYPE)
-                    .post(Entity.form(formData), new GenericType<OAuthToken>() {
+                    .post(Entity.form(formData), new GenericType<>() {
                     });
 
-            handler.storeEveUserRegistration(eveState, oAuthToken, RequestUtils.getRemoteIP(request));
+            handler.storeEveUserRegistration(eveState, oAuthToken);
 
             return REDIRECT + frontendUrl + "/" + eveState;
         } catch (AccessDeniedException ade) {
-            return initiateLogin(request);
+            return initiateLogin();
         }
     }
 

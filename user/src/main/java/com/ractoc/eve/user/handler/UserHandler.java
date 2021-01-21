@@ -37,8 +37,8 @@ public class UserHandler {
         this.service = service;
     }
 
-    public String initiateLogin(String remoteIP) {
-        return service.initializeUser(remoteIP);
+    public String initiateLogin() {
+        return service.initializeUser();
     }
 
     public String getRefreshTokenForState(String eveState) {
@@ -48,8 +48,8 @@ public class UserHandler {
                 .orElseThrow(() -> new AccessDeniedException(eveState));
     }
 
-    public void storeEveUserRegistration(String eveState, OAuthToken oAuthToken, String remoteIp) {
-        service.updateUser(convertOAuthTokenToUser(eveState, oAuthToken, remoteIp));
+    public void storeEveUserRegistration(String eveState, OAuthToken oAuthToken) {
+        service.updateUser(convertOAuthTokenToUser(eveState, oAuthToken));
     }
 
     public String getValidIpByState(String eveState) {
@@ -113,12 +113,11 @@ public class UserHandler {
         return Integer.parseInt(charId);
     }
 
-    private User convertOAuthTokenToUser(String eveState, OAuthToken oAuthToken, String remoteIp) {
+    private User convertOAuthTokenToUser(String eveState, OAuthToken oAuthToken) {
         EveJwtContent jwtContent = decodeJwt(oAuthToken.getAccess_token());
         User user = new UserImpl();
         user.setCharacterId(extractCharacterIdFromSub(jwtContent.getSub()));
         user.setName(jwtContent.getName());
-        user.setIpAddress(remoteIp);
         user.setEveState(eveState);
         user.setRefreshToken(oAuthToken.getRefresh_token());
         user.setLastRefresh(LocalDateTime.now());

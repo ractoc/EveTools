@@ -107,7 +107,7 @@ public class UserRestController {
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.form(formData), new GenericType<OAuthToken>() {
                 });
-        handler.storeEveUserRegistration(eveState, oAuthToken, RequestUtils.getRemoteIP(request));
+        handler.storeEveUserRegistration(eveState, oAuthToken);
     }
 
 }

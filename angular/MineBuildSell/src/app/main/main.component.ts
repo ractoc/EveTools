@@ -6,7 +6,7 @@ import localeIs from '@angular/common/locales/is';
 
 import {UserService} from '../service/user.service';
 import {User} from '../shared/model/user.model';
-import {LocalStorageService} from "../service/local-storage.service";
+import {LocalStorageService} from '../service/local-storage.service';
 
 @Component({
   selector: 'app-main',

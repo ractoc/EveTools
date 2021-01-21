@@ -27,17 +27,18 @@ public class UserService {
         this.characterApi = characterApi;
     }
 
-    public String initializeUser(String remoteIP) {
+    public String initializeUser() {
         User user = new UserImpl();
         user.setEveState(generateEveState());
-        user.setIpAddress(remoteIP);
-
         userManager.persist(user);
-
         return user.getEveState();
     }
 
     public void updateUser(User user) {
+        userManager.stream()
+                .filter(User.CHARACTER_ID.equal(user.getCharacterId().orElseThrow(() -> new IllegalArgumentException("CharacterId")))
+                        .and(EVE_STATE.notEqual(user.getEveState())))
+                .forEach(userManager::remove);
         userManager.update(user);
     }
 
