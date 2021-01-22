@@ -7,14 +7,14 @@ import com.ractoc.eve.user.response.BaseResponse;
 import com.ractoc.eve.user.response.UserResponse;
 import com.ractoc.eve.user.service.ServiceException;
 import io.swagger.annotations.*;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
@@ -35,11 +35,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/api")
 @Validated
-@Slf4j
 public class UserRestController {
 
+    private static final Logger log = LoggerFactory.getLogger(UserRestController.class.getName());
+
     private final Client client;
-    private UserHandler handler;
+    private final UserHandler handler;
 
     @Autowired
     public UserRestController(UserHandler handler, Client client) {
@@ -52,13 +53,13 @@ public class UserRestController {
             @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = UserModel.class)
     })
     @GetMapping(value = "/userdetails/{eveState}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserModel> getUserDetails(HttpServletRequest request, @PathVariable String eveState) {
+    public ResponseEntity<UserModel> getUserDetails(@PathVariable String eveState) {
         try {
-            refreshToken(request, eveState);
+            refreshToken(eveState);
             return new ResponseEntity<>(handler.getUserByState(eveState), OK);
         } catch (ServiceException e) {
             e.printStackTrace();
-            return new ResponseEntity<>(null, BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST);
         }
     }
 
@@ -74,11 +75,11 @@ public class UserRestController {
             if (user != null) {
                 return new ResponseEntity<>(user, OK);
             } else {
-                return new ResponseEntity<>(null, FORBIDDEN);
+                return new ResponseEntity<>(FORBIDDEN);
             }
         } catch (ServiceException e) {
             e.printStackTrace();
-            return new ResponseEntity<>(null, BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST);
         }
     }
 
@@ -94,18 +95,18 @@ public class UserRestController {
             return new ResponseEntity<>(new BaseResponse(GONE.value()), OK);
         } catch (ServiceException e) {
             log.error(e.getMessage(), e);
-            return new ResponseEntity<>(null, BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST);
         }
     }
 
-    private void refreshToken(HttpServletRequest request, String eveState) {
+    private void refreshToken(String eveState) {
         String refreshToken = handler.getRefreshTokenForState(eveState);
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
         formData.add("grant_type", "refresh_token");
         formData.add("refresh_token", refreshToken);
         OAuthToken oAuthToken = client.target("https://login.eveonline.com/v2/oauth/token")
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.form(formData), new GenericType<OAuthToken>() {
+                .post(Entity.form(formData), new GenericType<>() {
                 });
         handler.storeEveUserRegistration(eveState, oAuthToken);
     }

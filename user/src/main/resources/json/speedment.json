@@ -2,7 +2,7 @@
   "config" : {
     "speedmentVersion": "Speedment:3.2.10",
     "companyName": "ractoc.com",
-    "appId": "449f8d5c-8769-4c51-a7b2-c2ca1cb70344",
+    "appId": "3d4b8d1b-7b79-450a-bbff-af333a9a11b9",
     "name": "user",
     "packageLocation": "target/generated-sources/java",
     "packageName": "com.ractoc.eve.user.db",
@@ -47,54 +47,47 @@
                     "ordinalPosition" : 1
                   },
                   {
-                    "databaseType" : "java.lang.String",
-                    "nullable" : false,
-                    "name" : "ip_address",
-                    "id" : "ip_address",
-                    "ordinalPosition" : 2
-                  },
-                  {
                     "databaseType" : "java.lang.Integer",
                     "nullable" : true,
                     "name" : "characterId",
                     "id" : "characterId",
-                    "ordinalPosition" : 3
+                    "ordinalPosition": 2
                   },
                   {
                     "databaseType" : "java.lang.String",
                     "nullable" : true,
                     "name" : "name",
                     "id" : "name",
-                    "ordinalPosition" : 4
+                    "ordinalPosition": 3
                   },
                   {
                     "databaseType" : "java.lang.String",
                     "nullable" : true,
                     "name" : "refresh_token",
                     "id" : "refresh_token",
-                    "ordinalPosition" : 5
+                    "ordinalPosition": 4
                   },
                   {
-                    "databaseType" : "java.sql.Timestamp",
-                    "nullable" : true,
-                    "name" : "last_refresh",
-                    "id" : "last_refresh",
-                    "ordinalPosition" : 6,
-                    "typeMapper" : "com.speedment.runtime.typemapper.time.TimestampToLocalDateTimeMapper"
+                    "databaseType": "java.sql.Timestamp",
+                    "nullable": true,
+                    "name": "last_refresh",
+                    "id": "last_refresh",
+                    "ordinalPosition": 5,
+                    "typeMapper": "com.speedment.runtime.typemapper.time.TimestampToLocalDateTimeMapper"
                   },
                   {
                     "databaseType" : "java.lang.Integer",
                     "nullable" : true,
                     "name" : "expires_in",
                     "id" : "expires_in",
-                    "ordinalPosition" : 7
+                    "ordinalPosition": 6
                   },
                   {
                     "databaseType" : "java.lang.String",
                     "nullable" : true,
                     "name" : "access_token",
                     "id" : "access_token",
-                    "ordinalPosition" : 8
+                    "ordinalPosition": 7
                   }
                 ],
                 "name" : "user",

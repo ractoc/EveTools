@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
@@ -50,9 +49,7 @@ public class UserWebController {
     }
 
     @GetMapping(value = "/eveCallBack")
-    public String eveCallBack(HttpServletRequest request, @RequestParam String code, @RequestParam(name = "state") String eveState) {
-        validatedIP(eveState, RequestUtils.getRemoteIP(request));
-
+    public String eveCallBack(@RequestParam String code, @RequestParam(name = "state") String eveState) {
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
         formData.add("grant_type", "authorization_code");
         formData.add("code", code);
@@ -92,12 +89,6 @@ public class UserWebController {
             return REDIRECT + frontendUrl + "/" + eveState;
         } catch (AccessDeniedException ade) {
             return initiateLogin();
-        }
-    }
-
-    private void validatedIP(String eveState, String remoteIP) {
-        if (!handler.getValidIpByState(eveState).equals(remoteIP)) {
-            throw new AccessDeniedException("Unvalidated IP-Address");
         }
     }
 

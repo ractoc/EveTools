@@ -52,12 +52,6 @@ public class UserHandler {
         service.updateUser(convertOAuthTokenToUser(eveState, oAuthToken));
     }
 
-    public String getValidIpByState(String eveState) {
-        return getUser(eveState)
-                .map(User::getIpAddress)
-                .orElseThrow(() -> new AccessDeniedException(eveState));
-    }
-
     public UserModel getUserByState(String eveState) {
         return getUser(eveState)
                 .map(user -> {
@@ -65,7 +59,6 @@ public class UserHandler {
                             .charId(user.getCharacterId().orElseThrow(() -> new AccessDeniedException(eveState)))
                             .characterName(user.getName().orElseThrow(() -> new AccessDeniedException(eveState)))
                             .eveState(eveState)
-                            .ipAddress(user.getIpAddress())
                             .expiresAt(user.getLastRefresh().orElseThrow(() -> new AccessDeniedException(eveState))
                                     .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + (1000 *
                                     user.getExpiresIn().orElseThrow(() -> new AccessDeniedException(eveState))))
