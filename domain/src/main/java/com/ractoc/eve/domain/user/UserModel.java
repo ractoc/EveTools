@@ -18,7 +18,6 @@ public class UserModel {
     private String characterName;
     private String eveState;
     private long expiresAt;
-    private String ipAddress;
     private String accessToken;
     private List<String> roles;
 

@@ -2,7 +2,7 @@
   "config": {
     "speedmentVersion": "Speedment:3.2.9-SNAPSHOT",
     "companyName": "ractoc.com",
-    "appId": "8068ddb2-0143-421e-ab87-c6cad9bb4aa2",
+    "appId": "f737afff-a36c-4082-97c1-c91b99da5955",
     "name": "fleetmanager",
     "packageLocation": "target/generated-sources/java",
     "packageName": "com.ractoc.eve.fleetmanager.db",

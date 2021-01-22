@@ -63,7 +63,6 @@ public class UserAuthenticationProvider extends AbstractUserDetailsAuthenticatio
                 AuthorityUtils.createAuthorityList(user.getRoles().toArray(new String[]{})),
                 user.getCharId(),
                 user.getExpiresAt(),
-                user.getIpAddress(),
                 user.getAccessToken());
     }
 }
