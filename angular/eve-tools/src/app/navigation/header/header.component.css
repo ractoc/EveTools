@@ -1,9 +1,14 @@
 a {
   text-decoration: none;
   color: white;
+  font-family: Shentox, Rogan, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 600;
+  font-size: 15px;
 }
-a:hover, a:active{
-  color: lightgray;
+a:hover {
+  color: rgb(127, 137, 145);
 }
 .navigation-items{
   list-style-type: none;
@@ -12,9 +17,26 @@ a:hover, a:active{
 }
 mat-toolbar{
   border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.4);
+  height: 111px;
+  margin-bottom: 40px;
 }
+
+.mat-button {
+  color: white;
+  font-family: Shentox, Rogan, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 600;
+  font-size: 15px;
+}
+
 @media(max-width: 959px){
   mat-toolbar{
     border-radius: 0px;
   }
+}
+
+.logo {
+  font-size: 30px;
 }
