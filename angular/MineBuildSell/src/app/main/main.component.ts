@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Subject} from 'rxjs';
 import {Router} from '@angular/router';
-import {registerLocaleData} from '@angular/common';
-import localeIs from '@angular/common/locales/is';
 
 import {UserService} from '../service/user.service';
 import {User} from '../shared/model/user.model';
@@ -24,7 +22,6 @@ export class MainComponent implements OnInit {
   }
 
   ngOnInit() {
-    registerLocaleData(localeIs);
     this.userMonitor = this.userService.monitorUser();
     this.userMonitor
       .subscribe((us: User) => {

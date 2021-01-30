@@ -19,7 +19,6 @@
         <module>user</module>
         <module>user-client</module>
         <module>assets-client</module>
-        <module>deployment</module>
         <module>common-test</module>
         <module>fleetmanager</module>
     </modules>
@@ -189,6 +188,7 @@
                 </os>
             </activation>
             <modules>
+                <module>deployment</module>
                 <module>angular</module>
             </modules>
             <properties>

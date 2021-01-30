@@ -1,0 +1,15 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+  <div fxFlexAlign="center">
+    <h1 class="sub-header">Login</h1>
+  </div>
+
+  <div fxFlexAlign="center" class="content" *ngIf="user; else login">
+    <p>Hello and welcome {{user.name}}</p>
+  </div>
+</section>
+
+<ng-template #login>
+  <div fxFlexAlign="center" class="content">
+    <p>Login using your registered EVE-login</p>
+  </div>
+</ng-template>

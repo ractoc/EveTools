@@ -1,40 +1,40 @@
 {
   "config" : {
-    "speedmentVersion": "Speedment:3.2.10",
-    "companyName": "ractoc.com",
-    "appId": "146bec19-e2c7-4aef-91e4-e527f3012e22",
-    "name": "universe",
-    "packageLocation": "target/generated-sources/java",
-    "packageName": "com.ractoc.eve.universe.db",
-    "id": "universe",
-    "enabled": true,
-    "dbmses": [
+    "speedmentVersion" : "Speedment:3.2.10",
+    "companyName" : "ractoc.com",
+    "appId" : "f9abdcf8-5655-4c0c-918c-7f165f9bebbb",
+    "name" : "universe",
+    "packageLocation" : "target/generated-sources/java",
+    "packageName" : "com.ractoc.eve.universe.db",
+    "id" : "universe",
+    "enabled" : true,
+    "dbmses" : [
       {
-        "port": 9876,
-        "schemas": [
+        "port" : 9876,
+        "schemas" : [
           {
-            "tables": [
+            "tables" : [
               {
-                "primaryKeyColumns": [
+                "primaryKeyColumns" : [
                   {
-                    "name": "id",
-                    "id": "id",
-                    "ordinalPosition": 1
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
                   }
                 ],
-                "indexes": [
+                "indexes" : [
                   {
-                    "unique": true,
-                    "name": "name_UNIQUE",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "name_UNIQUE",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "name",
-                        "id": "name",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "name",
+                        "id" : "name",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "id": "name_UNIQUE"
+                    "id" : "name_UNIQUE"
                   },
                   {
                     "unique" : true,

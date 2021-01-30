@@ -1,4 +1,4 @@
-a {
+a, button {
   text-decoration: none;
   color: white;
   font-family: Shentox, Rogan, sans-serif;
@@ -7,7 +7,10 @@ a {
   font-weight: 600;
   font-size: 15px;
 }
-a:hover {
+a.mat-menu-item {
+   color: black;
+ }
+a:hover, button:hover {
   color: rgb(127, 137, 145);
 }
 .navigation-items{

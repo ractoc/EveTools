@@ -1,6 +1,6 @@
 <mat-toolbar>
   <div fxHide.gt-xs>
-    <button mat-icon-button (click)="onToggleSidenav()">
+    <button mat-icon-button (click)="onToggleSidenav()" routerLink="/home">
       <img src="assets/images/sidenav.png"/>
     </button>
   </div>
@@ -11,15 +11,23 @@
   <div fxFlex fxLayout fxLayoutAlign="start" fxHide.xs>
     <button mat-button [matMenuTriggerFor]="fleetMenu">Fleets</button>
     <mat-menu #fleetMenu="matMenu">
-      <button mat-menu-item>Find Fleet</button>
-      <button mat-menu-item>My Fleets</button>
+      <a mat-menu-item routerLink="/fleet/create">New</a>
+      <a mat-menu-item routerLink="/fleet/find">Find</a>
+      <a mat-menu-item routerLink="/fleet/invitation">Invitations</a>
+      <a mat-menu-item routerLink="/fleet/registration">Registrations</a>
     </mat-menu>
   </div>
-  <div fxFlex fxLayout fxLayoutAlign="end">
-    <ul fxLayout fxLayoutGap="15px" class="navigation-items">
-      <li>
-        <a routerLink="/login">Login</a>
-      </li>
-    </ul>
+  <div *ngIf="user; else login" fxFlex fxLayout fxLayoutAlign="end">
+    <button mat-button [matMenuTriggerFor]="fleetMenu">{{user.name}}</button>
+    <mat-menu #fleetMenu="matMenu">
+      <a mat-menu-item (click)="switch()">Switch Character</a>
+      <a mat-menu-item (click)="logout()">Logout</a>
+    </mat-menu>
   </div>
 </mat-toolbar>
+
+<ng-template #login>
+  <div fxFlex fxLayout fxLayoutAlign="end">
+    <a routerLink="/user/login">Login</a>
+  </div>
+</ng-template>
