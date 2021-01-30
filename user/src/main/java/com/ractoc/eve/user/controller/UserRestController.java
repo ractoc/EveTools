@@ -83,15 +83,15 @@ public class UserRestController {
         }
     }
 
-    @ApiOperation(value = "Switch user by EVE state. This will remove the user linked to the provided eve state from the system.", response = UserResponse.class, produces = "application/json")
+    @ApiOperation(value = "Lougout user by EVE state. This will remove the user linked to the provided eve state from the system.", response = UserResponse.class, produces = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = UserModel.class),
             @ApiResponse(code = 403, message = "The user does not exist")
     })
     @DeleteMapping(value = "/user", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> switchUser(@RequestHeader(AUTHORIZATION) @NotNull String authorization) {
+    public ResponseEntity<BaseResponse> logoutUser(@RequestHeader(AUTHORIZATION) @NotNull String authorization) {
         try {
-            handler.switchUser(StringUtils.removeStart(authorization, "Bearer").trim());
+            handler.logoutUser(StringUtils.removeStart(authorization, "Bearer").trim());
             return new ResponseEntity<>(new BaseResponse(GONE.value()), OK);
         } catch (ServiceException e) {
             log.error(e.getMessage(), e);

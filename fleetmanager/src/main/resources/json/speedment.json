@@ -1,608 +1,608 @@
 {
-  "config": {
-    "speedmentVersion": "Speedment:3.2.9-SNAPSHOT",
-    "companyName": "ractoc.com",
-    "appId": "f737afff-a36c-4082-97c1-c91b99da5955",
-    "name": "fleetmanager",
-    "packageLocation": "target/generated-sources/java",
-    "packageName": "com.ractoc.eve.fleetmanager.db",
-    "id": "fleetmanager",
-    "enabled": true,
-    "dbmses": [
+  "config" : {
+    "speedmentVersion" : "Speedment:3.2.10",
+    "companyName" : "ractoc.com",
+    "appId" : "4840aa5d-27c2-41a0-9325-03d9d2dfee26",
+    "name" : "fleetmanager",
+    "packageLocation" : "target/generated-sources/java",
+    "packageName" : "com.ractoc.eve.fleetmanager.db",
+    "id" : "fleetmanager",
+    "enabled" : true,
+    "dbmses" : [
       {
-        "port": 9876,
-        "schemas": [
+        "port" : 9876,
+        "schemas" : [
           {
-            "tables": [
+            "tables" : [
               {
-                "primaryKeyColumns": [
+                "primaryKeyColumns" : [
                   {
-                    "name": "id",
-                    "id": "id",
-                    "ordinalPosition": 1
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
                   }
                 ],
-                "indexes": [
+                "indexes" : [
                   {
-                    "unique": true,
-                    "name": "PRIMARY",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "id",
-                        "id": "id",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "id",
+                        "id" : "id",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "id": "PRIMARY"
+                    "id" : "PRIMARY"
                   }
                 ],
-                "isView": false,
-                "columns": [
+                "isView" : false,
+                "columns" : [
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "autoIncrement": true,
-                    "name": "id",
-                    "id": "id",
-                    "ordinalPosition": 1
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "autoIncrement" : true,
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": false,
-                    "name": "name",
-                    "id": "name",
-                    "ordinalPosition": 2
+                    "databaseType" : "java.lang.String",
+                    "nullable" : false,
+                    "name" : "name",
+                    "id" : "name",
+                    "ordinalPosition" : 2
                   },
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "name": "owner",
-                    "id": "owner",
-                    "ordinalPosition": 3
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "owner",
+                    "id" : "owner",
+                    "ordinalPosition" : 3
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": false,
-                    "name": "start",
-                    "id": "start",
-                    "ordinalPosition": 4
+                    "databaseType" : "java.lang.String",
+                    "nullable" : false,
+                    "name" : "start",
+                    "id" : "start",
+                    "ordinalPosition" : 4
                   },
                   {
-                    "databaseType": "java.lang.Integer",
-                    "nullable": true,
-                    "name": "duration",
-                    "id": "duration",
-                    "ordinalPosition": 5
+                    "databaseType" : "java.lang.Integer",
+                    "nullable" : true,
+                    "name" : "duration",
+                    "id" : "duration",
+                    "ordinalPosition" : 5
                   },
                   {
-                    "databaseType": "java.sql.Timestamp",
-                    "nullable": true,
-                    "name": "start_date_time",
-                    "id": "start_date_time",
-                    "ordinalPosition": 6
+                    "databaseType" : "java.sql.Timestamp",
+                    "nullable" : true,
+                    "name" : "start_date_time",
+                    "id" : "start_date_time",
+                    "ordinalPosition" : 6
                   },
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "name": "type_id",
-                    "id": "type_id",
-                    "ordinalPosition": 7
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 7
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": false,
-                    "name": "restricted",
-                    "id": "restricted",
-                    "ordinalPosition": 8,
-                    "typeMapper": "com.speedment.runtime.typemapper.string.TrueFalseStringToBooleanMapper"
+                    "databaseType" : "java.lang.String",
+                    "nullable" : false,
+                    "name" : "restricted",
+                    "id" : "restricted",
+                    "ordinalPosition" : 8,
+                    "typeMapper" : "com.speedment.runtime.typemapper.string.TrueFalseStringToBooleanMapper"
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": true,
-                    "name": "description",
-                    "id": "description",
-                    "ordinalPosition": 9
+                    "databaseType" : "java.lang.String",
+                    "nullable" : true,
+                    "name" : "description",
+                    "id" : "description",
+                    "ordinalPosition" : 9
                   }
                 ],
-                "name": "fleet",
-                "id": "fleet"
+                "name" : "fleet",
+                "id" : "fleet"
               },
               {
-                "primaryKeyColumns": [
+                "primaryKeyColumns" : [
                   {
-                    "name": "id",
-                    "id": "id",
-                    "ordinalPosition": 1
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
                   }
                 ],
-                "indexes": [
+                "indexes" : [
                   {
-                    "unique": true,
-                    "name": "invite_key_UNIQUE",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "invite_key_UNIQUE",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "key",
-                        "id": "key",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "key",
+                        "id" : "key",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "id": "invite_key_UNIQUE"
+                    "id" : "invite_key_UNIQUE"
                   },
                   {
-                    "unique": true,
-                    "name": "PRIMARY",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "id",
-                        "id": "id",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "id",
+                        "id" : "id",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "id": "PRIMARY"
+                    "id" : "PRIMARY"
                   }
                 ],
-                "isView": false,
-                "columns": [
+                "isView" : false,
+                "columns" : [
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "autoIncrement": true,
-                    "name": "id",
-                    "id": "id",
-                    "ordinalPosition": 1
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "autoIncrement" : true,
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
                   },
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "name": "fleet_id",
-                    "id": "fleet_id",
-                    "ordinalPosition": 2
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "fleet_id",
+                    "id" : "fleet_id",
+                    "ordinalPosition" : 2
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": false,
-                    "name": "type",
-                    "id": "type",
-                    "ordinalPosition": 3
+                    "databaseType" : "java.lang.String",
+                    "nullable" : false,
+                    "name" : "type",
+                    "id" : "type",
+                    "ordinalPosition" : 3
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": false,
-                    "name": "name",
-                    "id": "name",
-                    "ordinalPosition": 4
+                    "databaseType" : "java.lang.String",
+                    "nullable" : false,
+                    "name" : "name",
+                    "id" : "name",
+                    "ordinalPosition" : 4
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": false,
-                    "name": "key",
-                    "id": "key",
-                    "ordinalPosition": 5
+                    "databaseType" : "java.lang.String",
+                    "nullable" : false,
+                    "name" : "key",
+                    "id" : "key",
+                    "ordinalPosition" : 5
                   }
                 ],
-                "name": "invites",
-                "id": "invites"
+                "name" : "invites",
+                "id" : "invites"
               },
               {
-                "primaryKeyColumns": [
+                "primaryKeyColumns" : [
                   {
-                    "name": "character_id",
-                    "id": "character_id",
-                    "ordinalPosition": 1
+                    "name" : "character_id",
+                    "id" : "character_id",
+                    "ordinalPosition" : 1
                   },
                   {
-                    "name": "fleet_id",
-                    "id": "fleet_id",
-                    "ordinalPosition": 2
+                    "name" : "fleet_id",
+                    "id" : "fleet_id",
+                    "ordinalPosition" : 2
                   }
                 ],
-                "indexes": [
+                "indexes" : [
                   {
-                    "unique": true,
-                    "name": "PRIMARY",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "character_id",
-                        "id": "character_id",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "character_id",
+                        "id" : "character_id",
+                        "ordinalPosition" : 1
                       },
                       {
-                        "orderType": "ASC",
-                        "name": "fleet_id",
-                        "id": "fleet_id",
-                        "ordinalPosition": 2
+                        "orderType" : "ASC",
+                        "name" : "fleet_id",
+                        "id" : "fleet_id",
+                        "ordinalPosition" : 2
                       }
                     ],
-                    "id": "PRIMARY"
+                    "id" : "PRIMARY"
                   }
                 ],
-                "isView": false,
-                "columns": [
+                "isView" : false,
+                "columns" : [
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "name": "character_id",
-                    "id": "character_id",
-                    "ordinalPosition": 1
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "character_id",
+                    "id" : "character_id",
+                    "ordinalPosition" : 1
                   },
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "name": "fleet_id",
-                    "id": "fleet_id",
-                    "ordinalPosition": 2
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "fleet_id",
+                    "id" : "fleet_id",
+                    "ordinalPosition" : 2
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": false,
-                    "name": "name",
-                    "id": "name",
-                    "ordinalPosition": 3
+                    "databaseType" : "java.lang.String",
+                    "nullable" : false,
+                    "name" : "name",
+                    "id" : "name",
+                    "ordinalPosition" : 3
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": true,
-                    "name": "start",
-                    "id": "start",
-                    "ordinalPosition": 4
+                    "databaseType" : "java.lang.String",
+                    "nullable" : true,
+                    "name" : "start",
+                    "id" : "start",
+                    "ordinalPosition" : 4
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": true,
-                    "name": "end",
-                    "id": "end",
-                    "ordinalPosition": 5
+                    "databaseType" : "java.lang.String",
+                    "nullable" : true,
+                    "name" : "end",
+                    "id" : "end",
+                    "ordinalPosition" : 5
                   },
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.integer.PrimitiveIntegerZeroOneToBooleanMapper",
-                    "nullable": false,
-                    "name": "accept",
-                    "id": "accept",
-                    "ordinalPosition": 6
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.integer.PrimitiveIntegerZeroOneToBooleanMapper",
+                    "nullable" : false,
+                    "name" : "accept",
+                    "id" : "accept",
+                    "ordinalPosition" : 6
                   },
                   {
-                    "databaseType": "java.lang.Integer",
-                    "nullable": true,
-                    "name": "role_id",
-                    "id": "role_id",
-                    "ordinalPosition": 7
+                    "databaseType" : "java.lang.Integer",
+                    "nullable" : true,
+                    "name" : "role_id",
+                    "id" : "role_id",
+                    "ordinalPosition" : 7
                   },
                   {
-                    "databaseType": "java.sql.Timestamp",
-                    "nullable": true,
-                    "name": "start_date_time",
-                    "id": "start_date_time",
-                    "ordinalPosition": 8
+                    "databaseType" : "java.sql.Timestamp",
+                    "nullable" : true,
+                    "name" : "start_date_time",
+                    "id" : "start_date_time",
+                    "ordinalPosition" : 8
                   },
                   {
-                    "databaseType": "java.sql.Timestamp",
-                    "nullable": true,
-                    "name": "end_date_time",
-                    "id": "end_date_time",
-                    "ordinalPosition": 9
+                    "databaseType" : "java.sql.Timestamp",
+                    "nullable" : true,
+                    "name" : "end_date_time",
+                    "id" : "end_date_time",
+                    "ordinalPosition" : 9
                   }
                 ],
-                "name": "registrations",
-                "id": "registrations"
+                "name" : "registrations",
+                "id" : "registrations"
               },
               {
-                "primaryKeyColumns": [
+                "primaryKeyColumns" : [
                   {
-                    "name": "id",
-                    "id": "id",
-                    "ordinalPosition": 1
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
                   }
                 ],
-                "indexes": [
+                "indexes" : [
                   {
-                    "unique": true,
-                    "name": "name_UNIQUE",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "name_UNIQUE",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "name",
-                        "id": "name",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "name",
+                        "id" : "name",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "id": "name_UNIQUE"
+                    "id" : "name_UNIQUE"
                   },
                   {
-                    "unique": true,
-                    "name": "PRIMARY",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "id",
-                        "id": "id",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "id",
+                        "id" : "id",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "id": "PRIMARY"
+                    "id" : "PRIMARY"
                   }
                 ],
-                "isView": false,
-                "columns": [
+                "isView" : false,
+                "columns" : [
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "autoIncrement": true,
-                    "name": "id",
-                    "id": "id",
-                    "ordinalPosition": 1
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "autoIncrement" : true,
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": false,
-                    "name": "name",
-                    "id": "name",
-                    "ordinalPosition": 2
+                    "databaseType" : "java.lang.String",
+                    "nullable" : false,
+                    "name" : "name",
+                    "id" : "name",
+                    "ordinalPosition" : 2
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": false,
-                    "name": "description",
-                    "id": "description",
-                    "ordinalPosition": 3
+                    "databaseType" : "java.lang.String",
+                    "nullable" : false,
+                    "name" : "description",
+                    "id" : "description",
+                    "ordinalPosition" : 3
                   }
                 ],
-                "name": "role",
-                "id": "role"
+                "name" : "role",
+                "id" : "role"
               },
               {
-                "primaryKeyColumns": [
+                "primaryKeyColumns" : [
                   {
-                    "name": "fleet_id",
-                    "id": "fleet_id",
-                    "ordinalPosition": 2
+                    "name" : "fleet_id",
+                    "id" : "fleet_id",
+                    "ordinalPosition" : 2
                   },
                   {
-                    "name": "role_id",
-                    "id": "role_id",
-                    "ordinalPosition": 1
+                    "name" : "role_id",
+                    "id" : "role_id",
+                    "ordinalPosition" : 1
                   }
                 ],
-                "indexes": [
+                "indexes" : [
                   {
-                    "unique": true,
-                    "name": "PRIMARY",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "role_id",
-                        "id": "role_id",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "role_id",
+                        "id" : "role_id",
+                        "ordinalPosition" : 1
                       },
                       {
-                        "orderType": "ASC",
-                        "name": "fleet_id",
-                        "id": "fleet_id",
-                        "ordinalPosition": 2
+                        "orderType" : "ASC",
+                        "name" : "fleet_id",
+                        "id" : "fleet_id",
+                        "ordinalPosition" : 2
                       }
                     ],
-                    "id": "PRIMARY"
+                    "id" : "PRIMARY"
                   }
                 ],
-                "isView": false,
-                "columns": [
+                "isView" : false,
+                "columns" : [
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "name": "role_id",
-                    "id": "role_id",
-                    "ordinalPosition": 1
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "role_id",
+                    "id" : "role_id",
+                    "ordinalPosition" : 1
                   },
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "name": "fleet_id",
-                    "id": "fleet_id",
-                    "ordinalPosition": 2
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "fleet_id",
+                    "id" : "fleet_id",
+                    "ordinalPosition" : 2
                   },
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "name": "number",
-                    "id": "number",
-                    "ordinalPosition": 3
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "number",
+                    "id" : "number",
+                    "ordinalPosition" : 3
                   }
                 ],
-                "name": "role_fleet",
-                "id": "role_fleet"
+                "name" : "role_fleet",
+                "id" : "role_fleet"
               },
               {
-                "foreignKeys": [
+                "foreignKeys" : [
                   {
-                    "foreignKeyColumns": [
+                    "foreignKeyColumns" : [
                       {
-                        "foreignDatabaseName": "fleetmanager",
-                        "foreignSchemaName": "eve_fleetmanager",
-                        "name": "role_id",
-                        "foreignColumnName": "id",
-                        "id": "role_id",
-                        "foreignTableName": "role",
-                        "ordinalPosition": 1
+                        "foreignDatabaseName" : "fleetmanager",
+                        "foreignSchemaName" : "eve_fleetmanager",
+                        "name" : "role_id",
+                        "foreignColumnName" : "id",
+                        "id" : "role_id",
+                        "foreignTableName" : "role",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "name": "fk_role_types_role",
-                    "id": "fk_role_types_role"
+                    "name" : "fk_role_types_role",
+                    "id" : "fk_role_types_role"
                   },
                   {
-                    "foreignKeyColumns": [
+                    "foreignKeyColumns" : [
                       {
-                        "foreignDatabaseName": "fleetmanager",
-                        "foreignSchemaName": "eve_fleetmanager",
-                        "name": "type_id",
-                        "foreignColumnName": "id",
-                        "id": "type_id",
-                        "foreignTableName": "types",
-                        "ordinalPosition": 1
+                        "foreignDatabaseName" : "fleetmanager",
+                        "foreignSchemaName" : "eve_fleetmanager",
+                        "name" : "type_id",
+                        "foreignColumnName" : "id",
+                        "id" : "type_id",
+                        "foreignTableName" : "types",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "name": "fk_role_types_types",
-                    "id": "fk_role_types_types"
+                    "name" : "fk_role_types_types",
+                    "id" : "fk_role_types_types"
                   }
                 ],
-                "primaryKeyColumns": [
+                "primaryKeyColumns" : [
                   {
-                    "name": "role_id",
-                    "id": "role_id",
-                    "ordinalPosition": 1
+                    "name" : "role_id",
+                    "id" : "role_id",
+                    "ordinalPosition" : 1
                   },
                   {
-                    "name": "type_id",
-                    "id": "type_id",
-                    "ordinalPosition": 2
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 2
                   }
                 ],
-                "indexes": [
+                "indexes" : [
                   {
-                    "unique": true,
-                    "name": "PRIMARY",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "role_id",
-                        "id": "role_id",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "role_id",
+                        "id" : "role_id",
+                        "ordinalPosition" : 1
                       },
                       {
-                        "orderType": "ASC",
-                        "name": "type_id",
-                        "id": "type_id",
-                        "ordinalPosition": 2
+                        "orderType" : "ASC",
+                        "name" : "type_id",
+                        "id" : "type_id",
+                        "ordinalPosition" : 2
                       }
                     ],
-                    "id": "PRIMARY"
+                    "id" : "PRIMARY"
                   },
                   {
-                    "unique": false,
-                    "name": "fk_role_types_types_idx",
-                    "indexColumns": [
+                    "unique" : false,
+                    "name" : "fk_role_types_types_idx",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "type_id",
-                        "id": "type_id",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "type_id",
+                        "id" : "type_id",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "id": "fk_role_types_types_idx"
+                    "id" : "fk_role_types_types_idx"
                   }
                 ],
-                "isView": false,
-                "columns": [
+                "isView" : false,
+                "columns" : [
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "name": "role_id",
-                    "id": "role_id",
-                    "ordinalPosition": 1
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "role_id",
+                    "id" : "role_id",
+                    "ordinalPosition" : 1
                   },
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "name": "type_id",
-                    "id": "type_id",
-                    "ordinalPosition": 2
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "name" : "type_id",
+                    "id" : "type_id",
+                    "ordinalPosition" : 2
                   }
                 ],
-                "name": "role_types",
-                "id": "role_types"
+                "name" : "role_types",
+                "id" : "role_types"
               },
               {
-                "primaryKeyColumns": [
+                "primaryKeyColumns" : [
                   {
-                    "name": "id",
-                    "id": "id",
-                    "ordinalPosition": 1
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
                   }
                 ],
-                "indexes": [
+                "indexes" : [
                   {
-                    "unique": true,
-                    "name": "name_UNIQUE",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "name_UNIQUE",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "name",
-                        "id": "name",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "name",
+                        "id" : "name",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "id": "name_UNIQUE"
+                    "id" : "name_UNIQUE"
                   },
                   {
-                    "unique": true,
-                    "name": "PRIMARY",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "id",
-                        "id": "id",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "id",
+                        "id" : "id",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "id": "PRIMARY"
+                    "id" : "PRIMARY"
                   }
                 ],
-                "isView": false,
-                "columns": [
+                "isView" : false,
+                "columns" : [
                   {
-                    "databaseType": "java.lang.Integer",
-                    "typeMapper": "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable": false,
-                    "autoIncrement": true,
-                    "name": "id",
-                    "id": "id",
-                    "ordinalPosition": 1
+                    "databaseType" : "java.lang.Integer",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "nullable" : false,
+                    "autoIncrement" : true,
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": false,
-                    "name": "name",
-                    "id": "name",
-                    "ordinalPosition": 2
+                    "databaseType" : "java.lang.String",
+                    "nullable" : false,
+                    "name" : "name",
+                    "id" : "name",
+                    "ordinalPosition" : 2
                   },
                   {
-                    "databaseType": "java.lang.String",
-                    "nullable": false,
-                    "name": "description",
-                    "id": "description",
-                    "ordinalPosition": 3
+                    "databaseType" : "java.lang.String",
+                    "nullable" : false,
+                    "name" : "description",
+                    "id" : "description",
+                    "ordinalPosition" : 3
                   }
                 ],
-                "name": "types",
-                "id": "types"
+                "name" : "types",
+                "id" : "types"
               }
             ],
-            "name": "eve_fleetmanager",
-            "id": "eve_fleetmanager",
-            "enabled": true
+            "name" : "eve_fleetmanager",
+            "id" : "eve_fleetmanager",
+            "enabled" : true
           }
         ],
-        "name": "fleetmanager",
-        "typeName": "MySQL",
-        "id": "fleetmanager",
-        "enabled": true,
-        "username": "eve"
+        "name" : "fleetmanager",
+        "typeName" : "MySQL",
+        "id" : "fleetmanager",
+        "enabled" : true,
+        "username" : "eve"
       }
     ]
   }

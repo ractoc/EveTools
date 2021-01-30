@@ -22,7 +22,7 @@ dbms:
   password: eve
 
 sso:
-  frontend-url: http://localhost:4200/login
+  frontend-url: http://localhost:4200/user/login
   client-url: http://localhost:8484/user/eveCallBack
   client-id: cf33fd256e884c81b634bf74ca21612a
   client-secret: SEmd2uiGUpW0Flvxaqe1XiTV6M6Ii8GvFd4dyyZy
