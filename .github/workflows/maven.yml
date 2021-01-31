@@ -18,7 +18,7 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: clean old deployment
       uses: appleboy/ssh-action@master
-      if: contains(github.ref, "develop")
+      if: contains(github.ref, 'develop')
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
