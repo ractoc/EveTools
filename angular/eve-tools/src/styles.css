@@ -6,7 +6,7 @@ html, body {
 
 body {
   margin: 0;
-  color: white;
+  /*color: white;*/
   font-family: Shentox, Rogan, sans-serif;
   background-image: url("/assets/images/bg_main.jpg");
   background-repeat: no-repeat;
