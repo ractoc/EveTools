@@ -1,19 +1,23 @@
 <section fxLayout="column" fxFlexAlign="stretch">
-  <div fxFlexAlign="center">
-    <h1 class="sub-header">Fleet Finder</h1>
+  <app-sub-header subTitle="Fleet Finder"></app-sub-header>
+  <div fxFlexAlign="center" class="content" fxLayoutGap="15px">
+    <p>Search for a fleet</p>
+    <mat-form-field appearance="fill" [formGroup]="fleetForm">
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate formControlName="start" />
+        <input matEndDate formControlName="end" />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker">
+        <mat-icon matDatepickerToggleIcon svgIcon="icon-calendar"></mat-icon>
+      </mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+    <mat-form-field appearance="fill" [formGroup]="fleetForm">
+      <mat-label>Fleet types</mat-label>
+      <mat-select FormControlName="types" multiple>
+        <mat-option *ngFor="let type of types" [value]="type">{{type.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
-  <div fxFlexAlign="center" class="content">
-    <p>Here you will be able to search for a fleet matching your criteria.</p>
-  </div>
-  <!--<mat-tab-group (selectedTabChange)="executeSelectedChange($event)">
-    <mat-tab label="Material Components">
-      <p>We are going to use different material components to create nice looking angular app.</p>
-    </mat-tab>
-    <mat-tab label="Consume .NET Core Web API">
-      <p>We will consume our .NET Core application. Basically, we will create complete CRUD client app.</p>
-    </mat-tab>
-    <mat-tab label="Fully responsive navigation menu">
-      <p>By using material components, we are going to create fully responsive navigation menu, with its side-bar as well.</p>
-    </mat-tab>
-  </mat-tab-group>-->
 </section>
