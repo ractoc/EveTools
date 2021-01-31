@@ -1,24 +1,27 @@
 a, button {
   text-decoration: none;
-  color: white;
   font-family: Shentox, Rogan, sans-serif;
   text-transform: uppercase;
   letter-spacing: .05em;
   font-weight: 600;
   font-size: 15px;
 }
-a.mat-menu-item {
-   color: black;
- }
+
+a:visited {
+  color: white;
+}
+
 a:hover, button:hover {
   color: rgb(127, 137, 145);
 }
-.navigation-items{
+
+.navigation-items {
   list-style-type: none;
   padding: 0;
   margin: 0;
 }
-mat-toolbar{
+
+mat-toolbar {
   border-radius: 3px;
   background-color: rgba(0, 0, 0, 0.4);
   height: 111px;
@@ -26,7 +29,6 @@ mat-toolbar{
 }
 
 .mat-button {
-  color: white;
   font-family: Shentox, Rogan, sans-serif;
   text-transform: uppercase;
   letter-spacing: .05em;
@@ -34,8 +36,8 @@ mat-toolbar{
   font-size: 15px;
 }
 
-@media(max-width: 959px){
-  mat-toolbar{
+@media (max-width: 959px) {
+  mat-toolbar {
     border-radius: 0px;
   }
 }
