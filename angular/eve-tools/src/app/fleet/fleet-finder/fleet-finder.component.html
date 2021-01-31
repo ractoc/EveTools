@@ -1,23 +1,27 @@
 <section fxLayout="column" fxFlexAlign="stretch">
   <app-sub-header subTitle="Fleet Finder"></app-sub-header>
-  <div fxFlexAlign="center" class="content" fxLayoutGap="15px">
+  <div fxFlexAlign="center" class="content" fxLayoutGap="15px" [formGroup]="fleetForm">
     <p>Search for a fleet</p>
-    <mat-form-field appearance="fill" [formGroup]="fleetForm">
+    <mat-form-field appearance="fill" >
       <mat-label>Enter a date range</mat-label>
       <mat-date-range-input [rangePicker]="picker">
-        <input matStartDate formControlName="start" />
-        <input matEndDate formControlName="end" />
+        <input matStartDate formControlName="start"/>
+        <input matEndDate formControlName="end"/>
       </mat-date-range-input>
       <mat-datepicker-toggle matSuffix [for]="picker">
         <mat-icon matDatepickerToggleIcon svgIcon="icon-calendar"></mat-icon>
       </mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
-    <mat-form-field appearance="fill" [formGroup]="fleetForm">
+    <mat-form-field appearance="fill">
       <mat-label>Fleet types</mat-label>
       <mat-select FormControlName="types" multiple>
         <mat-option *ngFor="let type of types" [value]="type">{{type.name}}</mat-option>
       </mat-select>
     </mat-form-field>
+    <mat-checkbox formControlName="invited" color="primary">Invited</mat-checkbox>
+    <mat-checkbox formControlName="registered" color="primary">Registered</mat-checkbox>
+    <mat-checkbox formControlName="owned" color="primary">Owned</mat-checkbox>
+    <mat-icon>search</mat-icon>
   </div>
 </section>

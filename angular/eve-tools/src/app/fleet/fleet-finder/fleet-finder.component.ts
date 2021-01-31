@@ -3,7 +3,7 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {TypeService} from "../../services/type.service";
 import {Type} from "../../services/model/type";
 import {UserService} from "../../services/user.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {LocalStorageService} from "../../../../../MineBuildSell/src/app/service/local-storage.service";
 
 @Component({
@@ -17,6 +17,9 @@ export class FleetFinderComponent implements OnInit {
     start: new FormControl(),
     end: new FormControl(),
     types: new FormControl(),
+    invited: new FormControl(),
+    registered: new FormControl(),
+    owned: new FormControl()
   });
 
   private types: Type[];

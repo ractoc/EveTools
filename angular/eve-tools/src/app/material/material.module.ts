@@ -12,6 +12,7 @@ import {MatIconModule, MatIconRegistry} from "@angular/material/icon";
 import {DomSanitizer} from "@angular/platform-browser";
 import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
   declarations: [],
@@ -27,6 +28,7 @@ import {MatSelectModule} from "@angular/material/select";
     MatNativeDateModule,
     MatSelectModule,
     MatOptionModule,
+    MatCheckboxModule,
     MatIconModule,
   ],
   exports: [
@@ -40,6 +42,7 @@ import {MatSelectModule} from "@angular/material/select";
     MatFormFieldModule,
     MatNativeDateModule,
     MatSelectModule,
+    MatCheckboxModule,
     MatIconModule,
   ]
 })
