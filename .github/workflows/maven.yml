@@ -17,6 +17,7 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     - name: clean old deployment
+      if: contains(github.ref, "develop")
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
@@ -25,6 +26,7 @@ jobs:
         port: ${{ secrets.PORT }}
         script: rm -rf /tmp/eve
     - name: upload new deployment
+      if: contains(github.ref, "develop")
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.HOST }}
@@ -34,6 +36,7 @@ jobs:
         source: "deployment/target/deployment*.zip"
         target: "/tmp/eve"
     - name: extract new deployment
+      if: contains(github.ref, "develop")
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
@@ -42,6 +45,7 @@ jobs:
         port: ${{ secrets.PORT }}
         script: unzip /tmp/eve/deployment/target/deployment*.zip -d /tmp/eve
     - name: install new deployment
+      if: contains(github.ref, "develop")
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
