@@ -26,8 +26,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesManager.IDENTIFIER;
-import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites.FLEET_ID;
-import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites.KEY;
+import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.Invites.*;
 
 @Service
 public class InviteService {
@@ -53,7 +52,14 @@ public class InviteService {
     }
 
     public Invites getInvite(String key) {
-        return invitesManager.stream().filter(KEY.equal(key)).findAny().orElseThrow(() -> new ServiceException("Invite not found for jey " + key));
+        return invitesManager.stream().filter(KEY.equal(key)).findAny().orElseThrow(() -> new ServiceException("Invite not found for key " + key));
+    }
+
+    public Optional<Invites> getInvite(Integer fleetId, Integer charId, Integer corpId) {
+        return invitesManager.stream()
+                .filter(FLEET_ID.equal(fleetId))
+                .filter(CHAR_ID.equal(charId).or(CORP_ID.equal(corpId)))
+                .findAny();
     }
 
     public Stream<Tuple2<Invites, Fleet>> getInvitesForCharacter(Integer characterId, Integer corpId) {
@@ -76,14 +82,14 @@ public class InviteService {
     }
 
     // needs to be synchronized to make sure there are never any duplicate invite keys.
-    public synchronized String invite(Integer fleetId, Integer id, String type, String name) {
+    public synchronized String invite(Integer fleetId, Integer charId, Integer corpId, String name) {
         String inviteKey = generateInviteKey();
         Invites invite = new InvitesImpl();
         invite.setFleetId(fleetId);
-        invite.setId(id);
-        invite.setType(type);
         invite.setName(name);
         invite.setKey(inviteKey);
+        invite.setCharId(charId);
+        invite.setCorpId(corpId);
         invitesManager.persist(invite);
         return inviteKey;
     }
@@ -100,8 +106,8 @@ public class InviteService {
                                String charName,
                                String fleetName,
                                Integer id,
-                               String type,
                                String name,
+                               RecipientTypeEnum type,
                                String inviteKey,
                                String additionalInfo,
                                String accessToken) throws ApiException {
@@ -109,7 +115,7 @@ public class InviteService {
                 fleetName,
                 id,
                 name,
-                RecipientTypeEnum.fromValue(type.toLowerCase(Locale.ROOT)),
+                type,
                 additionalInfo,
                 inviteKey);
         mailApi.postCharactersCharacterIdMail(charId, mail, null, accessToken);

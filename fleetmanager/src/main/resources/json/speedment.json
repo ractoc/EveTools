@@ -2,7 +2,7 @@
   "config" : {
     "speedmentVersion" : "Speedment:3.2.10",
     "companyName" : "ractoc.com",
-    "appId" : "4840aa5d-27c2-41a0-9325-03d9d2dfee26",
+    "appId" : "0e1e52e4-0238-46c1-98a3-b72a4493a1db",
     "name" : "fleetmanager",
     "packageLocation" : "target/generated-sources/java",
     "packageName" : "com.ractoc.eve.fleetmanager.db",
@@ -169,23 +169,30 @@
                   {
                     "databaseType" : "java.lang.String",
                     "nullable" : false,
-                    "name" : "type",
-                    "id" : "type",
-                    "ordinalPosition" : 3
-                  },
-                  {
-                    "databaseType" : "java.lang.String",
-                    "nullable" : false,
                     "name" : "name",
                     "id" : "name",
-                    "ordinalPosition" : 4
+                    "ordinalPosition" : 3
                   },
                   {
                     "databaseType" : "java.lang.String",
                     "nullable" : false,
                     "name" : "key",
                     "id" : "key",
+                    "ordinalPosition" : 4
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "nullable" : true,
+                    "name" : "corp_id",
+                    "id" : "corp_id",
                     "ordinalPosition" : 5
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "nullable" : true,
+                    "name" : "char_id",
+                    "id" : "char_id",
+                    "ordinalPosition" : 6
                   }
                 ],
                 "name" : "invites",

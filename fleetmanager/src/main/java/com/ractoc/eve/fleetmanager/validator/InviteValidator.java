@@ -34,13 +34,12 @@ public class InviteValidator {
             if (invite.getFleet() != null && invite.getFleet().getOwner().equals(charId)) {
                 return true;
             }
-            if (invite.getType().equals(InviteModel.TYPE_CHARACTER)) {
-                return invite.getId().equals(charId);
-            } else if (invite.getType().equals(InviteModel.TYPE_CORPORATION)) {
+            if (invite.getCharId() != null) {
+                return invite.getCharId().equals(charId);
+            } else {
                 Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
-                return invite.getId().equals(corpId);
+                return invite.getCorpId().equals(corpId);
             }
-            return true;
         } catch (ApiException e) {
             throw new HandlerException("Unable to fetch data from EVE ESI", e);
         }

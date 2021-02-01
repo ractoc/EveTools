@@ -19,18 +19,20 @@ export class FleetService {
 
   fleets: Fleet[];
 
-  getFleets(owned: boolean, active: boolean): Observable<Fleet[]> {
+  find(searchParameters: any): Observable<Fleet[]> {
+    console.log('searching')
     const httpOptions = {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + this.userService.getEveState()
       })
     };
-    return this.http.get<any>(FLEETS_URI + '/?owned=' + owned + '&active=' + active, httpOptions)
+    return this.http.post<any>(FLEETS_URI + '/search', searchParameters, httpOptions)
       .pipe(
         map(result => {
           if (result.responseCode >= 400) {
             throw new Error('broken API:' + result.responseCode);
           } else {
+            console.log('finding')
             this.fleets = result.fleetList;
             return result.fleetList;
           }
