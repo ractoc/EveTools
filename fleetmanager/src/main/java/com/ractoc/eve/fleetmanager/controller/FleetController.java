@@ -48,9 +48,9 @@ public class FleetController extends BaseController {
             @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = FleetListResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> searchFleets(@AuthenticationPrincipal Authentication authentication,
-                                                     FleetSearchParams params) {
+    @PostMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> searchFleets(@Valid @RequestBody FleetSearchParams params,
+                                                     @AuthenticationPrincipal Authentication authentication) {
         try {
             return new ResponseEntity<>(
                     new FleetListResponse(OK,

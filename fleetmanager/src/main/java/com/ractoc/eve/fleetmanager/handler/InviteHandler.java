@@ -14,6 +14,7 @@ import com.ractoc.eve.fleetmanager.validator.InviteValidator;
 import com.ractoc.eve.fleetmanager.validator.RegistrationValidator;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.CharacterApi;
+import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient.RecipientTypeEnum;
 import com.speedment.common.tuple.Tuple2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +57,16 @@ public class InviteHandler {
             String charName = getCharName(charId);
             String fleetName = getFleetName(invite.getFleetId(), charId);
             Fleet fleet = fleetService.getFleet(invite.getFleetId()).orElseThrow(() -> new NoSuchEntryException("No fleet found linked to invitation."));
-            String inviteKey = inviteService.invite(invite.getFleetId(), invite.getId(), invite.getType(), invite.getName());
-            inviteService.sendInviteMail(charId, charName, fleetName, invite.getId(), invite.getType(), invite.getName(), inviteKey, fleet.getDescription().orElse(""), accessToken);
+            String inviteKey = inviteService.invite(invite.getFleetId(), invite.getCharId(), invite.getCorpId(), invite.getName());
+            inviteService.sendInviteMail(charId,
+                    charName,
+                    fleetName,
+                    invite.getCharId() != null ? invite.getCharId() : invite.getCorpId(),
+                    invite.getName(),
+                    invite.getCharId() != null ? RecipientTypeEnum.CHARACTER : RecipientTypeEnum.CORPORATION,
+                    inviteKey,
+                    fleet.getDescription().orElse(""),
+                    accessToken);
             return inviteKey;
         } catch (ApiException e) {
             throw new HandlerException("unable to send create invitation", e);
@@ -88,11 +97,10 @@ public class InviteHandler {
 
     private boolean filterRegistrations(Tuple2<Invites, Fleet> inviteFleet, Integer charId) {
         // in case of a corporation invite we need to check the registration
-        if (((Invites) inviteFleet.get(0)).getType().equals(InviteModel.TYPE_CORPORATION)) {
+        if (((Invites) inviteFleet.get(0)).getCorpId().isPresent()) {
             return !registrationValidator.hasRegistration(((Fleet) inviteFleet.get(1)).getId(), charId);
-        } else {
-            return true;
         }
+        return true;
     }
 
     public List<InviteModel> getInvitesForFleet(Integer fleetId, int charId) {

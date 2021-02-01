@@ -14,6 +14,8 @@ import com.ractoc.eve.fleetmanager.service.InviteService;
 import com.ractoc.eve.fleetmanager.service.NoSuchEntryException;
 import com.ractoc.eve.fleetmanager.service.RegistrationService;
 import com.ractoc.eve.fleetmanager.validator.FleetValidator;
+import com.ractoc.eve.jesi.ApiException;
+import com.ractoc.eve.jesi.api.CharacterApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -22,7 +24,6 @@ import java.util.List;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Validated
@@ -32,34 +33,28 @@ public class FleetHandler {
     private final FleetValidator fleetValidator;
     private final InviteService inviteService;
     private final RegistrationService registrationService;
+    private final CharacterApi characterApi;
 
     @Autowired
     public FleetHandler(FleetService fleetService,
                         FleetValidator fleetValidator,
                         InviteService inviteService,
-                        RegistrationService registrationService) {
+                        RegistrationService registrationService,
+                        CharacterApi characterApi) {
         this.fleetService = fleetService;
         this.fleetValidator = fleetValidator;
         this.inviteService = inviteService;
         this.registrationService = registrationService;
+        this.characterApi = characterApi;
     }
 
     public List<FleetModel> searchFleets(FleetSearchParams params, int charId) {
-        Stream<Fleet> results;
-        if (params.isOwned()) {
-            if (params.isActive()) {
-                results = fleetService.getActiveOwnedFleets(charId);
-            } else {
-                results = fleetService.getOwnedFleets(charId);
-            }
-        } else {
-            if (params.isActive()) {
-                results = fleetService.getActiveFleets();
-            } else {
-                results = fleetService.getAllFleets();
-            }
+        try {
+            Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+            return fleetService.searchFleets(params, charId, corpId).map(FleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+        } catch (ApiException e) {
+            throw new HandlerException("Unable to fetch data from EVE ESI", e);
         }
-        return results.map(FleetMapper.INSTANCE::dbToModel).collect(Collectors.toList());
     }
 
     public FleetModel getFleet(Integer id, Integer charId) {

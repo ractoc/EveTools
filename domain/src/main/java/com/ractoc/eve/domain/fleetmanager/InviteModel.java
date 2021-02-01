@@ -11,14 +11,11 @@ import lombok.ToString;
 @ApiModel(value = "Invite Model", description = "Contains the Fleet Invitation model information")
 public class InviteModel {
 
-    public static final String TYPE_CHARACTER = "character";
-    public static final String TYPE_CORPORATION = "corporation";
-
     private Integer fleetId;
-    private Integer id;
     private String key;
-    private String type;
     private String name;
+    private Integer charId;
+    private Integer corpId;
     private String additionalInfo;
 
     private FleetModel fleet;
