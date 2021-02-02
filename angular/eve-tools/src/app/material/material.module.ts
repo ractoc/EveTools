@@ -13,6 +13,9 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {NgxMatDatetimePickerModule, NgxMatNativeDateModule} from '@angular-material-components/datetime-picker';
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 @NgModule({
   declarations: [],
@@ -30,6 +33,10 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     MatOptionModule,
     MatCheckboxModule,
     MatIconModule,
+    MatProgressSpinnerModule,
+    MatSlideToggleModule,
+    NgxMatDatetimePickerModule,
+    NgxMatNativeDateModule,
   ],
   exports: [
     MatListModule,
@@ -44,6 +51,10 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     MatSelectModule,
     MatCheckboxModule,
     MatIconModule,
+    MatProgressSpinnerModule,
+    MatSlideToggleModule,
+    NgxMatDatetimePickerModule,
+    NgxMatNativeDateModule,
   ]
 })
 export class MaterialModule {

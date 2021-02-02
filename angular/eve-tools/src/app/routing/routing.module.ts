@@ -12,11 +12,10 @@ const routes: Routes = [
   {path: 'user/login', redirectTo: 'user/login/', pathMatch: 'full'},
   {path: 'user/login/:eveState', component: UserLoginComponent},
   {path: 'fleet', redirectTo: 'fleet/find', pathMatch: 'full'},
+  {path: 'fleet/new', component: FleetDetailsComponent},
   {path: 'fleet/find', component: FleetFinderComponent},
-  {path: 'fleet/details', component: FleetDetailsComponent},
-
+  {path: 'fleet/details/:id', component: FleetDetailsComponent},
   {path: '', redirectTo: '/home', pathMatch: 'full'}
-
 ];
 
 @NgModule({

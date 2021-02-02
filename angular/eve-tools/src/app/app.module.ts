@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 
 import {RoutingModule} from './routing/routing.module';
 import {AppComponent} from './app.component';
@@ -28,7 +28,7 @@ import { SubHeaderComponent } from './sub-header/sub-header.component';
     FleetDetailsComponent,
     FleetFinderComponent,
     UserLoginComponent,
-    SubHeaderComponent
+    SubHeaderComponent,
   ],
   imports: [
     BrowserModule,
