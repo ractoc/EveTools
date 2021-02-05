@@ -32,6 +32,31 @@
       <section appearance="fill" class="full-width">
         <mat-slide-toggle formControlName="restricted" color="primary">Restricted</mat-slide-toggle>
       </section>
+
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Roles
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Invitations
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Registrations
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+        </mat-expansion-panel>
+      </mat-accordion>
+
       <div class="buttons">
         <button mat-stroked-button (click)="cancel()" *ngIf="editing && update">
           <mat-icon aria-label="cancel">clear</mat-icon>
