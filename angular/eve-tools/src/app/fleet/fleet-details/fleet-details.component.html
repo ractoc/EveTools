@@ -6,7 +6,7 @@
         <mat-label>Name
           <mat-icon matSuffix>priority_high</mat-icon>
         </mat-label>
-        <input matInput formControlName="name" color="primary"/>
+        <input matInput formControlName="name"/>
       </mat-form-field>
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Description</mat-label>
@@ -25,7 +25,7 @@
       </mat-form-field>
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Fleet type</mat-label>
-        <mat-select formControlName="type">
+        <mat-select [compareWith]="compareType" formControlName="type">
           <mat-option *ngFor="let type of types" [value]="type">{{type.name}}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -33,8 +33,14 @@
         <mat-slide-toggle formControlName="restricted" color="primary">Restricted</mat-slide-toggle>
       </section>
       <div class="buttons">
-        <button mat-stroked-button (click)="createFleet()">
-          <mat-icon>check</mat-icon>
+        <button mat-stroked-button (click)="cancel()" *ngIf="editing && update">
+          <mat-icon aria-label="cancel">clear</mat-icon>
+        </button>
+        <button mat-stroked-button (click)="saveFleet()" *ngIf="editing">
+          <mat-icon aria-label="save">check</mat-icon>
+        </button>
+        <button (click)="editFleet()" *ngIf="!editing && owner" mat-stroked-button>
+          <mat-icon aria-label="edit">create</mat-icon>
         </button>
       </div>
     </form>

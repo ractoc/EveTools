@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 import {Fleet} from "../../services/model/fleet";
 import {FleetService} from "../../services/fleet.service";
@@ -21,14 +21,11 @@ export class FleetDetailsComponent implements OnInit {
   private routeListener$: Subscription;
 
   subTitle: String;
-  fleetForm = new FormGroup({
-    name: new FormControl(),
-    description: new FormControl(),
-    type: new FormControl(),
-    start: new FormControl(),
-    restricted: new FormControl(false),
-  });
+  fleetForm: FormGroup;
   types: Type[];
+  editing: boolean;
+  update: boolean;
+  owner: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,7 +43,6 @@ export class FleetDetailsComponent implements OnInit {
       this.router.navigateByUrl('/user/login');
     }
     this.subTitle = 'New Fleet';
-    this.initFleetForm(undefined);
     this.routeListener$ = this.route.params
       .subscribe((params: any) => {
           if (params.id) {
@@ -74,12 +70,37 @@ export class FleetDetailsComponent implements OnInit {
   private initFleetForm(fleet: Fleet) {
     if (fleet) {
       this.fleetForm = new FormGroup({
-        name: new FormControl(fleet.name),
-        description: new FormControl(fleet.description),
-        type: new FormControl(fleet.type),
-        start: new FormControl(DateUtil.parseDate(fleet.start)),
+        id: new FormControl(fleet.id),
+        owner: new FormControl(fleet.owner),
+        name: new FormControl(fleet.name, [
+          Validators.required,
+          Validators.minLength(4),
+          Validators.maxLength(45)]),
+        description: new FormControl(fleet.description, [
+          Validators.required,
+          Validators.minLength(4),
+          Validators.maxLength(1000)]),
+        type: new FormControl(fleet.type, [
+          Validators.required]),
+        start: new FormControl(DateUtil.parseDate(fleet.start), [
+          Validators.required]),
         restricted: new FormControl(fleet.restricted)
       });
+      this.update = true;
+      this.owner = this.userService.getCurrentUser().characterId === fleet.owner;
+      this.cancel();
+    } else {
+      this.fleetForm = new FormGroup({
+        id: new FormControl(),
+        owner: new FormControl(),
+        name: new FormControl(),
+        description: new FormControl(),
+        type: new FormControl(),
+        start: new FormControl(),
+        restricted: new FormControl(false),
+      });
+      this.update = false;
+      this.editFleet();
     }
   }
 
@@ -97,6 +118,8 @@ export class FleetDetailsComponent implements OnInit {
     startDateTime.setSeconds(0);
     this.fleetForm.setValue(
       {
+        id: this.fleetForm.value.id,
+        owner: this.fleetForm.value.owner,
         name: this.fleetForm.value.name,
         description: this.fleetForm.value.description,
         type: this.fleetForm.value.type,
@@ -106,13 +129,12 @@ export class FleetDetailsComponent implements OnInit {
     );
   }
 
-  createFleet() {
-    console.log('fleet', this.fleetForm.value);
+  saveFleet() {
     let startDate: Date = this.fleetForm.value.start;
     let fleet: Fleet = {
-      id: undefined,
+      id: this.fleetForm.value.id,
       locationId: undefined,
-      owner: undefined,
+      owner: this.fleetForm.value.owner,
       typeId: undefined,
       duration: undefined,
       roles: undefined,
@@ -127,39 +149,42 @@ export class FleetDetailsComponent implements OnInit {
     this.fleetService.saveFleet(fleet).subscribe(
       (fleetData: Fleet) => {
         if (fleetData) {
-          this.initFleetForm(fleetData);
+          this.fleetForm.controls.id.setValue(fleetData.id);
+          this.fleetForm.controls.owner.setValue(fleetData.owner);
+          this.owner = this.userService.getCurrentUser().characterId === fleet.owner;
+          this.update = true;
+          this.editing = true;
         }
       },
       err => {
       });
   }
-  //
-  // parseDate(start: string): Date {
-  //   let startJson = JSON.parse(start);
-  //   let dateString =
-  //     startJson.date.year + '-' + startJson.date.month + '-' + startJson.date.day +
-  //     'T'
-  //     + startJson.time.hour + ':' + startJson.time.minute + ':' + startJson.time.second
-  //   console.log('dateString', dateString);
-  //   let startDate: Date = new Date(Date.UTC(startJson.date.year, startJson.date.month - 1, startJson.date.day, startJson.time.hour, startJson.time.minute, startJson.time.second));
-  //   console.log('startDate', startDate);
-  //   return startDate;
-  // }
-  //
-  // formatDate(start: Date): string {
-  //   return "{\"date\":{\"year\":" +
-  //     start.getFullYear() +
-  //     ",\"month\":" +
-  //     (start.getMonth() + 1) +
-  //     ",\"day\":" +
-  //     start.getDate() +
-  //     "},\"time\":{\"hour\":" +
-  //     start.getUTCHours() +
-  //     ",\"minute\":" +
-  //     start.getMinutes() +
-  //     ",\"second\":" +
-  //     start.getSeconds() +
-  //     "}}";
-  // }
 
+  updateFleet() {
+
+  }
+
+  editFleet() {
+    this.fleetForm.controls.name.enable();
+    this.fleetForm.controls.description.enable();
+    this.fleetForm.controls.type.enable();
+    this.fleetForm.controls.start.enable();
+    this.fleetForm.controls.restricted.enable();
+    this.editing = true;
+  }
+
+  cancel() {
+    if (this.update) {
+      this.fleetForm.controls.name.disable();
+      this.fleetForm.controls.description.disable();
+      this.fleetForm.controls.type.disable();
+      this.fleetForm.controls.start.disable();
+      this.fleetForm.controls.restricted.disable();
+      this.editing = false;
+    }
+  }
+
+  compareType(t1: any, t2: any) {
+    return t1.id === t2.id;
+  }
 }
