@@ -21,7 +21,24 @@ export class FleetDetailsComponent implements OnInit {
   private routeListener$: Subscription;
 
   subTitle: String;
-  fleetForm: FormGroup;
+  fleetForm = new FormGroup({
+    id: new FormControl(),
+    owner: new FormControl(),
+    name: new FormControl('', [
+      Validators.required,
+      Validators.minLength(4),
+      Validators.maxLength(45)]),
+    description: new FormControl('', [
+      Validators.required,
+      Validators.minLength(4),
+      Validators.maxLength(1000)]),
+    type: new FormControl('', [
+      Validators.required]),
+    start: new FormControl('', [
+      Validators.required]),
+    restricted: new FormControl()
+  });
+  private fleet: Fleet;
   types: Type[];
   editing: boolean;
   update: boolean;
@@ -59,6 +76,7 @@ export class FleetDetailsComponent implements OnInit {
     this.fleetService.getFleet(fleetId).subscribe(
       (fleetData: Fleet) => {
         if (fleetData) {
+          this.fleet = fleetData;
           this.initFleetForm(fleetData);
         }
       },
@@ -69,26 +87,22 @@ export class FleetDetailsComponent implements OnInit {
 
   private initFleetForm(fleet: Fleet) {
     if (fleet) {
-      this.fleetForm = new FormGroup({
-        id: new FormControl(fleet.id),
-        owner: new FormControl(fleet.owner),
-        name: new FormControl(fleet.name, [
-          Validators.required,
-          Validators.minLength(4),
-          Validators.maxLength(45)]),
-        description: new FormControl(fleet.description, [
-          Validators.required,
-          Validators.minLength(4),
-          Validators.maxLength(1000)]),
-        type: new FormControl(fleet.type, [
-          Validators.required]),
-        start: new FormControl(DateUtil.parseDate(fleet.start), [
-          Validators.required]),
-        restricted: new FormControl(fleet.restricted)
-      });
-      this.update = true;
+      this.fleetForm.controls.id.setValue(fleet.id);
+      this.fleetForm.controls.owner.setValue(fleet.owner);
+      this.fleetForm.controls.name.setValue(fleet.name);
+      this.fleetForm.controls.name.disable();
+      this.fleetForm.controls.description.setValue(fleet.id);
+      this.fleetForm.controls.description.disable();
+      this.fleetForm.controls.type.setValue(fleet.type);
+      this.fleetForm.controls.type.disable();
+      this.fleetForm.controls.start.setValue(DateUtil.parseDate(fleet.start));
+      this.fleetForm.controls.start.disable();
+      this.fleetForm.controls.restricted.setValue(fleet.restricted);
+      this.fleetForm.controls.restricted.disable();
+
       this.owner = this.userService.getCurrentUser().characterId === fleet.owner;
-      this.cancel();
+      this.update = true;
+      this.editing = false;
     } else {
       this.fleetForm = new FormGroup({
         id: new FormControl(),
@@ -175,12 +189,7 @@ export class FleetDetailsComponent implements OnInit {
 
   cancel() {
     if (this.update) {
-      this.fleetForm.controls.name.disable();
-      this.fleetForm.controls.description.disable();
-      this.fleetForm.controls.type.disable();
-      this.fleetForm.controls.start.disable();
-      this.fleetForm.controls.restricted.disable();
-      this.editing = false;
+      this.initFleetForm(this.fleet);
     }
   }
 
