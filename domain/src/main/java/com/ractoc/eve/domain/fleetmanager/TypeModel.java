@@ -16,6 +16,4 @@ public class TypeModel {
     private Integer id;
     private String name;
     private String description;
-
-    private List<RoleModel> roles;
 }

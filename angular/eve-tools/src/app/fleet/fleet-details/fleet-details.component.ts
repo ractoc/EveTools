@@ -10,6 +10,8 @@ import {UserService} from "../../services/user.service";
 import {LocalStorageService} from "../../services/local-storage.service";
 import {Subscription} from "rxjs";
 import {DateUtil} from "../../services/date-util";
+import {Role} from "../../services/model/role";
+import {RoleService} from "../../services/role.service";
 
 @Component({
   selector: 'app-fleet-details',
@@ -21,28 +23,31 @@ export class FleetDetailsComponent implements OnInit {
   private routeListener$: Subscription;
 
   subTitle: String;
+  fleet: Fleet;
+  types: Type[];
+  roles: Role[];
+  fleetRoles: Role[];
+  editing: boolean;
+  owner: boolean;
+
   fleetForm = new FormGroup({
     id: new FormControl(),
     owner: new FormControl(),
-    name: new FormControl('', [
+    name: new FormControl(null, [
       Validators.required,
       Validators.minLength(4),
       Validators.maxLength(45)]),
-    description: new FormControl('', [
+    description: new FormControl(null, [
       Validators.required,
       Validators.minLength(4),
       Validators.maxLength(1000)]),
-    type: new FormControl('', [
+    type: new FormControl(null, [
       Validators.required]),
-    start: new FormControl('', [
+    roles: new FormControl(null),
+    start: new FormControl(null, [
       Validators.required]),
     restricted: new FormControl()
   });
-  private fleet: Fleet;
-  types: Type[];
-  editing: boolean;
-  update: boolean;
-  owner: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -50,7 +55,8 @@ export class FleetDetailsComponent implements OnInit {
     private userService: UserService,
     private localStorageService: LocalStorageService,
     private fleetService: FleetService,
-    private typeService: TypeService
+    private typeService: TypeService,
+    private roleService: RoleService
   ) {
   }
 
@@ -101,19 +107,8 @@ export class FleetDetailsComponent implements OnInit {
       this.fleetForm.controls.restricted.disable();
 
       this.owner = this.userService.getCurrentUser().characterId === fleet.owner;
-      this.update = true;
       this.editing = false;
     } else {
-      this.fleetForm = new FormGroup({
-        id: new FormControl(),
-        owner: new FormControl(),
-        name: new FormControl(),
-        description: new FormControl(),
-        type: new FormControl(),
-        start: new FormControl(),
-        restricted: new FormControl(false),
-      });
-      this.update = false;
       this.editFleet();
     }
   }
@@ -121,8 +116,15 @@ export class FleetDetailsComponent implements OnInit {
   private loadTypes() {
     this.typeService.loadTypes().subscribe(
       (typeData: Type[]) => {
-        console.log('setting types', typeData);
         this.types = typeData;
+      }
+    );
+  }
+
+  loadRoles() {
+    this.roleService.loadRoles(this.fleetForm.controls.type.value.id).subscribe(
+      (roleData: Role[]) => {
+        this.roles = roleData;
       }
     );
   }
@@ -137,6 +139,7 @@ export class FleetDetailsComponent implements OnInit {
         name: this.fleetForm.value.name,
         description: this.fleetForm.value.description,
         type: this.fleetForm.value.type,
+        roles: this.fleetForm.value.roles,
         start: startDateTime,
         restricted: this.fleetForm.value.restricted
       }
@@ -149,33 +152,25 @@ export class FleetDetailsComponent implements OnInit {
       id: this.fleetForm.value.id,
       locationId: undefined,
       owner: this.fleetForm.value.owner,
-      typeId: undefined,
       duration: undefined,
-      roles: undefined,
-      invitations: undefined,
       name: this.fleetForm.value.name,
       description: this.fleetForm.value.description,
-      type: this.fleetForm.value.type,
-      start: DateUtil.formatDate(startDate),
+      type: this.fleetForm.value.type,      start: DateUtil.formatDate(startDate),
       restricted: this.fleetForm.value.restricted
     };
     console.log('fleet', fleet);
     this.fleetService.saveFleet(fleet).subscribe(
       (fleetData: Fleet) => {
         if (fleetData) {
+          this.fleet = fleetData;
           this.fleetForm.controls.id.setValue(fleetData.id);
           this.fleetForm.controls.owner.setValue(fleetData.owner);
           this.owner = this.userService.getCurrentUser().characterId === fleet.owner;
-          this.update = true;
           this.editing = true;
         }
       },
       err => {
       });
-  }
-
-  updateFleet() {
-
   }
 
   editFleet() {
@@ -188,12 +183,22 @@ export class FleetDetailsComponent implements OnInit {
   }
 
   cancel() {
-    if (this.update) {
+    if (this.fleet) {
       this.initFleetForm(this.fleet);
     }
   }
 
-  compareType(t1: any, t2: any) {
+  compareById(t1: any, t2: any) {
     return t1.id === t2.id;
+  }
+
+  getTypeRoles() {
+    return this.fleetForm.controls.type.value.roles;
+  }
+
+  handleRoleEvent(checked: boolean, role: Role) {
+    if (checked) {
+      this.fleetRoles.push(role);
+    }
   }
 }

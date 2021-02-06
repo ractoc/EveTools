@@ -7,8 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.List;
-
 @Getter
 @Setter
 @ToString
@@ -28,8 +26,6 @@ public class FleetModel {
     private boolean restricted = false;
 
     @NonNull
-    private Integer typeId;
     private TypeModel type;
-    private List<RoleModel> roles;
 
 }

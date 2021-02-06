@@ -94,32 +94,4 @@ public class FleetService {
             throw new ServiceException("Unable to delete fleet " + fleet.getId(), e);
         }
     }
-
-    public Stream<RoleFleet> getFleetRoles(Integer fleetId) {
-        return roleFleetManager.stream().filter(RoleFleet.FLEET_ID.equal(fleetId));
-    }
-
-    public void saveRole(RoleFleet roleFleet) {
-        try {
-            roleFleetManager.persist(roleFleet);
-        } catch (SpeedmentException e) {
-            throw new ServiceException("Unable to save roleFleet" + roleFleet.getRoleId() + "-" + roleFleet.getFleetId(), e);
-        }
-    }
-
-    public void updateRole(RoleFleet roleFleet) {
-        try {
-            roleFleetManager.update(roleFleet);
-        } catch (SpeedmentException e) {
-            throw new ServiceException("Unable to update roleFleet" + roleFleet.getRoleId() + "-" + roleFleet.getFleetId(), e);
-        }
-    }
-
-    public void deleteRole(RoleFleet roleFleet) {
-        try {
-            roleFleetManager.remove(roleFleet);
-        } catch (SpeedmentException e) {
-            throw new ServiceException("Unable to delete roleFleet" + roleFleet.getRoleId() + "-" + roleFleet.getFleetId(), e);
-        }
-    }
 }

@@ -1,31 +1,28 @@
 package com.ractoc.eve.fleetmanager.service;
 
-import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.types.Types;
-import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.types.TypesManager;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.type.Type;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.type.TypeManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.types.generated.GeneratedTypes.ID;
-import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.types.generated.GeneratedTypes.NAME;
-
 @Service
 public class TypeService {
 
-    private final TypesManager typesManager;
+    private final TypeManager typeManager;
 
     @Autowired
-    public TypeService(TypesManager typesManager) {
-        this.typesManager = typesManager;
+    public TypeService(TypeManager typeManager) {
+        this.typeManager = typeManager;
     }
 
-    public Stream<Types> getTypes() {
-        return typesManager.stream().sorted(NAME);
+    public Stream<Type> getTypes() {
+        return typeManager.stream().sorted(Type.NAME);
     }
 
-    public Optional<Types> getTypesById(Integer typeId) {
-        return typesManager.stream().filter(ID.equal(typeId)).findFirst();
+    public Optional<Type> getTypesById(Integer typeId) {
+        return typeManager.stream().filter(Type.ID.equal(typeId)).findFirst();
     }
 }

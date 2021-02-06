@@ -2,7 +2,7 @@
   "config" : {
     "speedmentVersion" : "Speedment:3.2.10",
     "companyName" : "ractoc.com",
-    "appId" : "0e1e52e4-0238-46c1-98a3-b72a4493a1db",
+    "appId" : "c95cd213-c6de-453e-acdf-39f2a1a57cf7",
     "name" : "fleetmanager",
     "packageLocation" : "target/generated-sources/java",
     "packageName" : "com.ractoc.eve.fleetmanager.db",
@@ -169,34 +169,48 @@
                   {
                     "databaseType" : "java.lang.String",
                     "nullable" : false,
+                    "name" : "type",
+                    "id" : "type",
+                    "ordinalPosition" : 3
+                  },
+                  {
+                    "databaseType" : "java.lang.String",
+                    "nullable" : false,
                     "name" : "name",
                     "id" : "name",
-                    "ordinalPosition" : 3
+                    "ordinalPosition" : 4
                   },
                   {
                     "databaseType" : "java.lang.String",
                     "nullable" : false,
                     "name" : "key",
                     "id" : "key",
-                    "ordinalPosition" : 4
+                    "ordinalPosition" : 5
                   },
                   {
-                    "databaseType" : "java.lang.Integer",
+                    "databaseType" : "java.lang.String",
                     "nullable" : true,
-                    "name" : "corp_id",
-                    "id" : "corp_id",
-                    "ordinalPosition" : 5
+                    "name" : "additional_info",
+                    "id" : "additional_info",
+                    "ordinalPosition" : 6
                   },
                   {
                     "databaseType" : "java.lang.Integer",
                     "nullable" : true,
                     "name" : "char_id",
                     "id" : "char_id",
-                    "ordinalPosition" : 6
+                    "ordinalPosition" : 7
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "nullable" : true,
+                    "name" : "corp_id",
+                    "id" : "corp_id",
+                    "ordinalPosition" : 8
                   }
                 ],
-                "name" : "invites",
-                "id" : "invites"
+                "name" : "invite",
+                "id" : "invite"
               },
               {
                 "primaryKeyColumns" : [
@@ -372,14 +386,14 @@
               {
                 "primaryKeyColumns" : [
                   {
-                    "name" : "fleet_id",
-                    "id" : "fleet_id",
-                    "ordinalPosition" : 2
-                  },
-                  {
                     "name" : "role_id",
                     "id" : "role_id",
                     "ordinalPosition" : 1
+                  },
+                  {
+                    "name" : "fleet_id",
+                    "id" : "fleet_id",
+                    "ordinalPosition" : 2
                   }
                 ],
                 "indexes" : [
@@ -432,107 +446,6 @@
                 ],
                 "name" : "role_fleet",
                 "id" : "role_fleet"
-              },
-              {
-                "foreignKeys" : [
-                  {
-                    "foreignKeyColumns" : [
-                      {
-                        "foreignDatabaseName" : "fleetmanager",
-                        "foreignSchemaName" : "eve_fleetmanager",
-                        "name" : "role_id",
-                        "foreignColumnName" : "id",
-                        "id" : "role_id",
-                        "foreignTableName" : "role",
-                        "ordinalPosition" : 1
-                      }
-                    ],
-                    "name" : "fk_role_types_role",
-                    "id" : "fk_role_types_role"
-                  },
-                  {
-                    "foreignKeyColumns" : [
-                      {
-                        "foreignDatabaseName" : "fleetmanager",
-                        "foreignSchemaName" : "eve_fleetmanager",
-                        "name" : "type_id",
-                        "foreignColumnName" : "id",
-                        "id" : "type_id",
-                        "foreignTableName" : "types",
-                        "ordinalPosition" : 1
-                      }
-                    ],
-                    "name" : "fk_role_types_types",
-                    "id" : "fk_role_types_types"
-                  }
-                ],
-                "primaryKeyColumns" : [
-                  {
-                    "name" : "role_id",
-                    "id" : "role_id",
-                    "ordinalPosition" : 1
-                  },
-                  {
-                    "name" : "type_id",
-                    "id" : "type_id",
-                    "ordinalPosition" : 2
-                  }
-                ],
-                "indexes" : [
-                  {
-                    "unique" : true,
-                    "name" : "PRIMARY",
-                    "indexColumns" : [
-                      {
-                        "orderType" : "ASC",
-                        "name" : "role_id",
-                        "id" : "role_id",
-                        "ordinalPosition" : 1
-                      },
-                      {
-                        "orderType" : "ASC",
-                        "name" : "type_id",
-                        "id" : "type_id",
-                        "ordinalPosition" : 2
-                      }
-                    ],
-                    "id" : "PRIMARY"
-                  },
-                  {
-                    "unique" : false,
-                    "name" : "fk_role_types_types_idx",
-                    "indexColumns" : [
-                      {
-                        "orderType" : "ASC",
-                        "name" : "type_id",
-                        "id" : "type_id",
-                        "ordinalPosition" : 1
-                      }
-                    ],
-                    "id" : "fk_role_types_types_idx"
-                  }
-                ],
-                "isView" : false,
-                "columns" : [
-                  {
-                    "databaseType" : "java.lang.Integer",
-                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable" : false,
-                    "name" : "role_id",
-                    "id" : "role_id",
-                    "ordinalPosition" : 1
-                  },
-                  {
-                    "databaseType" : "java.lang.Integer",
-                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
-                    "nullable" : false,
-                    "name" : "type_id",
-                    "id" : "type_id",
-                    "ordinalPosition" : 2
-                  }
-                ],
-                "name" : "role_types",
-                "id" : "role_types"
               },
               {
                 "primaryKeyColumns" : [
@@ -596,8 +509,8 @@
                     "ordinalPosition" : 3
                   }
                 ],
-                "name" : "types",
-                "id" : "types"
+                "name" : "type",
+                "id" : "type"
               }
             ],
             "name" : "eve_fleetmanager",

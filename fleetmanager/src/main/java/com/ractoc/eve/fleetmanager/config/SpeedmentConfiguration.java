@@ -6,12 +6,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ractoc.eve.fleetmanager.db.FleetmanagerApplication;
 import com.ractoc.eve.fleetmanager.db.FleetmanagerApplicationBuilder;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.FleetManager;
-import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesManager;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.InviteManager;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.RegistrationsManager;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role.RoleManager;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role_fleet.RoleFleetManager;
-import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role_types.RoleTypesManager;
-import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.types.TypesManager;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.type.TypeManager;
 import com.speedment.runtime.core.component.transaction.TransactionComponent;
 import com.speedment.runtime.core.component.transaction.TransactionHandler;
 import com.speedment.runtime.join.JoinBundle;
@@ -100,23 +99,18 @@ public class SpeedmentConfiguration {
     }
 
     @Bean
-    public InvitesManager getInvitesManager(FleetmanagerApplication app) {
-        return app.getOrThrow(InvitesManager.class);
+    public InviteManager getInvitesManager(FleetmanagerApplication app) {
+        return app.getOrThrow(InviteManager.class);
     }
 
     @Bean
-    public TypesManager getTypesManager(FleetmanagerApplication app) {
-        return app.getOrThrow(TypesManager.class);
+    public TypeManager getTypeManager(FleetmanagerApplication app) {
+        return app.getOrThrow(TypeManager.class);
     }
 
     @Bean
     public RoleManager getRoleManager(FleetmanagerApplication app) {
         return app.getOrThrow(RoleManager.class);
-    }
-
-    @Bean
-    public RoleTypesManager getRoleTypesManager(FleetmanagerApplication app) {
-        return app.getOrThrow(RoleTypesManager.class);
     }
 
     @Bean
