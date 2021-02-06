@@ -10,12 +10,9 @@ export class Fleet {
               public locationId: number,
               public owner: number,
               public type: Type,
-              public typeId: number,
               public start: string,
               public duration: number,
-              public restricted: boolean,
-              public invitations: Character[],
-              public roles: Role[]) {
+              public restricted: boolean) {
   }
 
 }

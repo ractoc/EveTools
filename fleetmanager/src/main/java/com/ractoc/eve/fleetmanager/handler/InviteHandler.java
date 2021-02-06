@@ -3,7 +3,7 @@ package com.ractoc.eve.fleetmanager.handler;
 import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.domain.fleetmanager.InviteModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
-import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.Invites;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.Invite;
 import com.ractoc.eve.fleetmanager.mapper.FleetMapper;
 import com.ractoc.eve.fleetmanager.mapper.InviteMapper;
 import com.ractoc.eve.fleetmanager.service.FleetService;
@@ -95,9 +95,9 @@ public class InviteHandler {
         }
     }
 
-    private boolean filterRegistrations(Tuple2<Invites, Fleet> inviteFleet, Integer charId) {
+    private boolean filterRegistrations(Tuple2<Invite, Fleet> inviteFleet, Integer charId) {
         // in case of a corporation invite we need to check the registration
-        if (((Invites) inviteFleet.get(0)).getCorpId().isPresent()) {
+        if (((Invite) inviteFleet.get(0)).getCorpId().isPresent()) {
             return !registrationValidator.hasRegistration(((Fleet) inviteFleet.get(1)).getId(), charId);
         }
         return true;
@@ -113,7 +113,7 @@ public class InviteHandler {
     }
 
     public void deleteInvite(String key, int charId) {
-        Invites invite = inviteService.getInvite(key);
+        Invite invite = inviteService.getInvite(key);
         Fleet fleet = fleetService.getFleet(invite.getFleetId()).orElseThrow(() -> new NoSuchEntryException("fleet not found"));
         if (fleet.getOwner() == charId) {
             inviteService.deleteInvitation(invite);

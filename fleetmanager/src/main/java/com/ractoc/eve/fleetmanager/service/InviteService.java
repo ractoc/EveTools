@@ -2,11 +2,9 @@ package com.ractoc.eve.fleetmanager.service;
 
 import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
-import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.generated.GeneratedFleet;
-import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.Invites;
-import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesImpl;
-import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesManager;
-import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.generated.GeneratedInvites;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.Invite;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.InviteImpl;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.InviteManager;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.MailApi;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailMail;
@@ -20,83 +18,79 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.InvitesManager.IDENTIFIER;
-import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invites.Invites.*;
-
 @Service
 public class InviteService {
 
-    private final InvitesManager invitesManager;
+    private final InviteManager inviteManager;
     private final JoinComponent joinComponent;
 
     private final MailApi mailApi;
 
     @Autowired
-    public InviteService(InvitesManager invitesManager, JoinComponent joinComponent, MailApi mailApi) {
-        this.invitesManager = invitesManager;
+    public InviteService(InviteManager inviteManager, JoinComponent joinComponent, MailApi mailApi) {
+        this.inviteManager = inviteManager;
         this.joinComponent = joinComponent;
         this.mailApi = mailApi;
     }
 
-    public Stream<Invites> getInvitesForFleet(Integer fleetId) {
-        return invitesManager.stream().filter(FLEET_ID.equal(fleetId));
+    public Stream<Invite> getInvitesForFleet(Integer fleetId) {
+        return inviteManager.stream().filter(Invite.FLEET_ID.equal(fleetId));
     }
 
-    public Stream<Invites> getInvitesForFleet(FleetModel fleet) {
-        return invitesManager.stream().filter(FLEET_ID.equal(fleet.getId()));
+    public Stream<Invite> getInvitesForFleet(FleetModel fleet) {
+        return inviteManager.stream().filter(Invite.FLEET_ID.equal(fleet.getId()));
     }
 
-    public Invites getInvite(String key) {
-        return invitesManager.stream().filter(KEY.equal(key)).findAny().orElseThrow(() -> new ServiceException("Invite not found for key " + key));
+    public Invite getInvite(String key) {
+        return inviteManager.stream().filter(Invite.KEY.equal(key)).findAny().orElseThrow(() -> new ServiceException("Invite not found for key " + key));
     }
 
-    public Optional<Invites> getInvite(Integer fleetId, Integer charId, Integer corpId) {
-        return invitesManager.stream()
-                .filter(FLEET_ID.equal(fleetId))
-                .filter(CHAR_ID.equal(charId).or(CORP_ID.equal(corpId)))
+    public Optional<Invite> getInvite(Integer fleetId, Integer charId, Integer corpId) {
+        return inviteManager.stream()
+                .filter(Invite.FLEET_ID.equal(fleetId))
+                .filter(Invite.CHAR_ID.equal(charId).or(Invite.CORP_ID.equal(corpId)))
                 .findAny();
     }
 
-    public Stream<Tuple2<Invites, Fleet>> getInvitesForCharacter(Integer characterId, Integer corpId) {
-        Join<Tuple2<Invites, Fleet>> join = joinComponent.from(IDENTIFIER)
-                .where(GeneratedInvites.ID.equal(characterId).or(GeneratedInvites.ID.equal(corpId)))
-                .innerJoinOn(GeneratedFleet.ID).equal(FLEET_ID)
+    public Stream<Tuple2<Invite, Fleet>> getInvitesForCharacter(Integer characterId, Integer corpId) {
+        Join<Tuple2<Invite, Fleet>> join = joinComponent.from(InviteManager.IDENTIFIER)
+                .where(Invite.CHAR_ID.equal(characterId).or(Invite.CORP_ID.equal(corpId)))
+                .innerJoinOn(Fleet.ID).equal(Invite.FLEET_ID)
                 .build(Tuples::of);
         return join.stream();
     }
 
     public void deleteInvitation(Integer fleetId, int id) {
-        Optional<Invites> invite = invitesManager.stream()
-                .filter(FLEET_ID.equal(fleetId).and(GeneratedInvites.ID.equal(id)))
+        Optional<Invite> invite = inviteManager.stream()
+                .filter(Invite.FLEET_ID.equal(fleetId).and(Invite.ID.equal(id)))
                 .findFirst();
-        invite.ifPresent(invitesManager::remove);
+        invite.ifPresent(inviteManager::remove);
     }
 
-    public void deleteInvitation(Invites invite) {
-        invitesManager.remove(invite);
+    public void deleteInvitation(Invite invite) {
+        inviteManager.remove(invite);
     }
 
     // needs to be synchronized to make sure there are never any duplicate invite keys.
     public synchronized String invite(Integer fleetId, Integer charId, Integer corpId, String name) {
         String inviteKey = generateInviteKey();
-        Invites invite = new InvitesImpl();
+        Invite invite = new InviteImpl();
         invite.setFleetId(fleetId);
         invite.setName(name);
         invite.setKey(inviteKey);
         invite.setCharId(charId);
         invite.setCorpId(corpId);
-        invitesManager.persist(invite);
+        inviteManager.persist(invite);
         return inviteKey;
     }
 
     private String generateInviteKey() {
         String inviteKey = UUID.randomUUID().toString();
-        if (invitesManager.stream().anyMatch(KEY.equal(inviteKey))) {
+        if (inviteManager.stream().anyMatch(Invite.KEY.equal(inviteKey))) {
             inviteKey = generateInviteKey();
         }
         return inviteKey;

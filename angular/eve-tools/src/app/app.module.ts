@@ -15,7 +15,7 @@ import {SidenavListComponent} from './navigation/sidenav-list/sidenav-list.compo
 import {FleetDetailsComponent} from './fleet/fleet-details/fleet-details.component';
 import {FleetFinderComponent} from './fleet/fleet-finder/fleet-finder.component';
 import {UserLoginComponent} from './user/user-login/user-login.component';
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { SubHeaderComponent } from './sub-header/sub-header.component';
 
 @NgModule({
@@ -30,15 +30,16 @@ import { SubHeaderComponent } from './sub-header/sub-header.component';
     UserLoginComponent,
     SubHeaderComponent,
   ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    MaterialModule,
-    FlexLayoutModule,
-    RoutingModule,
-    ReactiveFormsModule,
-  ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        MaterialModule,
+        FlexLayoutModule,
+        RoutingModule,
+        ReactiveFormsModule,
+        FormsModule,
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

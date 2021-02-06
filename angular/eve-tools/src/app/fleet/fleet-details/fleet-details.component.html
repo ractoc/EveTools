@@ -25,7 +25,7 @@
       </mat-form-field>
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Fleet type</mat-label>
-        <mat-select [compareWith]="compareType" formControlName="type">
+        <mat-select [compareWith]="compareById" formControlName="type">
           <mat-option *ngFor="let type of types" [value]="type">{{type.name}}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -33,13 +33,18 @@
         <mat-slide-toggle formControlName="restricted" color="primary">Restricted</mat-slide-toggle>
       </section>
 
-      <mat-accordion>
-        <mat-expansion-panel>
+      <mat-accordion *ngIf="this.fleet">
+        <mat-expansion-panel (opened)="loadRoles()">
           <mat-expansion-panel-header>
             <mat-panel-title>
               Roles
             </mat-panel-title>
           </mat-expansion-panel-header>
+          <ul>
+            <li *ngFor="let role of fleetRoles">
+              {{role.name}} {{role.amount}} Positions
+            </li>
+          </ul>
         </mat-expansion-panel>
         <mat-expansion-panel>
           <mat-expansion-panel-header>
@@ -58,10 +63,10 @@
       </mat-accordion>
 
       <div class="buttons">
-        <button mat-stroked-button (click)="cancel()" *ngIf="editing && update">
+        <button mat-stroked-button (click)="cancel()" *ngIf="editing && this.fleet">
           <mat-icon aria-label="cancel">clear</mat-icon>
         </button>
-        <button mat-stroked-button (click)="saveFleet()" *ngIf="editing">
+        <button mat-stroked-button (click)="saveFleet()" [disabled]="!fleetForm.valid" *ngIf="editing">
           <mat-icon aria-label="save">check</mat-icon>
         </button>
         <button (click)="editFleet()" *ngIf="!editing && owner" mat-stroked-button>
