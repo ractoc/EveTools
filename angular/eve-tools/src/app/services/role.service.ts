@@ -20,7 +20,11 @@ export class RoleService {
         Authorization: 'Bearer ' + this.userService.getEveState()
       })
     };
-    return this.http.get<any>(ROLES_URI + '?fleetId=' + fleetId, httpOptions)
+    let uri = ROLES_URI;
+    if (fleetId) {
+      uri = uri + '?fleetId=' + fleetId
+    }
+    return this.http.get<any>(uri, httpOptions)
       .pipe(
         map(result => {
           if (result.responseCode >= 400) {

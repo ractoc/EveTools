@@ -18,6 +18,9 @@ import {NgxMatDatetimePickerModule, NgxMatNativeDateModule} from '@angular-mater
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatDialogModule} from "@angular/material/dialog";
+import {MatTableModule} from "@angular/material/table";
+import {MatDividerModule} from "@angular/material/divider";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 @NgModule({
   declarations: [],
@@ -39,6 +42,9 @@ import {MatDialogModule} from "@angular/material/dialog";
     MatDialogModule,
     MatProgressSpinnerModule,
     MatSlideToggleModule,
+    MatTableModule,
+    MatDividerModule,
+    MatSnackBarModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
   ],
@@ -59,6 +65,9 @@ import {MatDialogModule} from "@angular/material/dialog";
     MatDialogModule,
     MatProgressSpinnerModule,
     MatSlideToggleModule,
+    MatTableModule,
+    MatDividerModule,
+    MatSnackBarModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
   ]

@@ -66,18 +66,19 @@ export class FleetDetailsComponent implements OnInit {
     if (!this.userService.getCurrentUser()) {
       this.localStorageService.set('currentPage', this.router.url);
       this.router.navigateByUrl('/user/login');
-    }
-    this.subTitle = 'New Fleet';
-    this.routeListener$ = this.route.params
-      .subscribe((params: any) => {
-          if (params.id) {
-            this.loadFleet(params.id);
-          } else {
-            this.initFleetForm(undefined);
+    } else {
+      this.routeListener$ = this.route.params
+        .subscribe((params: any) => {
+            if (params.id) {
+              this.loadFleet(params.id);
+            } else {
+              this.subTitle = 'New Fleet';
+              this.initFleetForm(undefined);
+            }
           }
-        }
-      );
-    this.loadTypes();
+        );
+      this.loadTypes();
+    }
   }
 
   private loadFleet(fleetId: number) {
@@ -85,6 +86,7 @@ export class FleetDetailsComponent implements OnInit {
       (fleetData: Fleet) => {
         if (fleetData) {
           this.fleet = fleetData;
+          this.subTitle = 'Fleet Details';
           this.initFleetForm(fleetData);
         }
       },
@@ -176,16 +178,18 @@ export class FleetDetailsComponent implements OnInit {
     this.fleetForm.controls.start.enable();
     this.fleetForm.controls.restricted.enable();
     this.editing = true;
+    this.subTitle = 'Update Fleet';
   }
 
   cancel() {
     if (this.fleet) {
+      this.subTitle = 'Fleet Details';
       this.initFleetForm(this.fleet);
     }
   }
 
   compareById(t1: any, t2: any) {
-    return t1.id === t2.id;
+    return t1 && t2 && t1.id === t2.id;
   }
 
   private loadTypes() {
