@@ -27,7 +27,6 @@ export class FleetDetailsComponent implements OnInit {
   subTitle: String;
   fleet: Fleet;
   types: Type[];
-  roles: Role[];
   fleetRoles: Role[];
   editing: boolean;
   owner: boolean;
@@ -119,7 +118,8 @@ export class FleetDetailsComponent implements OnInit {
   loadFleetRoles() {
     this.roleService.loadFleetRoles(this.fleet.id).subscribe(
       (roleData: Role[]) => {
-        this.roles = roleData;
+        console.log('roleData', roleData);
+        this.fleetRoles = roleData;
       }
     );
   }
@@ -150,7 +150,8 @@ export class FleetDetailsComponent implements OnInit {
       duration: undefined,
       name: this.fleetForm.value.name,
       description: this.fleetForm.value.description,
-      type: this.fleetForm.value.type,      start: DateUtil.formatDate(startDate),
+      type: this.fleetForm.value.type,
+      start: DateUtil.formatDate(startDate),
       restricted: this.fleetForm.value.restricted
     };
     console.log('fleet', fleet);
@@ -202,8 +203,19 @@ export class FleetDetailsComponent implements OnInit {
       }
     });
     roleDialogRef.afterClosed().subscribe(selectedRole => {
-      console.log('The dialog was closed');
-      console.log('selected role:', selectedRole);
+      this.roleService.addRoleToFleet(selectedRole, this.fleet.id).subscribe(
+        (roleData: Role[]) => {
+          this.fleetRoles = roleData;
+        }
+      );
     });
+  }
+
+  removeRole(role: Role) {
+    this.roleService.removeRoleFromFleet(role, this.fleet.id).subscribe(
+      (roleData: Role[]) => {
+        this.fleetRoles = roleData;
+      }
+    );
   }
 }

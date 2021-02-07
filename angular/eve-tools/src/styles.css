@@ -8,8 +8,8 @@ body {
   margin: 0;
   /*color: white;*/
   font-family: Shentox, Rogan, sans-serif;
-  background-image: url("/assets/images/bg_main.jpg");
-  background-repeat: no-repeat;
+  background: #000 url("/assets/images/bg_main.jpg") no-repeat 50% 0;
+  background-size: contain, cover;
 }
 
 h1.sub-header {
