@@ -40,16 +40,22 @@
               Roles
             </mat-panel-title>
           </mat-expansion-panel-header>
-          <button type="button" mat-icon-button matSuffix (click)="openRolesDialog()">
+          <button type="button" mat-icon-button matSuffix (click)="openRolesDialog()" *ngIf="editing">
             <mat-icon aria-label="add role">add</mat-icon>
           </button>
           <ul>
             <li *ngFor="let role of fleetRoles">
-              {{role.name}} {{role.amount}} Positions
+              <span *ngIf="role.amount">{{role.amount}} </span>
+              {{role.name}}
+              <span *ngIf="role.amount"> Posistions</span>
+              <span *ngIf="editing"> <button type="button" mat-icon-button matSuffix *ngIf="editing">
+                <mat-icon aria-label="remove role" (click)="removeRole(role)">delete_outline</mat-icon>
+              </button>
+              </span>
             </li>
           </ul>
         </mat-expansion-panel>
-        <mat-expansion-panel>
+        <!--<mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
               Invitations
@@ -62,7 +68,7 @@
               Registrations
             </mat-panel-title>
           </mat-expansion-panel-header>
-        </mat-expansion-panel>
+        </mat-expansion-panel>-->
       </mat-accordion>
 
       <div class="buttons">
