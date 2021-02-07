@@ -17,7 +17,7 @@
           <mat-icon matSuffix>priority_high</mat-icon>
         </mat-label>
         <input matInput [ngxMatDatetimePicker]="picker" (dateChange)="cleanDate()" formControlName="start">
-        <button mat-icon-button matSuffix (click)="picker.open(); $event.stopPropagation();">
+        <button type="button" mat-icon-button matSuffix (click)="picker.open(); $event.stopPropagation();">
           <mat-icon svgIcon="icon-calendar"></mat-icon>
         </button>
         <ngx-mat-datetime-picker #picker [touchUi]="true" [showSeconds]="false">
@@ -34,12 +34,15 @@
       </section>
 
       <mat-accordion *ngIf="this.fleet">
-        <mat-expansion-panel (opened)="loadRoles()">
+        <mat-expansion-panel (opened)="loadFleetRoles()">
           <mat-expansion-panel-header>
             <mat-panel-title>
               Roles
             </mat-panel-title>
           </mat-expansion-panel-header>
+          <button type="button" mat-icon-button matSuffix (click)="openRolesDialog()">
+            <mat-icon aria-label="add role">add</mat-icon>
+          </button>
           <ul>
             <li *ngFor="let role of fleetRoles">
               {{role.name}} {{role.amount}} Positions

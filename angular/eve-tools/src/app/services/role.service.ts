@@ -13,13 +13,31 @@ export class RoleService {
 
   constructor(private http: HttpClient, private userService: UserService) { }
 
-  loadRoles(typeId: number) {
+  loadRoles(fleetId: number) {
     const httpOptions = {
       headers: new HttpHeaders({
         Authorization: 'Bearer ' + this.userService.getEveState()
       })
     };
-    return this.http.get<any>(ROLES_URI + '/' + typeId, httpOptions)
+    return this.http.get<any>(ROLES_URI + '?fleetId=' + fleetId, httpOptions)
+      .pipe(
+        map(result => {
+          if (result.responseCode >= 400) {
+            throw new Error('broken API:' + result.responseCode);
+          } else {
+            return result.roles;
+          }
+        })
+      );
+  }
+
+  loadFleetRoles(fleetId: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.userService.getEveState()
+      })
+    };
+    return this.http.get<any>(ROLES_URI + '/' + fleetId, httpOptions)
       .pipe(
         map(result => {
           if (result.responseCode >= 400) {

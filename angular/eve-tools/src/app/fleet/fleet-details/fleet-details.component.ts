@@ -12,6 +12,8 @@ import {Subscription} from "rxjs";
 import {DateUtil} from "../../services/date-util";
 import {Role} from "../../services/model/role";
 import {RoleService} from "../../services/role.service";
+import {MatDialog} from "@angular/material/dialog";
+import {RoleDialogComponent} from "../role-dialog/role-dialog.component";
 
 @Component({
   selector: 'app-fleet-details',
@@ -56,7 +58,8 @@ export class FleetDetailsComponent implements OnInit {
     private localStorageService: LocalStorageService,
     private fleetService: FleetService,
     private typeService: TypeService,
-    private roleService: RoleService
+    private roleService: RoleService,
+    public roleDialog: MatDialog
   ) {
   }
 
@@ -113,16 +116,8 @@ export class FleetDetailsComponent implements OnInit {
     }
   }
 
-  private loadTypes() {
-    this.typeService.loadTypes().subscribe(
-      (typeData: Type[]) => {
-        this.types = typeData;
-      }
-    );
-  }
-
-  loadRoles() {
-    this.roleService.loadRoles(this.fleetForm.controls.type.value.id).subscribe(
+  loadFleetRoles() {
+    this.roleService.loadFleetRoles(this.fleet.id).subscribe(
       (roleData: Role[]) => {
         this.roles = roleData;
       }
@@ -192,13 +187,23 @@ export class FleetDetailsComponent implements OnInit {
     return t1.id === t2.id;
   }
 
-  getTypeRoles() {
-    return this.fleetForm.controls.type.value.roles;
+  private loadTypes() {
+    this.typeService.loadTypes().subscribe(
+      (typeData: Type[]) => {
+        this.types = typeData;
+      }
+    );
   }
 
-  handleRoleEvent(checked: boolean, role: Role) {
-    if (checked) {
-      this.fleetRoles.push(role);
-    }
+  openRolesDialog() {
+    const roleDialogRef = this.roleDialog.open(RoleDialogComponent, {
+      data: {
+        fleetId: this.fleet.id
+      }
+    });
+    roleDialogRef.afterClosed().subscribe(selectedRole => {
+      console.log('The dialog was closed');
+      console.log('selected role:', selectedRole);
+    });
   }
 }

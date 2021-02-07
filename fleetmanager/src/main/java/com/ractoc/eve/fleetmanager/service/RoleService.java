@@ -1,10 +1,13 @@
 package com.ractoc.eve.fleetmanager.service;
 
+import com.ractoc.eve.fleetmanager.db.FleetmanagerApplication;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role.Role;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role.RoleManager;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role_fleet.RoleFleet;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role_fleet.RoleFleetImpl;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role_fleet.RoleFleetManager;
+import com.speedment.common.tuple.nullable.Tuple2OfNullables;
+import com.speedment.runtime.join.JoinComponent;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Stream;
@@ -16,13 +19,24 @@ public class RoleService {
     private final RoleManager roleManager;
     private final RoleFleetManager roleFleetManager;
 
-    public RoleService(RoleManager roleManager, RoleFleetManager roleFleetManager) {
+    private final JoinComponent joinComponent;
+
+    public RoleService(FleetmanagerApplication app, RoleManager roleManager, RoleFleetManager roleFleetManager) {
         this.roleManager = roleManager;
         this.roleFleetManager = roleFleetManager;
+        this.joinComponent = app.getOrThrow(JoinComponent.class);
     }
 
-    public Stream<Role> getRoles() {
-        return roleManager.stream();
+    public Stream<Role> getRoles(Integer fleetId) {
+        if (fleetId == null) {
+            return roleManager.stream();
+        }
+        return joinComponent.from(RoleManager.IDENTIFIER)
+                .leftJoinOn(RoleFleet.ROLE_ID).equal(Role.ID)
+                .where(RoleFleet.FLEET_ID.notEqual(fleetId).or(RoleFleet.FLEET_ID.isNull()))
+                .build()
+                .stream()
+                .map(Tuple2OfNullables::getOrNull0);
     }
 
     public Stream<Role> getRolesForFleet(Integer fleetId) {
@@ -51,7 +65,7 @@ public class RoleService {
 
     private Role getRole(RoleFleet roleFleet) {
         return roleManager.stream()
-                .filter(Role.ID.equal(roleFleet.getRoleId()))
+                .filter(Role.ID.equal(roleFleet.getRoleId().orElse(0)))
                 .findFirst().orElseThrow(() -> new NoSuchEntryException("Unable to find matching Role"));
     }
 

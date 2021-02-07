@@ -17,6 +17,7 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {NgxMatDatetimePickerModule, NgxMatNativeDateModule} from '@angular-material-components/datetime-picker';
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatExpansionModule} from "@angular/material/expansion";
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [],
@@ -35,6 +36,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
     MatOptionModule,
     MatCheckboxModule,
     MatIconModule,
+    MatDialogModule,
     MatProgressSpinnerModule,
     MatSlideToggleModule,
     NgxMatDatetimePickerModule,
@@ -54,6 +56,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
     MatSelectModule,
     MatCheckboxModule,
     MatIconModule,
+    MatDialogModule,
     MatProgressSpinnerModule,
     MatSlideToggleModule,
     NgxMatDatetimePickerModule,

@@ -21,8 +21,8 @@ public class RoleHandler {
         this.roleService = roleService;
     }
 
-    public List<RoleModel> getRoles() {
-        return roleService.getRoles().map(RoleMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+    public List<RoleModel> getRoles(Integer fleetId) {
+        return roleService.getRoles(fleetId).map(RoleMapper.INSTANCE::dbToModel).collect(Collectors.toList());
     }
 
     public List<RoleModel> getRolesForFleet(Integer fleetId) {
