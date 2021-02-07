@@ -17,8 +17,6 @@ export class FleetService {
   constructor(private http: HttpClient, private userService: UserService) {
   }
 
-  fleets: Fleet[];
-
   find(searchParameters: any): Observable<Fleet[]> {
     console.log('searching')
     const httpOptions = {
@@ -32,8 +30,7 @@ export class FleetService {
           if (result.responseCode >= 400) {
             throw new Error('broken API:' + result.responseCode);
           } else {
-            console.log('finding')
-            this.fleets = result.fleetList;
+            console.log('finding', result.fleetList)
             return result.fleetList;
           }
         })
