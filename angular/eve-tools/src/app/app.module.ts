@@ -17,6 +17,7 @@ import {FleetFinderComponent} from './fleet/fleet-finder/fleet-finder.component'
 import {UserLoginComponent} from './user/user-login/user-login.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { SubHeaderComponent } from './sub-header/sub-header.component';
+import { RoleDialogComponent } from './fleet/role-dialog/role-dialog.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { SubHeaderComponent } from './sub-header/sub-header.component';
     FleetFinderComponent,
     UserLoginComponent,
     SubHeaderComponent,
+    RoleDialogComponent,
   ],
     imports: [
         BrowserModule,

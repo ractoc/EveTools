@@ -39,10 +39,10 @@ public class RoleController extends BaseController {
             @ApiResponse(code = 500, message = "Internal server error")
     })
     @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> getRoles() {
+    public ResponseEntity<BaseResponse> getRoles(@RequestParam(name = "fleetId", required = false) Integer fleetId) {
         return new ResponseEntity<>(
                 new RoleListResponse(OK,
-                        roleHandler.getRoles()
+                        roleHandler.getRoles(fleetId)
                 )
                 , OK);
     }
@@ -52,8 +52,8 @@ public class RoleController extends BaseController {
             @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = RoleListResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> getRolesForFleet(@RequestAttribute("fleetId") Integer fleetId) {
+    @GetMapping(value = "/{fleetId}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> getRolesForFleet(@PathVariable("fleetId") Integer fleetId) {
         return new ResponseEntity<>(
                 new RoleListResponse(OK,
                         roleHandler.getRolesForFleet(fleetId)
@@ -66,8 +66,8 @@ public class RoleController extends BaseController {
             @ApiResponse(code = 200, message = "Role successfully added", response = RoleListResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    @PutMapping(value = "", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> addRoleToFleet(@RequestAttribute("fleetId") Integer fleetId, @RequestBody RoleModel role) {
+    @PutMapping(value = "/{fleetId}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> addRoleToFleet(@PathVariable("fleetId") Integer fleetId, @RequestBody RoleModel role) {
         return new ResponseEntity<>(
                 new RoleListResponse(OK,
                         roleHandler.addRoleToFleet(role, fleetId)
@@ -80,8 +80,8 @@ public class RoleController extends BaseController {
             @ApiResponse(code = 200, message = "Role successfully updated", response = RoleListResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> updateRoleToFleet(@RequestAttribute("fleetId") Integer fleetId, @RequestBody RoleModel role) {
+    @PostMapping(value = "/{fleetId}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> updateRoleToFleet(@PathVariable("fleetId") Integer fleetId, @RequestBody RoleModel role) {
         return new ResponseEntity<>(
                 new RoleListResponse(OK,
                         roleHandler.updateRoleForFleet(role, fleetId)
@@ -94,8 +94,8 @@ public class RoleController extends BaseController {
             @ApiResponse(code = 200, message = "Role successfully removed", response = RoleListResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    @DeleteMapping(value = "", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> removeRoleFromFleet(@RequestAttribute("roleId") Integer roleId, @RequestAttribute("fleetId") Integer fleetId) {
+    @DeleteMapping(value = "/{fleetId}/{roleId}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> removeRoleFromFleet(@PathVariable("roleId") Integer roleId, @PathVariable("fleetId") Integer fleetId) {
         return new ResponseEntity<>(
                 new RoleListResponse(OK,
                         roleHandler.removeRoleFromFleet(roleId, fleetId)
