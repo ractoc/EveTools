@@ -21,6 +21,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatTableModule} from "@angular/material/table";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatRadioModule} from "@angular/material/radio";
 
 @NgModule({
   declarations: [],
@@ -45,6 +46,7 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
     MatTableModule,
     MatDividerModule,
     MatSnackBarModule,
+    MatRadioModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
   ],
@@ -68,6 +70,7 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
     MatTableModule,
     MatDividerModule,
     MatSnackBarModule,
+    MatRadioModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
   ]

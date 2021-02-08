@@ -14,6 +14,10 @@ import {Role} from "../../services/model/role";
 import {RoleService} from "../../services/role.service";
 import {MatDialog} from "@angular/material/dialog";
 import {RoleDialogComponent} from "../role-dialog/role-dialog.component";
+import {Invitation} from "../../services/model/invitation";
+import {InvitationDialogComponent} from "../invitation-dialog/invitation-dialog.component";
+import {InvitationService} from "../../services/invitation.service";
+
 
 @Component({
   selector: 'app-fleet-details',
@@ -28,6 +32,7 @@ export class FleetDetailsComponent implements OnInit {
   fleet: Fleet;
   types: Type[];
   fleetRoles: Role[];
+  fleetInvitations: Invitation[];
   editing: boolean;
   owner: boolean;
 
@@ -58,7 +63,8 @@ export class FleetDetailsComponent implements OnInit {
     private fleetService: FleetService,
     private typeService: TypeService,
     private roleService: RoleService,
-    public roleDialog: MatDialog
+    private invitationService: InvitationService,
+    public dialog: MatDialog
   ) {
   }
 
@@ -201,7 +207,7 @@ export class FleetDetailsComponent implements OnInit {
   }
 
   openRolesDialog() {
-    const roleDialogRef = this.roleDialog.open(RoleDialogComponent, {
+    const roleDialogRef = this.dialog.open(RoleDialogComponent, {
       data: {
         fleetId: this.fleet.id
       }
@@ -221,5 +227,20 @@ export class FleetDetailsComponent implements OnInit {
         this.fleetRoles = roleData;
       }
     );
+  }
+
+  openInvitationsDialog() {
+    const invitationDialogRef = this.dialog.open(InvitationDialogComponent, {
+      data: {
+        fleetId: this.fleet.id
+      }
+    });
+    invitationDialogRef.afterClosed().subscribe(searchResult => {
+      this.invitationService.addInvitationToFleet(searchResult.id, searchResult.type, this.fleet.id).subscribe(
+        (invitationData: Invitation[]) => {
+          this.fleetInvitations = invitationData;
+        }
+      );
+    });
   }
 }
