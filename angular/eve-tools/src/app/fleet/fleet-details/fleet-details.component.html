@@ -55,14 +55,26 @@
             </li>
           </ul>
         </mat-expansion-panel>
-        <!--<mat-expansion-panel>
+        <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
               Invitations
             </mat-panel-title>
           </mat-expansion-panel-header>
+          <button type="button" mat-icon-button matSuffix (click)="openInvitationsDialog()" *ngIf="editing">
+            <mat-icon aria-label="add invitation">add</mat-icon>
+          </button>
+          <ul>
+            <li *ngFor="let invitation of fleetInvitations">
+              {{invitation.name}}
+              <span *ngIf="editing"> <button type="button" mat-icon-button matSuffix *ngIf="editing">
+                <mat-icon aria-label="remove invitation" (click)="removeInvitation(invitation)">delete_outline</mat-icon>
+              </button>
+              </span>
+            </li>
+          </ul>
         </mat-expansion-panel>
-        <mat-expansion-panel>
+        <!--<mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
               Registrations

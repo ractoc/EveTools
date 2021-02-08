@@ -18,6 +18,7 @@ import {UserLoginComponent} from './user/user-login/user-login.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { SubHeaderComponent } from './sub-header/sub-header.component';
 import { RoleDialogComponent } from './fleet/role-dialog/role-dialog.component';
+import { InvitationDialogComponent } from './fleet/invitation-dialog/invitation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { RoleDialogComponent } from './fleet/role-dialog/role-dialog.component';
     UserLoginComponent,
     SubHeaderComponent,
     RoleDialogComponent,
+    InvitationDialogComponent,
   ],
     imports: [
         BrowserModule,
