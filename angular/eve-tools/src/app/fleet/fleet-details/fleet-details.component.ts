@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {MatDialog} from "@angular/material/dialog";
+
+import {Subscription} from "rxjs";
 
 import {Fleet} from "../../services/model/fleet";
 import {FleetService} from "../../services/fleet.service";
@@ -8,15 +11,15 @@ import {Type} from "../../services/model/type";
 import {TypeService} from "../../services/type.service";
 import {UserService} from "../../services/user.service";
 import {LocalStorageService} from "../../services/local-storage.service";
-import {Subscription} from "rxjs";
 import {DateUtil} from "../../services/date-util";
 import {Role} from "../../services/model/role";
 import {RoleService} from "../../services/role.service";
-import {MatDialog} from "@angular/material/dialog";
 import {RoleDialogComponent} from "../role-dialog/role-dialog.component";
 import {Invitation} from "../../services/model/invitation";
 import {InvitationDialogComponent} from "../invitation-dialog/invitation-dialog.component";
 import {InvitationService} from "../../services/invitation.service";
+import {CharacterService} from "../../services/character.service";
+import {CorporationService} from "../../services/corporation.service";
 
 
 @Component({
@@ -26,8 +29,6 @@ import {InvitationService} from "../../services/invitation.service";
 })
 export class FleetDetailsComponent implements OnInit {
 
-  private routeListener$: Subscription;
-
   subTitle: String;
   fleet: Fleet;
   types: Type[];
@@ -35,7 +36,6 @@ export class FleetDetailsComponent implements OnInit {
   fleetInvitations: Invitation[];
   editing: boolean;
   owner: boolean;
-
   fleetForm = new FormGroup({
     id: new FormControl(),
     owner: new FormControl(),
@@ -54,6 +54,7 @@ export class FleetDetailsComponent implements OnInit {
       Validators.required]),
     restricted: new FormControl()
   });
+  private routeListener$: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -64,6 +65,8 @@ export class FleetDetailsComponent implements OnInit {
     private typeService: TypeService,
     private roleService: RoleService,
     private invitationService: InvitationService,
+    private characterService: CharacterService,
+    private corporationService: CorporationService,
     public dialog: MatDialog
   ) {
   }
@@ -87,47 +90,19 @@ export class FleetDetailsComponent implements OnInit {
     }
   }
 
-  private loadFleet(fleetId: number) {
-    this.fleetService.getFleet(fleetId).subscribe(
-      (fleetData: Fleet) => {
-        if (fleetData) {
-          this.fleet = fleetData;
-          this.subTitle = 'Fleet Details';
-          this.initFleetForm(fleetData);
-        }
-      },
-      err => {
-      }
-    );
-  }
-
-  private initFleetForm(fleet: Fleet) {
-    if (fleet) {
-      this.fleetForm.controls.id.setValue(fleet.id);
-      this.fleetForm.controls.owner.setValue(fleet.owner);
-      this.fleetForm.controls.name.setValue(fleet.name);
-      this.fleetForm.controls.name.disable();
-      this.fleetForm.controls.description.setValue(fleet.id);
-      this.fleetForm.controls.description.disable();
-      this.fleetForm.controls.type.setValue(fleet.type);
-      this.fleetForm.controls.type.disable();
-      this.fleetForm.controls.start.setValue(DateUtil.parseDate(fleet.start));
-      this.fleetForm.controls.start.disable();
-      this.fleetForm.controls.restricted.setValue(fleet.restricted);
-      this.fleetForm.controls.restricted.disable();
-
-      this.owner = this.userService.getCurrentUser().characterId === fleet.owner;
-      this.editing = false;
-    } else {
-      this.editFleet();
-    }
-  }
-
   loadFleetRoles() {
     this.roleService.loadFleetRoles(this.fleet.id).subscribe(
       (roleData: Role[]) => {
         console.log('roleData', roleData);
         this.fleetRoles = roleData;
+      }
+    );
+  }
+
+  loadInvitations() {
+    this.invitationService.loadInvitationsForFleet(this.fleet.id).subscribe(
+      (invitationData: Invitation[]) => {
+        this.fleetInvitations = invitationData.map(invitation => this.populateInvitation(invitation));
       }
     );
   }
@@ -198,14 +173,6 @@ export class FleetDetailsComponent implements OnInit {
     return t1 && t2 && t1.id === t2.id;
   }
 
-  private loadTypes() {
-    this.typeService.loadTypes().subscribe(
-      (typeData: Type[]) => {
-        this.types = typeData;
-      }
-    );
-  }
-
   openRolesDialog() {
     const roleDialogRef = this.dialog.open(RoleDialogComponent, {
       data: {
@@ -238,9 +205,88 @@ export class FleetDetailsComponent implements OnInit {
     invitationDialogRef.afterClosed().subscribe(searchResult => {
       this.invitationService.addInvitationToFleet(searchResult.id, searchResult.type, this.fleet.id).subscribe(
         (invitationData: Invitation[]) => {
-          this.fleetInvitations = invitationData;
+          this.fleetInvitations = invitationData.map(invitation => this.populateInvitation(invitation));
         }
       );
     });
+  }
+
+  removeInvitation(invitation: Invitation) {
+    this.invitationService.removeInvitation(invitation.id).subscribe(
+      (invitationData: Invitation[]) => {
+        this.fleetInvitations = invitationData.map(invitation => this.populateInvitation(invitation));
+      }
+    );
+  }
+
+  private loadFleet(fleetId: number) {
+    this.fleetService.getFleet(fleetId).subscribe(
+      (fleetData: Fleet) => {
+        if (fleetData) {
+          this.fleet = fleetData;
+          this.subTitle = 'Fleet Details';
+          this.initFleetForm(fleetData);
+        }
+      },
+      err => {
+      }
+    );
+  }
+
+  private initFleetForm(fleet: Fleet) {
+    if (fleet) {
+      this.fleetForm.controls.id.setValue(fleet.id);
+      this.fleetForm.controls.owner.setValue(fleet.owner);
+      this.fleetForm.controls.name.setValue(fleet.name);
+      this.fleetForm.controls.name.disable();
+      this.fleetForm.controls.description.setValue(fleet.id);
+      this.fleetForm.controls.description.disable();
+      this.fleetForm.controls.type.setValue(fleet.type);
+      this.fleetForm.controls.type.disable();
+      this.fleetForm.controls.start.setValue(DateUtil.parseDate(fleet.start));
+      this.fleetForm.controls.start.disable();
+      this.fleetForm.controls.restricted.setValue(fleet.restricted);
+      this.fleetForm.controls.restricted.disable();
+
+      this.owner = this.userService.getCurrentUser().characterId === fleet.owner;
+      this.editing = false;
+    } else {
+      this.editFleet();
+    }
+  }
+
+  private loadTypes() {
+    this.typeService.loadTypes().subscribe(
+      (typeData: Type[]) => {
+        this.types = typeData;
+      }
+    );
+  }
+
+  private populateInvitation(invitation: Invitation) {
+    if (invitation.type === 'character') {
+      this.loadCharacter(invitation);
+    } else if (invitation.type === 'corporation') {
+      this.loadCorporation(invitation);
+    }
+    return invitation;
+  }
+
+  private loadCharacter(invitation: Invitation) {
+    this.characterService.getCharacter(invitation.inviteeId).subscribe(character => {
+      invitation.name = character.name;
+      this.characterService.getPortrait(invitation.inviteeId).subscribe(portrait => {
+        invitation.icon = portrait;
+      })
+    })
+  }
+
+  private loadCorporation(invitation: Invitation) {
+    this.corporationService.getCorporation(invitation.inviteeId).subscribe(corporation => {
+      invitation.name = corporation.name;
+      this.corporationService.getIcon(invitation.inviteeId).subscribe(portrait => {
+        invitation.icon = portrait;
+      })
+    })
   }
 }

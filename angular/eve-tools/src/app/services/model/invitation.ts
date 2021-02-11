@@ -1,11 +1,11 @@
 export class Invitation {
 
-  constructor(public key: string,
+  constructor(public id: number,
+              public fleetId: number,
+              public inviteeId: number,
+              public type: string,
               public name: string,
-              public id: number,
-              public icon: string,
-              public charId: number,
-              public corpId: number) {
+              public icon: string) {
   }
 
 }

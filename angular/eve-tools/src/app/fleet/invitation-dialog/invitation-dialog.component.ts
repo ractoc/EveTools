@@ -25,7 +25,7 @@ export class InvitationDialogComponent implements OnInit {
 
   TYPE_CHARACTER = 'character';
   TYPE_CORPORATION = 'corporation';
-  private searchResult: any;
+  private searchResult: SearchResult;
 
   constructor(public dialogRef: MatDialogRef<InvitationDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: InvitationDialogData,
@@ -77,6 +77,7 @@ export class InvitationDialogComponent implements OnInit {
   }
 
   selectMyCorporation() {
+    this.resetSearch();
     this.characterService.getCharacter(this.userService.getCurrentUser().characterId).subscribe(character => {
       this.loadCorporation(character.corporationId);
     })
@@ -88,5 +89,10 @@ export class InvitationDialogComponent implements OnInit {
     } else {
       return "results";
     }
+  }
+
+  resetSearch() {
+    this.searchResultList = [];
+    this.search = undefined;
   }
 }
