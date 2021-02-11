@@ -33,7 +33,7 @@ public class RoleService {
         }
         return joinComponent.from(RoleManager.IDENTIFIER)
                 .leftJoinOn(RoleFleet.ROLE_ID).equal(Role.ID)
-                .where(RoleFleet.FLEET_ID.notEqual(fleetId).or(RoleFleet.FLEET_ID.isNull()))
+                .where(RoleFleet.FLEET_ID.notEqual(fleetId))
                 .build()
                 .stream()
                 .map(Tuple2OfNullables::getOrNull0);
@@ -65,7 +65,7 @@ public class RoleService {
 
     private Role getRole(RoleFleet roleFleet) {
         return roleManager.stream()
-                .filter(Role.ID.equal(roleFleet.getRoleId().orElse(0)))
+                .filter(Role.ID.equal(roleFleet.getRoleId()))
                 .findFirst().orElseThrow(() -> new NoSuchEntryException("Unable to find matching Role"));
     }
 

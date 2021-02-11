@@ -1,7 +1,7 @@
 package com.ractoc.eve.fleetmanager.handler;
 
 import com.ractoc.eve.domain.fleetmanager.FleetModel;
-import com.ractoc.eve.domain.fleetmanager.InviteModel;
+import com.ractoc.eve.domain.fleetmanager.InvitationModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.Invite;
 import com.ractoc.eve.fleetmanager.mapper.FleetMapper;
@@ -14,8 +14,7 @@ import com.ractoc.eve.fleetmanager.validator.InviteValidator;
 import com.ractoc.eve.fleetmanager.validator.RegistrationValidator;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.CharacterApi;
-import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient.RecipientTypeEnum;
-import com.speedment.common.tuple.Tuple2;
+import com.ractoc.eve.jesi.api.CorporationApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +35,7 @@ public class InviteHandler {
     private final FleetValidator fleetValidator;
     private final RegistrationValidator registrationValidator;
     private final CharacterApi characterApi;
+    private final CorporationApi corporationApi;
 
     @Autowired
     public InviteHandler(InviteService inviteService,
@@ -43,67 +43,52 @@ public class InviteHandler {
                          InviteValidator inviteValidator,
                          FleetValidator fleetValidator,
                          RegistrationValidator registrationValidator,
-                         CharacterApi characterApi) {
+                         CharacterApi characterApi,
+                         CorporationApi corporationApi) {
         this.inviteService = inviteService;
         this.fleetService = fleetService;
         this.inviteValidator = inviteValidator;
         this.fleetValidator = fleetValidator;
         this.registrationValidator = registrationValidator;
         this.characterApi = characterApi;
+        this.corporationApi = corporationApi;
     }
 
-    public String invite(InviteModel invite, Integer charId, String accessToken) {
-        try {
-            String charName = getCharName(charId);
-            String fleetName = getFleetName(invite.getFleetId(), charId);
-            Fleet fleet = fleetService.getFleet(invite.getFleetId()).orElseThrow(() -> new NoSuchEntryException("No fleet found linked to invitation."));
-            String inviteKey = inviteService.invite(invite.getFleetId(), invite.getCharId(), invite.getCorpId(), invite.getName());
-            inviteService.sendInviteMail(charId,
-                    charName,
-                    fleetName,
-                    invite.getCharId() != null ? invite.getCharId() : invite.getCorpId(),
-                    invite.getName(),
-                    invite.getCharId() != null ? RecipientTypeEnum.CHARACTER : RecipientTypeEnum.CORPORATION,
-                    inviteKey,
-                    fleet.getDescription().orElse(""),
-                    accessToken);
-            return inviteKey;
-        } catch (ApiException e) {
-            throw new HandlerException("unable to send create invitation", e);
-        }
+    public List<InvitationModel> invite(Integer fleetId, InvitationModel invitation, Integer charId, String accessToken) {
+        inviteService.invite(fleetId, invitation.getId(), invitation.getType());
+        return getInvitesForFleet(fleetId, charId);
     }
 
-    public InviteModel getInvite(String key, int charId) {
-        InviteModel invite = InviteMapper.INSTANCE.dbToModel(inviteService.getInvite(key));
+    public InvitationModel getInvite(String key, int charId) {
+        InvitationModel invite = InviteMapper.INSTANCE.dbToModel(inviteService.getInvite(key));
         FleetModel fleet = getFleet(invite.getFleetId(), charId);
-        invite.setFleet(fleet);
-        if (!inviteValidator.verifyInvite(invite, charId)) {
+        if (!inviteValidator.verifyInvite(fleet, invite, charId)) {
             throw new SecurityException(ACCESS_DENIED);
         }
         return invite;
     }
 
-    public List<InviteModel> getInvitesForCharacter(int charId) {
+    public List<InvitationModel> getInvitesForCharacter(int charId) {
         try {
             Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
             return inviteService.getInvitesForCharacter(charId, corpId)
-                    .filter(inviteFleet -> this.filterRegistrations(inviteFleet, charId))
-                    .map(InviteMapper.INSTANCE::joinToModel)
+                    .filter(invite -> this.filterRegistrations(invite, charId))
+                    .map(InviteMapper.INSTANCE::dbToModel)
                     .collect(Collectors.toList());
         } catch (ApiException e) {
             throw new HandlerException("Unable to fetch data from EVE ESI", e);
         }
     }
 
-    private boolean filterRegistrations(Tuple2<Invite, Fleet> inviteFleet, Integer charId) {
+    private boolean filterRegistrations(Invite invite, Integer charId) {
         // in case of a corporation invite we need to check the registration
-        if (((Invite) inviteFleet.get(0)).getCorpId().isPresent()) {
-            return !registrationValidator.hasRegistration(((Fleet) inviteFleet.get(1)).getId(), charId);
+        if (invite.getType().equals("corporation")) {
+            return !registrationValidator.hasRegistration(invite.getFleetId(), charId);
         }
         return true;
     }
 
-    public List<InviteModel> getInvitesForFleet(Integer fleetId, int charId) {
+    public List<InvitationModel> getInvitesForFleet(Integer fleetId, int charId) {
         Fleet fleet = fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("fleet not found"));
         if (fleetValidator.verifyFleet(FleetMapper.INSTANCE.dbToModel(fleet), charId)) {
             return inviteService.getInvitesForFleet(fleetId).map(InviteMapper.INSTANCE::dbToModel).collect(Collectors.toList());
@@ -112,22 +97,15 @@ public class InviteHandler {
         }
     }
 
-    public void deleteInvite(String key, int charId) {
-        Invite invite = inviteService.getInvite(key);
+    public List<InvitationModel> deleteInvite(Integer id, int charId) {
+        Invite invite = inviteService.getInvite(id);
         Fleet fleet = fleetService.getFleet(invite.getFleetId()).orElseThrow(() -> new NoSuchEntryException("fleet not found"));
         if (fleet.getOwner() == charId) {
             inviteService.deleteInvitation(invite);
+            return getInvitesForFleet(fleet.getId(), charId);
         } else {
             throw new SecurityException(ACCESS_DENIED);
         }
-    }
-
-    private String getFleetName(Integer fleetId, Integer charId) {
-        return getFleet(fleetId, charId).getName();
-    }
-
-    private String getCharName(Integer characterId) throws ApiException {
-        return characterApi.getCharactersCharacterId(characterId, null, null).getName();
     }
 
     private FleetModel getFleet(Integer fleetId, Integer charId) {

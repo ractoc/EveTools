@@ -1,6 +1,6 @@
 package com.ractoc.eve.fleetmanager.controller;
 
-import com.ractoc.eve.domain.fleetmanager.InviteModel;
+import com.ractoc.eve.domain.fleetmanager.InvitationModel;
 import com.ractoc.eve.fleetmanager.handler.InviteHandler;
 import com.ractoc.eve.fleetmanager.response.*;
 import com.ractoc.eve.fleetmanager.service.ServiceException;
@@ -43,13 +43,15 @@ public class InviteController {
             @ApiResponse(code = 201, message = "The invite was successfully created", response = InviteResponse.class),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    @PostMapping(value = "/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> invite(@Valid @RequestBody InviteModel invite, @AuthenticationPrincipal Authentication authentication) {
+    @PostMapping(value = "/{fleetId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> invite(@PathVariable("fleetId") Integer fleetId,
+                                               @Valid @RequestBody InvitationModel invitation,
+                                               @AuthenticationPrincipal Authentication authentication) {
         try {
-            return new ResponseEntity<>(new InviteResponse(CREATED,
-                    inviteHandler.invite(invite,
-                            ((EveUserDetails) authentication.getPrincipal()).getCharId(),
-                            ((EveUserDetails) authentication.getPrincipal()).getAccessToken())),
+            return new ResponseEntity<>(new InviteListResponse(CREATED,
+                    inviteHandler.invite(fleetId, invitation,
+                    ((EveUserDetails) authentication.getPrincipal()).getCharId(),
+                    ((EveUserDetails) authentication.getPrincipal()).getAccessToken())),
                     CREATED);
         } catch (ServiceException e) {
             log.error(e.getMessage(), e);
@@ -79,11 +81,12 @@ public class InviteController {
     @ApiResponses(value = {
             @ApiResponse(code = 410, message = "Invite removed", response = BaseResponse.class),
     })
-    @DeleteMapping(value = "/{key}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<BaseResponse> deleteInvite(@PathVariable("key") String key, @AuthenticationPrincipal Authentication authentication) {
+    @DeleteMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> deleteInvite(@PathVariable("id") Integer id, @AuthenticationPrincipal Authentication authentication) {
         try {
-            inviteHandler.deleteInvite(key, ((EveUserDetails) authentication.getPrincipal()).getCharId());
-            return new ResponseEntity<>(new BaseResponse(GONE.value()), OK);
+            return new ResponseEntity<>(new InviteListResponse(GONE,
+                    inviteHandler.deleteInvite(id, ((EveUserDetails) authentication.getPrincipal()).getCharId())),
+                    OK);
         } catch (ServiceException e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);

@@ -3,7 +3,6 @@ package com.ractoc.eve.fleetmanager.service;
 import com.ractoc.eve.domain.fleetmanager.TypeModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.FleetManager;
-import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role_fleet.RoleFleet;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role_fleet.RoleFleetManager;
 import com.ractoc.eve.fleetmanager.model.FleetSearchParams;
 import com.speedment.runtime.core.exception.SpeedmentException;
@@ -12,9 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,12 +51,6 @@ public class FleetService {
         }
         if (ArrayUtils.isNotEmpty(params.getFleetTypes())) {
             fleets.filter(TYPE_ID.in(Arrays.stream(params.getFleetTypes()).map(TypeModel::getId).collect(Collectors.toList())));
-        }
-        if (params.isRegistered()) {
-            fleets.filter(fleet->registrationService.getRegistration(fleet.getId(), charId).isPresent());
-        }
-        if (params.isInvited()) {
-            fleets.filter(fleet->inviteService.getInvite(fleet.getId(), charId, corpId).isPresent());
         }
         return fleets;
     }

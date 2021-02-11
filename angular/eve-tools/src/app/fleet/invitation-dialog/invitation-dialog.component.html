@@ -3,7 +3,8 @@
   <label>Search by</label>
   <mat-radio-group aria-label="Select an option"
                    [(ngModel)]="searchType"
-                   class="radio-group">
+                   class="radio-group"
+                   (ngModelChange)="resetSearch()">
     <mat-radio-button class="radio-button" value="character">Character</mat-radio-button>
     <mat-radio-button class="radio-button" value="corporation">Corporation</mat-radio-button>
   </mat-radio-group>

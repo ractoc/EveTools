@@ -55,7 +55,7 @@
             </li>
           </ul>
         </mat-expansion-panel>
-        <mat-expansion-panel>
+        <mat-expansion-panel (opened)="loadInvitations()">
           <mat-expansion-panel-header>
             <mat-panel-title>
               Invitations
@@ -66,6 +66,7 @@
           </button>
           <ul>
             <li *ngFor="let invitation of fleetInvitations">
+              <img *ngIf="invitation.icon" src="{{invitation.icon}}"/>
               {{invitation.name}}
               <span *ngIf="editing"> <button type="button" mat-icon-button matSuffix *ngIf="editing">
                 <mat-icon aria-label="remove invitation" (click)="removeInvitation(invitation)">delete_outline</mat-icon>
