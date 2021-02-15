@@ -33,6 +33,8 @@ public class UserWebController {
     private String clientId;
     @Value("${sso.client-scopes}")
     private String clientScopes;
+    @Value("${sso.evetools-scopes}")
+    private String evetoolsScopes;
 
     @Autowired
     public UserWebController(UserHandler handler, Client client) {
@@ -43,9 +45,14 @@ public class UserWebController {
     @GetMapping(value = "/launchSignOn")
     public String launchSignOn(@CookieValue(value = "eve-state", defaultValue = "") String eveState) {
         if (eveState.isEmpty()) {
-            return initiateLogin();
+            return initiateLogin(clientScopes);
         }
         return refreshToken(eveState);
+    }
+
+    @GetMapping(value = "/evetools")
+    public String launchEveToolsSignOn() {
+        return initiateLogin(evetoolsScopes);
     }
 
     @GetMapping(value = "/eveCallBack")
@@ -63,13 +70,13 @@ public class UserWebController {
         return REDIRECT + frontendUrl + "/" + eveState;
     }
 
-    private String initiateLogin() {
+    private String initiateLogin(String scopes) {
         String eveState = handler.initiateLogin();
         return "redirect:https://login.eveonline.com/v2/oauth/authorize/"
                 + "?response_type=code"
                 + "&redirect_uri=" + clientUrl
                 + "&client_id=" + clientId
-                + "&scope=" + clientScopes
+                + "&scope=" + scopes
                 + "&state=" + eveState;
     }
 
@@ -88,7 +95,7 @@ public class UserWebController {
 
             return REDIRECT + frontendUrl + "/" + eveState;
         } catch (AccessDeniedException ade) {
-            return initiateLogin();
+            return initiateLogin(clientScopes);
         }
     }
 

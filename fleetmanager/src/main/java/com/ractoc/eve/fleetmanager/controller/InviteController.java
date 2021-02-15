@@ -50,8 +50,7 @@ public class InviteController {
         try {
             return new ResponseEntity<>(new InviteListResponse(CREATED,
                     inviteHandler.invite(fleetId, invitation,
-                    ((EveUserDetails) authentication.getPrincipal()).getCharId(),
-                    ((EveUserDetails) authentication.getPrincipal()).getAccessToken())),
+                    ((EveUserDetails) authentication.getPrincipal()).getCharId())),
                     CREATED);
         } catch (ServiceException e) {
             log.error(e.getMessage(), e);

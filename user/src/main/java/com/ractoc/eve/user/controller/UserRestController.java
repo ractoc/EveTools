@@ -12,9 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
@@ -57,6 +60,24 @@ public class UserRestController {
         try {
             refreshToken(eveState);
             return new ResponseEntity<>(handler.getUserByState(eveState), OK);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(BAD_REQUEST);
+        }
+    }
+
+    @ApiOperation(value = "Get user by EVE state", response = UserResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retrieval successfully processed.", response = UserModel.class)
+    })
+    // should only be called from localhost, since that's where the other webservices also live.
+    @PreAuthorize("#request.getRemoteAddr().equals(#request.getLocalAddr())")
+    @GetMapping(value = "/evetools", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserModel> getEveTools(@P("request") HttpServletRequest request) {
+        try {
+            UserModel evetools = handler.getEvetools();
+            refreshToken(evetools.getEveState());
+            return new ResponseEntity<>(evetools, OK);
         } catch (ServiceException e) {
             e.printStackTrace();
             return new ResponseEntity<>(BAD_REQUEST);

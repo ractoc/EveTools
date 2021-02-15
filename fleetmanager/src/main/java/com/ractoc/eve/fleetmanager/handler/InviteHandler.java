@@ -54,9 +54,18 @@ public class InviteHandler {
         this.corporationApi = corporationApi;
     }
 
-    public List<InvitationModel> invite(Integer fleetId, InvitationModel invitation, Integer charId, String accessToken) {
-        inviteService.invite(fleetId, invitation.getId(), invitation.getType());
-        return getInvitesForFleet(fleetId, charId);
+    public List<InvitationModel> invite(Integer fleetId, InvitationModel invitation, Integer charId) {
+        try {
+            String charName = getCharName(charId);
+            String inviteeName = getInviteeName(invitation);
+            String fleetName = getFleetName(fleetId, charId);
+            Fleet fleet = fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("No fleet found linked to invitation."));
+            String inviteKey = inviteService.invite(fleetId, invitation.getId(), invitation.getType());
+            inviteService.sendInviteMail(charName, fleetName, invitation.getId(), invitation.getType(), inviteeName, inviteKey, fleet.getDescription().orElse(""));
+            return getInvitesForFleet(fleetId, charId);
+        } catch (ApiException | com.ractoc.eve.user_client.ApiException e) {
+            throw new HandlerException("unable to send create invitation", e);
+        }
     }
 
     public InvitationModel getInvite(String key, int charId) {
@@ -106,6 +115,26 @@ public class InviteHandler {
         } else {
             throw new SecurityException(ACCESS_DENIED);
         }
+    }
+
+    private String getFleetName(Integer fleetId, Integer charId) {
+        return getFleet(fleetId, charId).getName();
+    }
+
+    private String getInviteeName(InvitationModel invitation) throws ApiException {
+        if (invitation.getType().equals("character")) {
+            return getCharName(invitation.getId());
+        } else {
+            return getCorpName(invitation.getId());
+        }
+    }
+
+    private String getCharName(Integer characterId) throws ApiException {
+        return characterApi.getCharactersCharacterId(characterId, null, null).getName();
+    }
+
+    private String getCorpName(Integer corporationId) throws ApiException {
+        return corporationApi.getCorporationsCorporationId(corporationId, null, null).getName();
     }
 
     private FleetModel getFleet(Integer fleetId, Integer charId) {
