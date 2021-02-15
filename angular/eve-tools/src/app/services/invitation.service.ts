@@ -3,7 +3,6 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {UserService} from './user.service';
 import {environment} from '../../environments/environment';
 import {map} from 'rxjs/operators';
-import {Invitation} from "./model/invitation";
 
 const INVITES_URI = 'http://' + environment.apiHost + ':8282/fleets/invites';
 

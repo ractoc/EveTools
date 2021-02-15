@@ -16,6 +16,7 @@ import com.ractoc.eve.user.model.EveJwtContent;
 import com.ractoc.eve.user.model.OAuthToken;
 import com.ractoc.eve.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -31,6 +32,9 @@ import java.util.stream.Collectors;
 public class UserHandler {
 
     private final UserService service;
+
+    @Value("${sso.evetools-charid}")
+    private Integer evetoolsCharId;
 
     @Autowired
     public UserHandler(UserService service) {
@@ -60,7 +64,7 @@ public class UserHandler {
                             .characterName(user.getName().orElseThrow(() -> new AccessDeniedException(eveState)))
                             .eveState(eveState)
                             .expiresAt(user.getLastRefresh().orElseThrow(() -> new AccessDeniedException(eveState))
-                                    .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + (1000 *
+                                    .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + (1000L *
                                     user.getExpiresIn().orElseThrow(() -> new AccessDeniedException(eveState))))
                             .accessToken(user.getAccessToken().orElseThrow(() -> new AccessDeniedException(eveState)))
                             .build();
@@ -99,6 +103,24 @@ public class UserHandler {
 
     private Optional<User> getUser(String eveState) {
         return service.getUser(eveState);
+    }
+
+    public UserModel getEvetools() {
+        return service.getUser(evetoolsCharId)
+                .map(user -> {
+                    UserModel result = UserModel.builder()
+                            .charId(user.getCharacterId().orElseThrow(() -> new AccessDeniedException("evetools")))
+                            .characterName(user.getName().orElseThrow(() -> new AccessDeniedException("evetools")))
+                            .eveState(user.getEveState())
+                            .expiresAt(user.getLastRefresh().orElseThrow(() -> new AccessDeniedException("evetools"))
+                                    .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + (1000L *
+                                    user.getExpiresIn().orElseThrow(() -> new AccessDeniedException("evetools"))))
+                            .accessToken(user.getAccessToken().orElseThrow(() -> new AccessDeniedException("evetools")))
+                            .build();
+                    result.setRoles(getRoles(result.getCharId(), result.getAccessToken(), "evetools"));
+                    return result;
+                })
+                .orElseThrow(() -> new AccessDeniedException("evetools"));
     }
 
     private int extractCharacterIdFromSub(String sub) {

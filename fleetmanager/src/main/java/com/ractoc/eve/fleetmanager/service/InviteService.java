@@ -4,6 +4,14 @@ import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.Invite;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.InviteImpl;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.InviteManager;
+import com.ractoc.eve.jesi.ApiException;
+import com.ractoc.eve.jesi.api.MailApi;
+import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailMail;
+import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient;
+import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient.RecipientTypeEnum;
+import com.ractoc.eve.user_client.api.UserResourceApi;
+import com.ractoc.eve.user_client.model.UserModel;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +23,14 @@ import java.util.stream.Stream;
 public class InviteService {
 
     private final InviteManager inviteManager;
+    private final UserResourceApi userResourceApi;
+    private final MailApi mailApi;
 
     @Autowired
-    public InviteService(InviteManager inviteManager) {
+    public InviteService(InviteManager inviteManager, UserResourceApi userResourceApi, MailApi mailApi) {
         this.inviteManager = inviteManager;
+        this.userResourceApi = userResourceApi;
+        this.mailApi = mailApi;
     }
 
     public Stream<Invite> getInvitesForFleet(Integer fleetId) {
@@ -72,5 +84,62 @@ public class InviteService {
             inviteKey = generateInviteKey();
         }
         return inviteKey;
+    }
+
+    public void sendInviteMail(String charName,
+                               String fleetName,
+                               Integer inviteeId,
+                               String inviteeType,
+                               String inviteeName,
+                               String inviteKey,
+                               String additionalInfo) throws ApiException, com.ractoc.eve.user_client.ApiException {
+        PostCharactersCharacterIdMailMail mail = generateMail(charName,
+                fleetName,
+                inviteeId,
+                inviteeName,
+                RecipientTypeEnum.fromValue(inviteeType),
+                additionalInfo,
+                inviteKey);
+        UserModel user = userResourceApi.getEveTools();
+        mailApi.postCharactersCharacterIdMail(user.getCharId(), mail, null, user.getAccessToken());
+    }
+
+    private PostCharactersCharacterIdMailMail generateMail(String charName, String fleetName, Integer recipientId, String recipientName, RecipientTypeEnum recipientType, String additionalInfo, String inviteKey) {
+        PostCharactersCharacterIdMailMail mail = new PostCharactersCharacterIdMailMail();
+        PostCharactersCharacterIdMailRecipient recipientItem = new PostCharactersCharacterIdMailRecipient();
+        recipientItem.setRecipientId(recipientId);
+        recipientItem.setRecipientType(recipientType);
+        mail.addRecipientsItem(recipientItem);
+        mail.setSubject(String.format("Fleet event %s", fleetName));
+
+        String body = "Hello " +
+                recipientName +
+                ",\n\n" +
+                "You have been invited to fleet event " +
+                fleetName +
+                "\n\n" +
+                "Please visit the following link to register for the event." +
+                "\n\n" +
+                generateLink(inviteKey) +
+                "\n\n" +
+                generateAdditionalInfoText(additionalInfo) +
+                "I hope to see you there." +
+                "\n\n" +
+                charName;
+        mail.setBody(body);
+
+        return mail;
+    }
+
+    private String generateLink(String inviteKey) {
+        return String.format("http://31.21.178.162:8181/fleets/invite/%s", inviteKey);
+    }
+
+    private String generateAdditionalInfoText(String additionalInfo) {
+        if (StringUtils.isNotBlank(additionalInfo)) {
+            return additionalInfo + "\n\n";
+        } else {
+            return "";
+        }
     }
 }
