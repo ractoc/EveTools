@@ -86,14 +86,18 @@ public class InviteService {
         return inviteKey;
     }
 
-    public void sendInviteMail(String charName,
+    public void sendInviteMail(Integer charId,
+                               String charName,
+                               Integer fleetId,
                                String fleetName,
                                Integer inviteeId,
                                String inviteeType,
                                String inviteeName,
                                String inviteKey,
                                String additionalInfo) throws ApiException, com.ractoc.eve.user_client.ApiException {
-        PostCharactersCharacterIdMailMail mail = generateMail(charName,
+        PostCharactersCharacterIdMailMail mail = generateMail(charId,
+                charName,
+                fleetId,
                 fleetName,
                 inviteeId,
                 inviteeName,
@@ -104,7 +108,7 @@ public class InviteService {
         mailApi.postCharactersCharacterIdMail(user.getCharId(), mail, null, user.getAccessToken());
     }
 
-    private PostCharactersCharacterIdMailMail generateMail(String charName, String fleetName, Integer recipientId, String recipientName, RecipientTypeEnum recipientType, String additionalInfo, String inviteKey) {
+    private PostCharactersCharacterIdMailMail generateMail(Integer charId, String charName, Integer fleetId, String fleetName, Integer recipientId, String recipientName, RecipientTypeEnum recipientType, String additionalInfo, String inviteKey) {
         PostCharactersCharacterIdMailMail mail = new PostCharactersCharacterIdMailMail();
         PostCharactersCharacterIdMailRecipient recipientItem = new PostCharactersCharacterIdMailRecipient();
         recipientItem.setRecipientId(recipientId);
@@ -112,32 +116,42 @@ public class InviteService {
         mail.addRecipientsItem(recipientItem);
         mail.setSubject(String.format("Fleet event %s", fleetName));
 
-        String body = "Hello " +
-                recipientName +
-                ",\n\n" +
-                "You have been invited to fleet event " +
-                fleetName +
-                "\n\n" +
-                "Please visit the following link to register for the event." +
-                "\n\n" +
-                generateLink(inviteKey) +
-                "\n\n" +
-                generateAdditionalInfoText(additionalInfo) +
-                "I hope to see you there." +
-                "\n\n" +
-                charName;
+        // TODO: link feet detail page as well
+        String body = String.format("<font size=\"13\" color=\"#ff999999\">Hello %s,</font>" +
+                        "<br><br>" +
+                        "<font size=\"13\" color=\"#ff999999\">You have been invited to fleet event %s</font>" +
+                        "<br><br>" +
+                        "<font size=\"13\" color=\"#ff999999\">Please visit the following link to register for the event.</font>" +
+                        "<br><br>" +
+                        "%s" +
+                        "<br><br>" +
+                        "%s" +
+                        "<font size=\"13\" color=\"#ff999999\">I hope to see you there.</font>" +
+                        "<br><br>" +
+                        "</font><font size=\"13\" color=\"#ffd98d00\"><a href=\"showinfo:1377//%s\">%s</a>",
+                recipientName,
+                generateFleetLink(fleetId, fleetName),
+                fleetName,
+                generateRegistrationLink(inviteKey),
+                generateAdditionalInfoText(additionalInfo),
+                charId,
+                charName);
         mail.setBody(body);
 
         return mail;
     }
 
-    private String generateLink(String inviteKey) {
-        return String.format("http://31.21.178.162:8181/fleets/invite/%s", inviteKey);
+    private String generateRegistrationLink(String inviteKey) {
+        return String.format("<font size=\"13\" color=\"#ffffe400\"><a href=\"http://31.21.178.162:8181/fleets/invite/%s\">Register</a></font>", inviteKey);
+    }
+
+    private String generateFleetLink(Integer fleetId, String fleetName) {
+        return String.format("<font size=\"13\" color=\"#ffffe400\"><a href=\"http://31.21.178.162:8181/fleet/details/%s\">%s</a></font>", fleetId, fleetName);
     }
 
     private String generateAdditionalInfoText(String additionalInfo) {
         if (StringUtils.isNotBlank(additionalInfo)) {
-            return additionalInfo + "\n\n";
+            return additionalInfo + "<br><br>";
         } else {
             return "";
         }

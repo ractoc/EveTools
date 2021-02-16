@@ -145,8 +145,10 @@ export class FleetDetailsComponent implements OnInit {
           this.fleetForm.controls.id.setValue(fleetData.id);
           this.fleetForm.controls.owner.setValue(fleetData.owner);
           this.owner = this.userService.getCurrentUser().characterId === fleet.owner;
-          this.editing = true;
+        } else if (this.editing) {
+          this.fleet = fleet;
         }
+        this.editing = false;
       },
       err => {
       });
@@ -239,7 +241,7 @@ export class FleetDetailsComponent implements OnInit {
       this.fleetForm.controls.owner.setValue(fleet.owner);
       this.fleetForm.controls.name.setValue(fleet.name);
       this.fleetForm.controls.name.disable();
-      this.fleetForm.controls.description.setValue(fleet.id);
+      this.fleetForm.controls.description.setValue(fleet.description);
       this.fleetForm.controls.description.disable();
       this.fleetForm.controls.type.setValue(fleet.type);
       this.fleetForm.controls.type.disable();
