@@ -16,10 +16,10 @@ public class FleetValidator {
         this.registrationValidator = registrationValidator;
     }
 
-    public boolean verifyFleet(FleetModel fleet, Integer charId) {
+    public boolean verifyFleet(FleetModel fleet, Integer charId, Integer corpId) {
         return fleet.getOwner().equals(charId) ||
                 !fleet.isRestricted() ||
-                inviteValidator.verifyFleetInvites(fleet, charId) ||
+                inviteValidator.verifyFleetInvites(fleet, charId, corpId) ||
                 registrationValidator.verifyFleetRegistrations(fleet, charId);
     }
 }

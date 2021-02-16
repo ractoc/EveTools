@@ -25,15 +25,18 @@ public class InviteValidator {
         this.characterApi = characterApi;
     }
 
-    public boolean verifyFleetInvites(FleetModel fleet, Integer charId) {
-        return getInvitesForFleet(fleet).stream().anyMatch(invite -> verifyInvite(fleet, invite, charId));
+    public boolean verifyFleetInvites(FleetModel fleet, Integer charId, Integer corpId) {
+        if (fleet.getOwner().equals(charId)) {
+            return true;
+        }
+        return getInvitesForFleet(fleet, charId, corpId).stream().findFirst().isPresent();
     }
 
     public boolean verifyInvite(FleetModel fleet, InvitationModel invite, Integer charId) {
+        if (fleet.getOwner().equals(charId)) {
+            return true;
+        }
         try {
-            if (fleet.getOwner().equals(charId)) {
-                return true;
-            }
             if (invite.getType().equals("character")) {
                 return invite.getId().equals(charId);
             } else {
@@ -45,7 +48,18 @@ public class InviteValidator {
         }
     }
 
-    public List<InvitationModel> getInvitesForFleet(FleetModel fleet) {
-        return inviteService.getInvitesForFleet(fleet).map(InviteMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+    public boolean verifyInvite(FleetModel fleet, InvitationModel invite, Integer charId, Integer corpId) {
+        if (fleet.getOwner().equals(charId)) {
+            return true;
+        }
+        if (invite.getType().equals("character")) {
+            return invite.getId().equals(charId);
+        } else {
+            return invite.getId().equals(corpId);
+        }
+    }
+
+    public List<InvitationModel> getInvitesForFleet(FleetModel fleet, Integer charId, Integer corpId) {
+        return inviteService.getInvitesForFleetAndCharacter(fleet.getId(), charId, corpId).map(InviteMapper.INSTANCE::dbToModel).collect(Collectors.toList());
     }
 }

@@ -12,6 +12,7 @@ import com.ractoc.eve.fleetmanager.service.RegistrationService;
 import com.ractoc.eve.fleetmanager.validator.FleetValidator;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.CharacterApi;
+import com.ractoc.eve.jesi.api.CorporationApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -43,27 +44,38 @@ public class RegistrationHandler {
     }
 
     public List<RegistrationModel> getRegistrationsForFleet(Integer fleetId, int charId) {
-        FleetModel fleet = FleetMapper.INSTANCE.dbToModel(fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("fleet not found")));
-        if (fleetValidator.verifyFleet(fleet, charId)) {
-            return registrationService.getRegistrationsForFleet(fleetId).map(RegistrationMapper.INSTANCE::dbToModel).collect(Collectors.toList());
-        } else {
-            throw new SecurityException("Access Denied");
+        try {
+            FleetModel fleet = FleetMapper.INSTANCE.dbToModel(fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("fleet not found")));
+            Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+            if (fleetValidator.verifyFleet(fleet, charId, corpId)) {
+                return registrationService.getRegistrationsForFleet(fleetId).map(RegistrationMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+            } else {
+                throw new SecurityException("Access Denied");
+            }
+        } catch (ApiException e) {
+            throw new HandlerException("Unable to fetch data from EVE ESI", e);
         }
     }
 
     public RegistrationModel getRegistrationsForFleetForCharacter(Integer fleetId, Integer characterId, int charId) {
-        FleetModel fleet = FleetMapper.INSTANCE.dbToModel(fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("fleet not found")));
-        if (fleetValidator.verifyFleet(fleet, charId)) {
-            return RegistrationMapper.INSTANCE.dbToModel(registrationService.getRegistrationsForFleetForCharacter(fleetId, characterId));
-        } else {
-            throw new SecurityException("Access Denied");
+        try {
+            FleetModel fleet = FleetMapper.INSTANCE.dbToModel(fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("fleet not found")));
+            Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+            if (fleetValidator.verifyFleet(fleet, charId, corpId)) {
+                return RegistrationMapper.INSTANCE.dbToModel(registrationService.getRegistrationsForFleetForCharacter(fleetId, characterId));
+            } else {
+                throw new SecurityException("Access Denied");
+            }
+        } catch (ApiException e) {
+            throw new HandlerException("Unable to fetch data from EVE ESI", e);
         }
     }
 
     public RegistrationModel registerForFleet(Integer fleetId, RegistrationConfirmation confirmation, int charId, String accessToken) {
         try {
             FleetModel fleet = FleetMapper.INSTANCE.dbToModel(fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("fleet not found")));
-            if (fleetValidator.verifyFleet(fleet, charId)) {
+            Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+            if (fleetValidator.verifyFleet(fleet, charId, corpId)) {
                 String charName = characterApi.getCharactersCharacterId(charId,
                         null,
                         null).getName();
@@ -92,14 +104,19 @@ public class RegistrationHandler {
         }
     }
 
-    public RegistrationModel updateRegistration(RegistrationModel registration, Integer characterId) {
-        FleetModel fleet = FleetMapper.INSTANCE.dbToModel(fleetService.getFleet(registration.getFleetId())
-                .orElseThrow(() -> new NoSuchEntryException("fleet not found")));
-        if (fleetValidator.verifyFleet(fleet, characterId)) {
-            return RegistrationMapper.INSTANCE.dbToModel(registrationService.updateRegistration(RegistrationMapper.INSTANCE.modelToDB(registration)));
-        } else {
-            deleteRegistration(registration.getFleetId(), characterId);
-            throw new SecurityException("Access Denied");
+    public RegistrationModel updateRegistration(RegistrationModel registration, Integer charId) {
+        try {
+            FleetModel fleet = FleetMapper.INSTANCE.dbToModel(fleetService.getFleet(registration.getFleetId())
+                    .orElseThrow(() -> new NoSuchEntryException("fleet not found")));
+            Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+            if (fleetValidator.verifyFleet(fleet, charId, corpId)) {
+                return RegistrationMapper.INSTANCE.dbToModel(registrationService.updateRegistration(RegistrationMapper.INSTANCE.modelToDB(registration)));
+            } else {
+                deleteRegistration(registration.getFleetId(), charId);
+                throw new SecurityException("Access Denied");
+            }
+        } catch (ApiException e) {
+            throw new HandlerException("Unable to fetch data from EVE ESI", e);
         }
     }
 
