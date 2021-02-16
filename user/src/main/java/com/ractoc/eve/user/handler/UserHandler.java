@@ -117,7 +117,6 @@ public class UserHandler {
                                     user.getExpiresIn().orElseThrow(() -> new AccessDeniedException("evetools"))))
                             .accessToken(user.getAccessToken().orElseThrow(() -> new AccessDeniedException("evetools")))
                             .build();
-                    result.setRoles(getRoles(result.getCharId(), result.getAccessToken(), "evetools"));
                     return result;
                 })
                 .orElseThrow(() -> new AccessDeniedException("evetools"));

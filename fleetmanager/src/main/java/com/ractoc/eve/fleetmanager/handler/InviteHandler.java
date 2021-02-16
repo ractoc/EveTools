@@ -61,7 +61,15 @@ public class InviteHandler {
             String fleetName = getFleetName(fleetId, charId);
             Fleet fleet = fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("No fleet found linked to invitation."));
             String inviteKey = inviteService.invite(fleetId, invitation.getId(), invitation.getType());
-            inviteService.sendInviteMail(charName, fleetName, invitation.getId(), invitation.getType(), inviteeName, inviteKey, fleet.getDescription().orElse(""));
+            inviteService.sendInviteMail(charId,
+                    charName,
+                    fleetId,
+                    fleetName,
+                    invitation.getId(),
+                    invitation.getType(),
+                    inviteeName,
+                    inviteKey,
+                    fleet.getDescription().orElse(""));
             return getInvitesForFleet(fleetId, charId);
         } catch (ApiException | com.ractoc.eve.user_client.ApiException e) {
             throw new HandlerException("unable to send create invitation", e);
