@@ -106,11 +106,16 @@ public class InviteHandler {
     }
 
     public List<InvitationModel> getInvitesForFleet(Integer fleetId, int charId) {
-        Fleet fleet = fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("fleet not found"));
-        if (fleetValidator.verifyFleet(FleetMapper.INSTANCE.dbToModel(fleet), charId)) {
-            return inviteService.getInvitesForFleet(fleetId).map(InviteMapper.INSTANCE::dbToModel).collect(Collectors.toList());
-        } else {
-            throw new SecurityException(ACCESS_DENIED);
+        try {
+            Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+            Fleet fleet = fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("fleet not found"));
+            if (fleetValidator.verifyFleet(FleetMapper.INSTANCE.dbToModel(fleet), charId, corpId)) {
+                return inviteService.getInvitesForFleet(fleetId).map(InviteMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+            } else {
+                throw new SecurityException(ACCESS_DENIED);
+            }
+        } catch (ApiException e) {
+            throw new HandlerException("Unable to fetch data from EVE ESI", e);
         }
     }
 
@@ -146,9 +151,14 @@ public class InviteHandler {
     }
 
     private FleetModel getFleet(Integer fleetId, Integer charId) {
-        return fleetService.getFleet(fleetId)
-                .map(FleetMapper.INSTANCE::dbToModel)
-                .filter(f -> fleetValidator.verifyFleet(f, charId))
-                .orElseThrow(() -> new NoSuchEntryException(String.format("No fleet found for id %d", fleetId)));
+        try {
+            Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+            return fleetService.getFleet(fleetId)
+                    .map(FleetMapper.INSTANCE::dbToModel)
+                    .filter(f -> fleetValidator.verifyFleet(f, charId, corpId))
+                    .orElseThrow(() -> new NoSuchEntryException(String.format("No fleet found for id %d", fleetId)));
+        } catch (ApiException e) {
+            throw new HandlerException("Unable to fetch data from EVE ESI", e);
+        }
     }
 }

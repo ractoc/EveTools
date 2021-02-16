@@ -48,13 +48,14 @@ export class FleetFinderComponent implements OnInit {
       this.localStorageService.set('currentPage', '/fleet/find');
       this.router.navigateByUrl('/user/login');
     } else {
-      const formData: string = this.localStorageService.get('searchParams');
+      const formData: any = this.localStorageService.get('searchParams');
       console.log('formData', formData);
       this.loadTypes();
       this.loadRoles();
       if (formData) {
-        this.fleetForm.setValue(JSON.parse(formData));
+        this.fleetForm.setValue(JSON.parse(formData)) ;
         this.doSearch();
+        this.localStorageService.remove('searchParams')
       }
     }
   }
