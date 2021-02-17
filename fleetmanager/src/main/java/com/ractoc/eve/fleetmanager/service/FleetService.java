@@ -41,16 +41,16 @@ public class FleetService {
     public Stream<Fleet> searchFleets(FleetSearchParams params, int charId, int corpId) {
         Stream<Fleet> fleets = fleetManager.stream();
         if (params.getStart() != null) {
-            fleets.filter(Fleet.START_DATE_TIME.greaterThan(Timestamp.valueOf(params.getStart())));
+            fleets = fleets.filter(Fleet.START_DATE_TIME.greaterThan(Timestamp.valueOf(params.getStart())));
         }
         if (params.getEnd() != null) {
-            fleets.filter(Fleet.START_DATE_TIME.lessThan(Timestamp.valueOf(params.getEnd())));
+            fleets = fleets.filter(Fleet.START_DATE_TIME.lessThan(Timestamp.valueOf(params.getEnd())));
         }
         if (params.isOwned()) {
             fleets.filter(OWNER.equal(charId));
         }
         if (ArrayUtils.isNotEmpty(params.getFleetTypes())) {
-            fleets.filter(TYPE_ID.in(Arrays.stream(params.getFleetTypes()).map(TypeModel::getId).collect(Collectors.toList())));
+            fleets = fleets.filter(TYPE_ID.in(Arrays.stream(params.getFleetTypes()).map(TypeModel::getId).collect(Collectors.toList())));
         }
         return fleets;
     }
@@ -58,13 +58,13 @@ public class FleetService {
     private Stream<Fleet> searchFleetsInvited(FleetSearchParams params, Integer charId, Integer corpId) {
         JoinBuilder1<Fleet> join = joinComponent.from(FleetManager.IDENTIFIER);
         if (params.getStart() != null) {
-            join.where(Fleet.START_DATE_TIME.greaterThan(Timestamp.valueOf(params.getStart())));
+            join = join.where(Fleet.START_DATE_TIME.greaterThan(Timestamp.valueOf(params.getStart())));
         }
         if (params.getEnd() != null) {
-            join.where(Fleet.START_DATE_TIME.lessThan(Timestamp.valueOf(params.getEnd())));
+            join = join.where(Fleet.START_DATE_TIME.lessThan(Timestamp.valueOf(params.getEnd())));
         }
         if (ArrayUtils.isNotEmpty(params.getFleetTypes())) {
-            join.where(TYPE_ID.in(Arrays.stream(params.getFleetTypes()).map(TypeModel::getId).collect(Collectors.toList())));
+            join = join.where(TYPE_ID.in(Arrays.stream(params.getFleetTypes()).map(TypeModel::getId).collect(Collectors.toList())));
         }
         return join.innerJoinOn(Invite.FLEET_ID).equal(Fleet.ID)
                 .where((Invite.TYPE.equal("character").and(Invite.INVITEE_ID.equal(charId)))
