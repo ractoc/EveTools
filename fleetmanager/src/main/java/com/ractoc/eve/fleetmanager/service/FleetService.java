@@ -3,9 +3,12 @@ package com.ractoc.eve.fleetmanager.service;
 import com.ractoc.eve.domain.fleetmanager.TypeModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.FleetManager;
-import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.role_fleet.RoleFleetManager;
+import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.Invite;
 import com.ractoc.eve.fleetmanager.model.FleetSearchParams;
+import com.speedment.common.tuple.nullable.Tuple2OfNullables;
 import com.speedment.runtime.core.exception.SpeedmentException;
+import com.speedment.runtime.join.JoinComponent;
+import com.speedment.runtime.join.builder.JoinBuilder1;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,31 +26,30 @@ import static com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet
 public class FleetService {
 
     private final FleetManager fleetManager;
-    private final RoleFleetManager roleFleetManager;
-    private final RegistrationService registrationService;
-    private final InviteService inviteService;
+    private final JoinComponent joinComponent;
 
     @Autowired
     public FleetService(FleetManager fleetManager,
-                        RoleFleetManager roleFleetManager,
-                        RegistrationService registrationService,
-                        InviteService inviteService) {
+                        JoinComponent joinComponent) {
         this.fleetManager = fleetManager;
-        this.roleFleetManager = roleFleetManager;
-        this.registrationService = registrationService;
-        this.inviteService = inviteService;
+        this.joinComponent = joinComponent;
     }
 
-    public Stream<Fleet> searchFleets(FleetSearchParams params, int charId, int corpId) {
+    public Stream<Fleet> searchFleets(FleetSearchParams params, Integer charId, Integer corpId) {
+        if (params.isInvited()) {
+            return searchFleetsInvited(params, charId, corpId);
+        }
         Stream<Fleet> fleets = fleetManager.stream();
+        if (params.isOwned()) {
+            fleets = fleets.filter(OWNER.equal(charId));
+        } else {
+            fleets = fleets.filter(Fleet.RESTRICTED.equal(false));
+        }
         if (params.getStart() != null) {
             fleets = fleets.filter(Fleet.START_DATE_TIME.greaterThan(Timestamp.valueOf(params.getStart())));
         }
         if (params.getEnd() != null) {
             fleets = fleets.filter(Fleet.START_DATE_TIME.lessThan(Timestamp.valueOf(params.getEnd())));
-        }
-        if (params.isOwned()) {
-            fleets.filter(OWNER.equal(charId));
         }
         if (ArrayUtils.isNotEmpty(params.getFleetTypes())) {
             fleets = fleets.filter(TYPE_ID.in(Arrays.stream(params.getFleetTypes()).map(TypeModel::getId).collect(Collectors.toList())));
