@@ -25,14 +25,14 @@
         <mat-option *ngFor="let role of roles" [value]="role">{{role.name}}</mat-option>
       </mat-select>
     </mat-form-field>
-    <!--<span [formGroup]="fleetForm">
-      <mat-checkbox formControlName="invited" color="primary">Invited</mat-checkbox>
-    </span>
     <span [formGroup]="fleetForm">
-      <mat-checkbox formControlName="registered" color="primary">Registered</mat-checkbox>
+      <mat-checkbox formControlName="invited" color="primary" (change)="changeCheck('invited', $event.checked)">Invited</mat-checkbox>
+    </span>
+    <!--<span [formGroup]="fleetForm">
+      <mat-checkbox formControlName="registered" color="primary" (change)="changeCheck('registered', $event.checked)">Registered</mat-checkbox>
     </span>-->
     <span [formGroup]="fleetForm">
-      <mat-checkbox formControlName="owned" color="primary">Owned</mat-checkbox>
+      <mat-checkbox formControlName="owned" color="primary" (change)="changeCheck('owned', $event.checked)">Owned</mat-checkbox>
     </span>
     <button mat-icon-button aria-label="Search" (click)="doSearch()">
       <mat-icon>search</mat-icon>

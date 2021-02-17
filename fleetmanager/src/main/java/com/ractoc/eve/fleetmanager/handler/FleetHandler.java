@@ -46,7 +46,6 @@ public class FleetHandler {
             Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
             return fleetService.searchFleets(params, charId, corpId)
                     .map(FleetMapper.INSTANCE::dbToModel)
-                    .filter(fleet -> fleetValidator.verifyFleet(fleet, charId, corpId))
                     .collect(Collectors.toList());
         } catch (ApiException e) {
             throw new HandlerException("Unable to fetch data from EVE ESI", e);
