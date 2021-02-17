@@ -28,11 +28,12 @@ export class FleetFinderComponent implements OnInit {
     registered: new FormControl(false),
     owned: new FormControl(false)
   });
-
+  displayedColumns: string[] = ['name', 'start', 'type', 'restricted'];
   private types: Type[];
   private roles: Role[];
   private fleets: Fleet[];
-  displayedColumns: string[] = ['name', 'start', 'type', 'restricted'];
+  private ownedChecked: boolean;
+  private invitedChecked: boolean;
 
   constructor(private router: Router,
               private userService: UserService,
@@ -49,13 +50,62 @@ export class FleetFinderComponent implements OnInit {
       this.router.navigateByUrl('/user/login');
     } else {
       const formData: any = this.localStorageService.get('searchParams');
-      console.log('formData', formData);
       this.loadTypes();
       this.loadRoles();
       if (formData) {
-        this.fleetForm.setValue(JSON.parse(formData)) ;
+        this.fleetForm.setValue(JSON.parse(formData));
         this.doSearch();
         this.localStorageService.remove('searchParams')
+      }
+    }
+  }
+
+  convertStartToDate(start: string) {
+    return DateUtil.parseDate(start);
+  }
+
+  doSearch() {
+    this.hideError();
+    this.fleets = undefined;
+    this.fleetService.find(this.fleetForm.value).subscribe(
+      (fleetData: Fleet[]) => {
+        if (fleetData && fleetData.length > 0) {
+          this.fleets = fleetData;
+        } else {
+          this.showError('No fleets to display');
+        }
+      },
+      err => {
+        this.showError('There was a problem executing your search');
+      }
+    );
+  }
+
+  showError(msg: string) {
+    this.snackBar.open(msg, '', {
+      duration: 30000
+    });
+  }
+
+  hideError() {
+    this.snackBar.dismiss();
+  }
+
+  showFleetDetails(fleet: Fleet) {
+    this.localStorageService.set('searchParams', JSON.stringify(this.fleetForm.value));
+    this.router.navigateByUrl('/fleet/details/' + fleet.id);
+  }
+
+  compareById(t1: any, t2: any) {
+    return t1 && t2 && t1.id === t2.id;
+  }
+
+  changeCheck(field: string, checked: boolean) {
+    if (checked) {
+      if (field === 'invited') {
+        this.fleetForm.controls.owned.setValue(false);
+      } else if (field === 'owned') {
+        this.fleetForm.controls.invited.setValue(false);
       }
     }
   }
@@ -74,42 +124,5 @@ export class FleetFinderComponent implements OnInit {
         this.roles = roleData;
       }
     );
-  }
-
-  convertStartToDate(start: string) {
-    return DateUtil.parseDate(start);
-  }
-
-  doSearch() {
-    this.fleets = undefined;
-    this.fleetService.find(this.fleetForm.value).subscribe(
-      (fleetData: Fleet[]) => {
-        if (fleetData && fleetData.length > 0) {
-          this.fleets = fleetData;
-        } else {
-          console.log('no fleets found')
-          this.showError('No fleets to display');
-        }
-      },
-      err => {
-        this.showError('There was a problem executing your search');
-      }
-    );
-  }
-
-  showError(msg: string) {
-    this.snackBar.open(msg, '', {
-      duration: 30000
-    });
-  }
-
-  showFleetDetails(fleet: Fleet) {
-    this.localStorageService.set('searchParams', JSON.stringify(this.fleetForm.value));
-    console.log('searchParams', JSON.stringify(this.fleetForm.value));
-    this.router.navigateByUrl('/fleet/details/' + fleet.id);
-  }
-
-  compareById(t1: any, t2: any) {
-    return t1 && t2 && t1.id === t2.id;
   }
 }

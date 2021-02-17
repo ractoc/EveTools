@@ -55,6 +55,27 @@ public class FleetService {
         return fleets;
     }
 
+    private Stream<Fleet> searchFleetsInvited(FleetSearchParams params, Integer charId, Integer corpId) {
+        JoinBuilder1<Fleet> join = joinComponent.from(FleetManager.IDENTIFIER);
+        if (params.getStart() != null) {
+            join.where(Fleet.START_DATE_TIME.greaterThan(Timestamp.valueOf(params.getStart())));
+        }
+        if (params.getEnd() != null) {
+            join.where(Fleet.START_DATE_TIME.lessThan(Timestamp.valueOf(params.getEnd())));
+        }
+        if (ArrayUtils.isNotEmpty(params.getFleetTypes())) {
+            join.where(TYPE_ID.in(Arrays.stream(params.getFleetTypes()).map(TypeModel::getId).collect(Collectors.toList())));
+        }
+        return join.innerJoinOn(Invite.FLEET_ID).equal(Fleet.ID)
+                .where((Invite.TYPE.equal("character").and(Invite.INVITEE_ID.equal(charId)))
+                        .or((Invite.TYPE.equal("corporation").and(Invite.INVITEE_ID.equal(corpId)))))
+                .build()
+                .stream()
+                .map(Tuple2OfNullables::get0)
+                .filter(Optional::isPresent)
+                .map(Optional::get);
+    }
+
     public Optional<Fleet> getFleet(int id) {
         return fleetManager.stream().filter(fleet -> fleet.getId() == id).findFirst();
     }
