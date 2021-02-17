@@ -58,8 +58,8 @@ public class InviteService {
     public Stream<Invite> getInvitesForFleetAndCharacter(Integer fleetId, Integer characterId, Integer corpId) {
         return inviteManager.stream()
                 .filter(Invite.FLEET_ID.equal(fleetId))
-                .filter(Invite.TYPE.equal("character").and(Invite.INVITEE_ID.equal(characterId)))
-                .filter(Invite.TYPE.equal("corporation").and(Invite.INVITEE_ID.equal(corpId)));
+                .filter((Invite.TYPE.equal("character").and(Invite.INVITEE_ID.equal(characterId)))
+                        .or(Invite.TYPE.equal("corporation").and(Invite.INVITEE_ID.equal(corpId))));
     }
 
     public void deleteInvitation(Integer fleetId, int id) {
