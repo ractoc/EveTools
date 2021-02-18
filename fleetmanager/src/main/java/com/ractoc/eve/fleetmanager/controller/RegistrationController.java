@@ -90,10 +90,8 @@ public class RegistrationController extends BaseController {
     public ResponseEntity<BaseResponse> confirmationForFleet(@PathVariable("fleetId") Integer fleetId, @RequestBody RegistrationConfirmation confirmation, @AuthenticationPrincipal Authentication authentication) {
         try {
             return new ResponseEntity<>(
-                    new RegistrationDetailsResponse(OK, registrationHandler.registerForFleet(fleetId,
-                            confirmation,
-                            ((EveUserDetails) authentication.getPrincipal()).getCharId(),
-                            ((EveUserDetails) authentication.getPrincipal()).getAccessToken())
+                    new RegistrationListResponse(OK, registrationHandler.registerForFleet(fleetId,
+                            ((EveUserDetails) authentication.getPrincipal()).getCharId())
                     )
                     , OK);
         } catch (ServiceException e) {

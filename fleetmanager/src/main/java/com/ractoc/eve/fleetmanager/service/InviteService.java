@@ -123,7 +123,6 @@ public class InviteService {
         mail.addRecipientsItem(recipientItem);
         mail.setSubject(String.format("Fleet event %s", fleetName));
 
-        // TODO: link feet detail page as well
         String body = String.format("<font size=\"13\" color=\"#ff999999\">Hello %s,</font>" +
                         "<br><br>" +
                         "<font size=\"13\" color=\"#ff999999\">You have been invited to fleet event %s</font>" +
@@ -138,7 +137,6 @@ public class InviteService {
                         "</font><font size=\"13\" color=\"#ffd98d00\"><a href=\"showinfo:1377//%s\">%s</a>",
                 recipientName,
                 generateFleetLink(fleetId, fleetName),
-                fleetName,
                 generateRegistrationLink(inviteKey),
                 generateAdditionalInfoText(additionalInfo),
                 charId,
@@ -149,7 +147,7 @@ public class InviteService {
     }
 
     private String generateRegistrationLink(String inviteKey) {
-        return String.format("<font size=\"13\" color=\"#ffffe400\"><a href=\"http://31.21.178.162:8181/fleets/invite/%s\">Register</a></font>", inviteKey);
+        return String.format("<font size=\"13\" color=\"#ffffe400\"><a href=\"http://31.21.178.162:8181/fleets/register/%s\">Register</a></font>", inviteKey);
     }
 
     private String generateFleetLink(Integer fleetId, String fleetName) {

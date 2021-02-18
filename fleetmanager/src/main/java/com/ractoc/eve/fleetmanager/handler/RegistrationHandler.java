@@ -4,15 +4,12 @@ import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.domain.fleetmanager.RegistrationModel;
 import com.ractoc.eve.fleetmanager.mapper.FleetMapper;
 import com.ractoc.eve.fleetmanager.mapper.RegistrationMapper;
-import com.ractoc.eve.fleetmanager.model.RegistrationConfirmation;
 import com.ractoc.eve.fleetmanager.service.FleetService;
-import com.ractoc.eve.fleetmanager.service.InviteService;
 import com.ractoc.eve.fleetmanager.service.NoSuchEntryException;
 import com.ractoc.eve.fleetmanager.service.RegistrationService;
 import com.ractoc.eve.fleetmanager.validator.FleetValidator;
 import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.CharacterApi;
-import com.ractoc.eve.jesi.api.CorporationApi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -27,17 +24,14 @@ public class RegistrationHandler {
 
     private final FleetService fleetService;
     private final RegistrationService registrationService;
-    private final InviteService inviteService;
     private final FleetValidator fleetValidator;
     private final CharacterApi characterApi;
 
     public RegistrationHandler(RegistrationService registrationService,
-                               InviteService inviteService,
                                FleetService fleetService,
                                FleetValidator fleetValidator,
                                CharacterApi characterApi) {
         this.registrationService = registrationService;
-        this.inviteService = inviteService;
         this.fleetValidator = fleetValidator;
         this.characterApi = characterApi;
         this.fleetService = fleetService;
@@ -71,9 +65,12 @@ public class RegistrationHandler {
         }
     }
 
-    public RegistrationModel registerForFleet(Integer fleetId, RegistrationConfirmation confirmation, int charId, String accessToken) {
+    public List<RegistrationModel> registerForFleet(Integer fleetId, int charId) {
         try {
             FleetModel fleet = FleetMapper.INSTANCE.dbToModel(fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("fleet not found")));
+            if (fleet.isRestricted()) {
+                throw new HandlerException("Not allowed to register directly on a restricted fleet.");
+            }
             Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
             if (fleetValidator.verifyFleet(fleet, charId, corpId)) {
                 String charName = characterApi.getCharactersCharacterId(charId,
@@ -82,20 +79,12 @@ public class RegistrationHandler {
                 String ownerName = characterApi.getCharactersCharacterId(fleet.getOwner(),
                         null,
                         null).getName();
-                RegistrationModel registration = RegistrationMapper.INSTANCE.dbToModel(
-                        registrationService.registerForFleet(
-                                fleetId,
-                                charId,
-                                charName,
-                                confirmation.isAccept()));
-                inviteService.deleteInvitation(fleetId, charId);
-                if (confirmation.isAccept()) {
-                    registrationService.sendRegistrationNotification(fleet.getName(), charId, charName, fleet.getOwner(), ownerName, accessToken);
-                    return registration;
-                } else {
-                    registrationService.sendDenyNotification(fleet.getName(), charId, charName, fleet.getOwner(), ownerName, accessToken);
-                    return null;
-                }
+                registrationService.registerForFleet(
+                        fleetId,
+                        charId,
+                        charName);
+                registrationService.sendRegistrationNotification(fleetId, fleet.getName(), charId, charName, fleet.getOwner(), ownerName);
+                return getRegistrationsForFleet(fleetId, charId);
             } else {
                 throw new SecurityException("Access Denied");
             }
@@ -104,13 +93,13 @@ public class RegistrationHandler {
         }
     }
 
-    public RegistrationModel updateRegistration(RegistrationModel registration, Integer charId) {
+    public void updateRegistration(RegistrationModel registration, Integer charId) {
         try {
             FleetModel fleet = FleetMapper.INSTANCE.dbToModel(fleetService.getFleet(registration.getFleetId())
                     .orElseThrow(() -> new NoSuchEntryException("fleet not found")));
             Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
             if (fleetValidator.verifyFleet(fleet, charId, corpId)) {
-                return RegistrationMapper.INSTANCE.dbToModel(registrationService.updateRegistration(RegistrationMapper.INSTANCE.modelToDB(registration)));
+                registrationService.updateRegistration(RegistrationMapper.INSTANCE.modelToDB(registration));
             } else {
                 deleteRegistration(registration.getFleetId(), charId);
                 throw new SecurityException("Access Denied");

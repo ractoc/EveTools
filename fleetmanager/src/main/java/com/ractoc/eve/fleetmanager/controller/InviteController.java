@@ -50,7 +50,7 @@ public class InviteController {
         try {
             return new ResponseEntity<>(new InviteListResponse(CREATED,
                     inviteHandler.invite(fleetId, invitation,
-                    ((EveUserDetails) authentication.getPrincipal()).getCharId())),
+                            ((EveUserDetails) authentication.getPrincipal()).getCharId())),
                     CREATED);
         } catch (ServiceException e) {
             log.error(e.getMessage(), e);
@@ -125,6 +125,42 @@ public class InviteController {
                     , OK);
         } catch (ServiceException e) {
             e.printStackTrace();
+            return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(value = "Accept invitation", response = InviteListResponse.class, consumes = "application/json", produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "The invite was successfully accepted", response = InviteListResponse.class),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
+    @PostMapping(value = "/accept/{invitationId}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> acceptInvitation(@PathVariable("invitationId") Integer invitationId,
+                                                         @AuthenticationPrincipal Authentication authentication) {
+        try {
+            return new ResponseEntity<>(new InviteListResponse(CREATED,
+                    inviteHandler.acceptInvitation(invitationId, ((EveUserDetails) authentication.getPrincipal()).getCharId())),
+                    CREATED);
+        } catch (ServiceException e) {
+            log.error(e.getMessage(), e);
+            return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(value = "Deny invitation", response = InviteListResponse.class, consumes = "application/json", produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 410, message = "The invite was successfully denied", response = InviteListResponse.class),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
+    @DeleteMapping(value = "/deny/{invitationId}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> denyInvitation(@PathVariable("invitationId") Integer invitationId,
+                                                         @AuthenticationPrincipal Authentication authentication) {
+        try {
+            return new ResponseEntity<>(new InviteListResponse(GONE,
+                    inviteHandler.denyInvitation(invitationId, ((EveUserDetails) authentication.getPrincipal()).getCharId())),
+                    OK);
+        } catch (ServiceException e) {
+            log.error(e.getMessage(), e);
             return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
         }
     }

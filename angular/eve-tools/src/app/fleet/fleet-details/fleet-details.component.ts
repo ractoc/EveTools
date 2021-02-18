@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewChecked, Component, OnInit, Renderer2} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
@@ -27,7 +27,7 @@ import {CorporationService} from "../../services/corporation.service";
   templateUrl: './fleet-details.component.html',
   styleUrls: ['./fleet-details.component.css']
 })
-export class FleetDetailsComponent implements OnInit {
+export class FleetDetailsComponent implements OnInit, AfterViewChecked {
 
   subTitle: String;
   fleet: Fleet;
@@ -36,6 +36,9 @@ export class FleetDetailsComponent implements OnInit {
   fleetInvitations: Invitation[];
   editing: boolean;
   owner: boolean;
+  private routeListener$: Subscription;
+  private myInvite: Invitation;
+
   fleetForm = new FormGroup({
     id: new FormControl(),
     owner: new FormControl(),
@@ -54,7 +57,6 @@ export class FleetDetailsComponent implements OnInit {
       Validators.required]),
     restricted: new FormControl()
   });
-  private routeListener$: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -67,7 +69,8 @@ export class FleetDetailsComponent implements OnInit {
     private invitationService: InvitationService,
     private characterService: CharacterService,
     private corporationService: CorporationService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private renderer: Renderer2
   ) {
   }
 
@@ -80,6 +83,8 @@ export class FleetDetailsComponent implements OnInit {
         .subscribe((params: any) => {
             if (params.id) {
               this.loadFleet(params.id);
+            } else if (params.key) {
+              this.loadInvitation(params.key);
             } else {
               this.subTitle = 'New Fleet';
               this.initFleetForm(undefined);
@@ -87,6 +92,15 @@ export class FleetDetailsComponent implements OnInit {
           }
         );
       this.loadTypes();
+    }
+  }
+
+  ngAfterViewChecked() {
+    if(this.myInvite) {
+      const itemToScrollTo = document.getElementById(String(this.myInvite.id));
+      if (itemToScrollTo) {
+        itemToScrollTo.scrollIntoView({behavior:"smooth"});
+      }
     }
   }
 
@@ -290,5 +304,39 @@ export class FleetDetailsComponent implements OnInit {
         invitation.icon = portrait;
       })
     })
+  }
+
+  isMyInvite(invitation: Invitation) {
+    if (invitation.type === 'character') {
+      return invitation.inviteeId === this.userService.getCurrentUser().characterId;
+    }
+    if (invitation.type === 'corporation') {
+      return invitation.inviteeId === this.userService.getCurrentUser().corporationId;
+    }
+  }
+
+  acceptInvitation(invitation: Invitation) {
+    this.invitationService.acceptInvitation(invitation.id).subscribe(
+      (invitationData: Invitation[]) => {
+        this.fleetInvitations = invitationData.map(invitation => this.populateInvitation(invitation));
+      }
+    );
+  }
+
+  denyInvitation(invitation: Invitation) {
+    this.invitationService.denyInvitation(invitation.id).subscribe(
+      (invitationData: Invitation[]) => {
+        this.fleetInvitations = invitationData.map(invitation => this.populateInvitation(invitation));
+      }
+    );
+  }
+
+  private loadInvitation(key:string) {
+    this.invitationService.loadInvitation(key).subscribe(
+      (invitationData: Invitation) => {
+        this.myInvite = invitationData;
+        this.loadFleet(invitationData.fleetId);
+      }
+    );
   }
 }
