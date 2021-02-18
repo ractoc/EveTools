@@ -50,6 +50,24 @@ export class InvitationService {
       );
   }
 
+  loadInvitation(key: string) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.userService.getEveState()
+      })
+    };
+    return this.http.get<any>(INVITES_URI + '/' + key, httpOptions)
+      .pipe(
+        map(result => {
+          if (result.responseCode >= 400) {
+            throw new Error('broken API:' + result.responseCode);
+          } else {
+            return result.invite;
+          }
+        })
+      );
+  }
+
   removeInvitation(id: number) {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -60,6 +78,42 @@ export class InvitationService {
       .pipe(
         map(result => {
           if (result.responseCode !== 410) {
+            throw new Error('broken API:' + result.responseCode);
+          } else {
+            return result.invites?result.invites:[];
+          }
+        })
+      );
+  }
+
+  denyInvitation(id: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.userService.getEveState()
+      })
+    };
+    return this.http.delete<any>(INVITES_URI + '/deny/' + id, httpOptions)
+      .pipe(
+        map(result => {
+          if (result.responseCode !== 410) {
+            throw new Error('broken API:' + result.responseCode);
+          } else {
+            return result.invites?result.invites:[];
+          }
+        })
+      );
+  }
+
+  acceptInvitation(id:number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + this.userService.getEveState()
+      })
+    };
+    return this.http.post<any>(INVITES_URI + '/accept/' + id, undefined, httpOptions)
+      .pipe(
+        map(result => {
+          if (result.responseCode > 400) {
             throw new Error('broken API:' + result.responseCode);
           } else {
             return result.invites?result.invites:[];

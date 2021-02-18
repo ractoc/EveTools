@@ -7,6 +7,8 @@ import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.MailApi;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailMail;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient;
+import com.ractoc.eve.user_client.api.UserResourceApi;
+import com.ractoc.eve.user_client.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +22,13 @@ import static com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient.R
 public class RegistrationService {
 
     private final RegistrationsManager registrationsManager;
+    private final UserResourceApi userResourceApi;
     private final MailApi mailApi;
 
     @Autowired
-    public RegistrationService(RegistrationsManager registrationsManager, MailApi mailApi) {
+    public RegistrationService(RegistrationsManager registrationsManager, UserResourceApi userResourceApi, MailApi mailApi) {
         this.registrationsManager = registrationsManager;
+        this.userResourceApi = userResourceApi;
         this.mailApi = mailApi;
     }
 
@@ -45,63 +49,97 @@ public class RegistrationService {
         return registrationsManager.stream().filter(FLEET_ID.equal(fleetId)).filter(CHARACTER_ID.equal(charId)).findFirst();
     }
 
-    public Registrations registerForFleet(Integer fleetId, int charId, String charName, boolean accept) {
+
+    public void registerForFleet(Integer fleetId, int charId, String charName) {
+        // First we remove any existing fleet registration for this character on the fleet event.
+        // This allows a character to re-register after first denying.
+        getRegistration(fleetId, charId).ifPresent(this::deleteRegistration);
+
         Registrations registrations = new RegistrationsImpl();
         registrations.setCharacterId(charId);
         registrations.setFleetId(fleetId);
         registrations.setName(charName);
-        registrations.setAccept(accept);
-        return registrationsManager.persist(registrations);
+        registrations.setAccept(true);
+        registrationsManager.persist(registrations);
     }
 
-    public void sendRegistrationNotification(String fleetName, int characterId, String charName, Integer ownerId, String ownerName, String accessToken) {
+    public void unRegisterForFleet(Integer fleetId, int charId, String charName) {
+        // First we remove any existing fleet registration for this character on the fleet event.
+        // This allows a character to re-register after first denying.
+        getRegistration(fleetId, charId).ifPresent(this::deleteRegistration);
+
+        Registrations registrations = new RegistrationsImpl();
+        registrations.setCharacterId(charId);
+        registrations.setFleetId(fleetId);
+        registrations.setName(charName);
+        registrations.setAccept(false);
+        registrationsManager.persist(registrations);
+    }
+
+    public void sendRegistrationNotification(Integer fleetId, String fleetName, int charId, String charName, Integer ownerId, String ownerName) {
         try {
-            PostCharactersCharacterIdMailMail mail = generateAcceptMail(charName, fleetName, ownerId, ownerName);
-            mailApi.postCharactersCharacterIdMail(characterId, mail, null, accessToken);
-        } catch (ApiException e) {
+            PostCharactersCharacterIdMailMail mail = generateAcceptMail(charId, charName, fleetId, fleetName, ownerId, ownerName);
+            UserModel user = userResourceApi.getEveTools();
+            mailApi.postCharactersCharacterIdMail(user.getCharId(), mail, null, user.getAccessToken());
+        } catch (ApiException | com.ractoc.eve.user_client.ApiException e) {
             throw new ServiceException("unable to send invite mail", e);
         }
     }
 
-    private PostCharactersCharacterIdMailMail generateAcceptMail(String charName, String fleetName, Integer ownerId, String ownerName) {
+    private PostCharactersCharacterIdMailMail generateAcceptMail(int charId, String charName, Integer fleetId, String fleetName, Integer ownerId, String ownerName) {
         PostCharactersCharacterIdMailMail mail = new PostCharactersCharacterIdMailMail();
         PostCharactersCharacterIdMailRecipient recipientItem = new PostCharactersCharacterIdMailRecipient();
         recipientItem.setRecipientId(ownerId);
         recipientItem.setRecipientType(CHARACTER);
         mail.addRecipientsItem(recipientItem);
-        mail.setBody(String.format("Hello %s,\n\n" +
-                        "I accepted your invitation for the fleet event, %s.\n\n" +
-                        "I will see you there.\n\n" +
-                        "%s",
+        String body = String.format("<font size=\"13\" color=\"#ff999999\">Hello %s,</font>" +
+                        "<br><br>" +
+                        "<font size=\"13\" color=\"#ff999999\">I accepted your invitation for the fleet event, %s.</font>" +
+                        "<br><br>" +
+                        "<font size=\"13\" color=\"#ff999999\">I will see you there.</font>" +
+                        "<br><br>" +
+                        "</font><font size=\"13\" color=\"#ffd98d00\"><a href=\"showinfo:1377//%s\">%s</a>",
                 ownerName,
-                fleetName,
-                charName));
+                generateFleetLink(fleetId, fleetName),
+                charId,
+                charName);
+        mail.setBody(body);
         mail.setSubject(String.format("Fleet event %s", fleetName));
         return mail;
     }
 
-    public void sendDenyNotification(String fleetName, int characterId, String charName, Integer ownerId, String ownerName, String accessToken) {
+    private String generateFleetLink(Integer fleetId, String fleetName) {
+        return String.format("<font size=\"13\" color=\"#ffffe400\"><a href=\"http://31.21.178.162:8181/fleet/details/%s\">%s</a></font>", fleetId, fleetName);
+    }
+
+    public void sendDenyNotification(Integer fleetId, String fleetName, int charId, String charName, Integer ownerId, String ownerName) {
         try {
-            PostCharactersCharacterIdMailMail mail = generateDenyMail(charName, fleetName, ownerId, ownerName);
-            mailApi.postCharactersCharacterIdMail(characterId, mail, null, accessToken);
-        } catch (ApiException e) {
+            PostCharactersCharacterIdMailMail mail = generateDenyMail(charId, charName, fleetId, fleetName, ownerId, ownerName);
+            UserModel user = userResourceApi.getEveTools();
+            mailApi.postCharactersCharacterIdMail(user.getCharId(), mail, null, user.getAccessToken());
+        } catch (ApiException | com.ractoc.eve.user_client.ApiException e) {
             throw new ServiceException("unable to send invite mail", e);
         }
     }
 
-    private PostCharactersCharacterIdMailMail generateDenyMail(String charName, String fleetName, Integer ownerId, String ownerName) {
+    private PostCharactersCharacterIdMailMail generateDenyMail(int charId, String charName, Integer fleetId, String fleetName, Integer ownerId, String ownerName) {
         PostCharactersCharacterIdMailMail mail = new PostCharactersCharacterIdMailMail();
         PostCharactersCharacterIdMailRecipient recipientItem = new PostCharactersCharacterIdMailRecipient();
         recipientItem.setRecipientId(ownerId);
         recipientItem.setRecipientType(CHARACTER);
         mail.addRecipientsItem(recipientItem);
-        mail.setBody(String.format("Hello %s,\n\n" +
-                        "I have not accepted your invitation for the fleet event, %s.\n\n" +
-                        "I will not see you there.\n\n" +
-                        "%s",
+        String body = String.format("<font size=\"13\" color=\"#ff999999\">Hello %s,</font>" +
+                        "<br><br>" +
+                        "<font size=\"13\" color=\"#ff999999\">I have not accepted your invitation for the fleet event, %s.</font>" +
+                        "<br><br>" +
+                        "<font size=\"13\" color=\"#ff999999\">I will not see you there.</font>" +
+                        "<br><br>" +
+                        "</font><font size=\"13\" color=\"#ffd98d00\"><a href=\"showinfo:1377//%s\">%s</a>",
                 ownerName,
-                fleetName,
-                charName));
+                generateFleetLink(fleetId, fleetName),
+                charId,
+                charName);
+        mail.setBody(body);
         mail.setSubject(String.format("Fleet event %s", fleetName));
         return mail;
     }

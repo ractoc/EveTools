@@ -1,8 +1,10 @@
 export class User {
+
   constructor(public eveState: string,
               public name: string,
               public roles: string[],
               public characterId: number,
+              public corporationId: number,
               public accessToken: string) {
   }
 

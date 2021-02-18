@@ -5,6 +5,8 @@ import {catchError, map} from "rxjs/operators";
 
 import {User} from "./model/user";
 import {environment} from '../../environments/environment';
+import {Invitation} from "./model/invitation";
+import {CorporationService} from "./corporation.service";
 
 const USER_URI = 'http://' + environment.apiHost + ':8484/user/api';
 
@@ -19,7 +21,7 @@ export class UserService {
 
   private currentUser: User;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private corporationService: CorporationService) {
   }
 
   getUser(eveState: string): Observable<any> {
@@ -35,8 +37,10 @@ export class UserService {
               user.characterName,
               user.roles,
               user.charId,
+              undefined,
               user.accessToken
             );
+            this.loadCorporation();
             this.user$.next(this.currentUser);
             return this.currentUser;
           }),
@@ -98,5 +102,11 @@ export class UserService {
 
   getEveState() {
     return this.eveState;
+  }
+
+  private loadCorporation() {
+    this.corporationService.getCorporation(this.currentUser.characterId).subscribe(corporation => {
+      this.currentUser.corporationId = corporation.id;
+    })
   }
 }

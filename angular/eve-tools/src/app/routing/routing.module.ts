@@ -15,6 +15,7 @@ const routes: Routes = [
   {path: 'fleet/new', component: FleetDetailsComponent},
   {path: 'fleet/find', component: FleetFinderComponent},
   {path: 'fleet/details/:id', component: FleetDetailsComponent},
+  {path: 'fleet/register/:key', component: FleetDetailsComponent},
   {path: '', redirectTo: '/home', pathMatch: 'full'}
 ];
 
