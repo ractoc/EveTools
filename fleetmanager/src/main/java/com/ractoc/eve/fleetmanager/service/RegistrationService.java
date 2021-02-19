@@ -3,12 +3,10 @@ package com.ractoc.eve.fleetmanager.service;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.Registrations;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.RegistrationsImpl;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.registrations.RegistrationsManager;
-import com.ractoc.eve.jesi.ApiException;
 import com.ractoc.eve.jesi.api.MailApi;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailMail;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient;
 import com.ractoc.eve.user_client.api.UserResourceApi;
-import com.ractoc.eve.user_client.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,14 +20,12 @@ import static com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient.R
 public class RegistrationService {
 
     private final RegistrationsManager registrationsManager;
-    private final UserResourceApi userResourceApi;
-    private final MailApi mailApi;
+    private final MailUtil mailUtil;
 
     @Autowired
-    public RegistrationService(RegistrationsManager registrationsManager, UserResourceApi userResourceApi, MailApi mailApi) {
+    public RegistrationService(RegistrationsManager registrationsManager, MailUtil mailUtil) {
         this.registrationsManager = registrationsManager;
-        this.userResourceApi = userResourceApi;
-        this.mailApi = mailApi;
+        this.mailUtil = mailUtil;
     }
 
     public Stream<Registrations> getRegistrationsForFleet(Integer fleetId) {
@@ -77,13 +73,8 @@ public class RegistrationService {
     }
 
     public void sendRegistrationNotification(Integer fleetId, String fleetName, int charId, String charName, Integer ownerId, String ownerName) {
-        try {
-            PostCharactersCharacterIdMailMail mail = generateAcceptMail(charId, charName, fleetId, fleetName, ownerId, ownerName);
-            UserModel user = userResourceApi.getEveTools();
-            mailApi.postCharactersCharacterIdMail(user.getCharId(), mail, null, user.getAccessToken());
-        } catch (ApiException | com.ractoc.eve.user_client.ApiException e) {
-            throw new ServiceException("unable to send invite mail", e);
-        }
+        PostCharactersCharacterIdMailMail mail = generateAcceptMail(charId, charName, fleetId, fleetName, ownerId, ownerName);
+        mailUtil.sendCharacterMail(mail);
     }
 
     private PostCharactersCharacterIdMailMail generateAcceptMail(int charId, String charName, Integer fleetId, String fleetName, Integer ownerId, String ownerName) {
@@ -113,13 +104,8 @@ public class RegistrationService {
     }
 
     public void sendDenyNotification(Integer fleetId, String fleetName, int charId, String charName, Integer ownerId, String ownerName) {
-        try {
-            PostCharactersCharacterIdMailMail mail = generateDenyMail(charId, charName, fleetId, fleetName, ownerId, ownerName);
-            UserModel user = userResourceApi.getEveTools();
-            mailApi.postCharactersCharacterIdMail(user.getCharId(), mail, null, user.getAccessToken());
-        } catch (ApiException | com.ractoc.eve.user_client.ApiException e) {
-            throw new ServiceException("unable to send invite mail", e);
-        }
+        PostCharactersCharacterIdMailMail mail = generateDenyMail(charId, charName, fleetId, fleetName, ownerId, ownerName);
+        mailUtil.sendCharacterMail(mail);
     }
 
     private PostCharactersCharacterIdMailMail generateDenyMail(int charId, String charName, Integer fleetId, String fleetName, Integer ownerId, String ownerName) {

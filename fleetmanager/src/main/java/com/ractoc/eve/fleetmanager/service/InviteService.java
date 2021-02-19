@@ -4,13 +4,9 @@ import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.Invite;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.InviteImpl;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.InviteManager;
-import com.ractoc.eve.jesi.ApiException;
-import com.ractoc.eve.jesi.api.MailApi;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailMail;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient.RecipientTypeEnum;
-import com.ractoc.eve.user_client.api.UserResourceApi;
-import com.ractoc.eve.user_client.model.UserModel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,14 +19,12 @@ import java.util.stream.Stream;
 public class InviteService {
 
     private final InviteManager inviteManager;
-    private final UserResourceApi userResourceApi;
-    private final MailApi mailApi;
+    private final MailUtil mailUtil;
 
     @Autowired
-    public InviteService(InviteManager inviteManager, UserResourceApi userResourceApi, MailApi mailApi) {
+    public InviteService(InviteManager inviteManager, MailUtil mailUtil) {
         this.inviteManager = inviteManager;
-        this.userResourceApi = userResourceApi;
-        this.mailApi = mailApi;
+        this.mailUtil = mailUtil;
     }
 
     public Stream<Invite> getInvitesForFleet(Integer fleetId) {
@@ -101,7 +95,7 @@ public class InviteService {
                                String inviteeType,
                                String inviteeName,
                                String inviteKey,
-                               String additionalInfo) throws ApiException, com.ractoc.eve.user_client.ApiException {
+                               String additionalInfo) {
         PostCharactersCharacterIdMailMail mail = generateMail(charId,
                 charName,
                 fleetId,
@@ -111,8 +105,7 @@ public class InviteService {
                 RecipientTypeEnum.fromValue(inviteeType),
                 additionalInfo,
                 inviteKey);
-        UserModel user = userResourceApi.getEveTools();
-        mailApi.postCharactersCharacterIdMail(user.getCharId(), mail, null, user.getAccessToken());
+        mailUtil.sendCharacterMail(mail);
     }
 
     private PostCharactersCharacterIdMailMail generateMail(Integer charId, String charName, Integer fleetId, String fleetName, Integer recipientId, String recipientName, RecipientTypeEnum recipientType, String additionalInfo, String inviteKey) {
