@@ -74,7 +74,7 @@ public class InviteHandler {
                     inviteKey,
                     fleet.getDescription().orElse(""));
             return getInvitesForFleet(fleetId, charId);
-        } catch (ApiException | com.ractoc.eve.user_client.ApiException e) {
+        } catch (ApiException e) {
             throw new HandlerException("unable to send create invitation", e);
         }
     }
