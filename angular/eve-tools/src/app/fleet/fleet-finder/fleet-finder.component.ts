@@ -103,9 +103,14 @@ export class FleetFinderComponent implements OnInit {
   changeCheck(field: string, checked: boolean) {
     if (checked) {
       if (field === 'invited') {
+        this.fleetForm.controls.registered.setValue(false);
+        this.fleetForm.controls.owned.setValue(false);
+      } else if (field === 'registered') {
+        this.fleetForm.controls.invited.setValue(false);
         this.fleetForm.controls.owned.setValue(false);
       } else if (field === 'owned') {
         this.fleetForm.controls.invited.setValue(false);
+        this.fleetForm.controls.registered.setValue(false);
       }
     }
   }

@@ -19,18 +19,12 @@
         <mat-option *ngFor="let type of types" [value]="type">{{type.name}}</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="fill" [formGroup]="fleetForm">
-      <mat-label>Roles</mat-label>
-      <mat-select formControlName="fleetRoles" [compareWith]="compareById" multiple>
-        <mat-option *ngFor="let role of roles" [value]="role">{{role.name}}</mat-option>
-      </mat-select>
-    </mat-form-field>
     <span [formGroup]="fleetForm">
       <mat-checkbox formControlName="invited" color="primary" (change)="changeCheck('invited', $event.checked)">Invited</mat-checkbox>
     </span>
-    <!--<span [formGroup]="fleetForm">
+    <span [formGroup]="fleetForm">
       <mat-checkbox formControlName="registered" color="primary" (change)="changeCheck('registered', $event.checked)">Registered</mat-checkbox>
-    </span>-->
+    </span>
     <span [formGroup]="fleetForm">
       <mat-checkbox formControlName="owned" color="primary" (change)="changeCheck('owned', $event.checked)">Owned</mat-checkbox>
     </span>
