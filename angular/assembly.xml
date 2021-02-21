@@ -12,22 +12,23 @@
             <directory>target/static</directory>
             <outputDirectory>/</outputDirectory>
             <excludes>
-                <exclude>*.vbs</exclude>
-                <exclude>*.ico</exclude>
-                <exclude>*.png</exclude>
+                <exclude>**/*.ico</exclude>
+                <exclude>**/*.jpg</exclude>
+                <exclude>**/*.png</exclude>
             </excludes>
             <filtered>true</filtered>
             <lineEnding>unix</lineEnding>
-            <fileMode>0770</fileMode>
+            <fileMode>0775</fileMode>
         </fileSet>
         <fileSet>
             <directory>target/static</directory>
             <outputDirectory></outputDirectory>
             <includes>
-                <include>*.ico</include>
-                <include>*.jpg</include>
-                <include>*.png</include>
+                <include>**/*.ico</include>
+                <include>**/*.jpg</include>
+                <include>**/*.png</include>
             </includes>
+            <fileMode>0775</fileMode>
         </fileSet>
     </fileSets>
 </assembly>
