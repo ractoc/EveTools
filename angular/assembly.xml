@@ -7,23 +7,9 @@
         <format>zip</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
-    <dependencySets>
-        <dependencySet>
-            <includes>
-                <include>com.ractoc.eve:*:jar:executable:*</include>
-            </includes>
-            <fileMode>0770</fileMode>
-            <useTransitiveDependencies>false</useTransitiveDependencies>
-        </dependencySet>
-        <dependencySet>
-            <fileMode>
-
-            </fileMode>
-        </dependencySet>
-    </dependencySets>
     <fileSets>
         <fileSet>
-            <directory>src/scripts</directory>
+            <directory>target/static</directory>
             <outputDirectory>/</outputDirectory>
             <filtered>true</filtered>
             <lineEnding>unix</lineEnding>

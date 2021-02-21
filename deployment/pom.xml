@@ -16,8 +16,8 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>angular</artifactId>
+            <type>zip</type>
             <version>${project.version}</version>
-            <classifier>executable</classifier>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
