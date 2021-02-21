@@ -25,7 +25,7 @@ export class InvitationDialogComponent implements OnInit {
 
   TYPE_CHARACTER = 'character';
   TYPE_CORPORATION = 'corporation';
-  private searchResult: SearchResult;
+  searchResult: SearchResult;
 
   constructor(public dialogRef: MatDialogRef<InvitationDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: InvitationDialogData,

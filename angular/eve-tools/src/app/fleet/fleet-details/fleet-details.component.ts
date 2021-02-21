@@ -40,7 +40,7 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
   editing: boolean;
   owner: boolean;
   private routeListener$: Subscription;
-  private myInvite: Invitation;
+  myInvite: Invitation;
 
   fleetForm = new FormGroup({
     id: new FormControl(),

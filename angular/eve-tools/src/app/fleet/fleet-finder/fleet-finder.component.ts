@@ -29,11 +29,11 @@ export class FleetFinderComponent implements OnInit {
     owned: new FormControl(false)
   });
   displayedColumns: string[] = ['name', 'start', 'type', 'restricted'];
-  private types: Type[];
-  private roles: Role[];
-  private fleets: Fleet[];
-  private ownedChecked: boolean;
-  private invitedChecked: boolean;
+  types: Type[];
+  roles: Role[];
+  fleets: Fleet[];
+  ownedChecked: boolean;
+  invitedChecked: boolean;
 
   constructor(private router: Router,
               private userService: UserService,

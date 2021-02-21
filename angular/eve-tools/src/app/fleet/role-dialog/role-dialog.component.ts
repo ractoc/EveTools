@@ -14,7 +14,7 @@ export interface RoleDialogData {
 })
 export class RoleDialogComponent implements OnInit {
 
-  private roles: Role[];
+  roles: Role[];
   selectedRole: Role;
 
   constructor(public dialogRef: MatDialogRef<RoleDialogComponent>,
