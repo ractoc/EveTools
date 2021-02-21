@@ -1,6 +1,5 @@
 echo stopping all services
 
-sudo systemctl stop apache2
 sudo systemctl stop assets-app
 sudo systemctl stop fleetmanager-app
 sudo systemctl stop universe-app
@@ -17,7 +16,10 @@ sudo rm -rf /opt/eve/crawler.jar
 
 echo installing new version
 
-sudo /tmp/eve/angular-${project.version}.zip -d /var/www/html
+sudo tar -C /var/www/html -zxvf /tmp/eve/angular-1.0-SNAPSHOT.tar.gz
+sudo chmod -R 775 /var/www/html
+sudo chown -R root:www-data /var/www/html
+
 sudo cp /tmp/eve/assets-${project.version}-executable.jar /opt/eve/assets.jar
 sudo cp /tmp/eve/fleetmanager-${project.version}-executable.jar /opt/eve/fleetmanager.jar
 sudo cp /tmp/eve/universe-${project.version}-executable.jar /opt/eve/universe.jar
@@ -52,7 +54,7 @@ sudo systemctl enable user-app
 
 echo starting all services
 
-sudo systemctl start apache2
+sudo systemctl restart apache2
 sudo systemctl start assets-app
 sudo systemctl start fleetmanager-app
 sudo systemctl start universe-app
