@@ -109,7 +109,18 @@ public class RegistrationHandler {
         }
     }
 
-    public void deleteRegistration(int fleetId, int charId) {
-        registrationService.deleteRegistration(fleetId, charId);
+    public List<RegistrationModel> deleteRegistration(int fleetId, int charId) {
+        try {
+            FleetModel fleet = FleetMapper.INSTANCE.dbToModel(fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("fleet not found")));
+            Integer corpId = characterApi.getCharactersCharacterId(charId, null, null).getCorporationId();
+            if (fleetValidator.verifyFleet(fleet, charId, corpId)) {
+                registrationService.deleteRegistration(fleetId, charId);
+                return registrationService.getRegistrationsForFleet(fleetId).map(RegistrationMapper.INSTANCE::dbToModel).collect(Collectors.toList());
+            } else {
+                throw new SecurityException("Access Denied");
+            }
+        } catch (ApiException e) {
+            throw new HandlerException("Unable to fetch data from EVE ESI", e);
+        }
     }
 }
