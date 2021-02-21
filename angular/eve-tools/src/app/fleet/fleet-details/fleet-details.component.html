@@ -84,13 +84,29 @@
             </li>
           </ul>
         </mat-expansion-panel>
-        <!--<mat-expansion-panel>
+        <mat-expansion-panel (opened)="loadRegistrations()">
           <mat-expansion-panel-header>
             <mat-panel-title>
               Registrations
             </mat-panel-title>
           </mat-expansion-panel-header>
-        </mat-expansion-panel>-->
+<!--          <button type="button" mat-icon-button matSuffix (click)="addRegistration()" *ngIf="!fleet.restricted">-->
+<!--            <mat-icon aria-label="register">add</mat-icon>-->
+<!--          </button>-->
+          <ul>
+            <li *ngFor="let registration of fleetRegistrations">
+              <div [id]="registration.id">
+                <img *ngIf="registration.icon" src="{{registration.icon}}"/>
+                {{registration.name}}
+                <span *ngIf="editing || isMyRegistration(registration)"> <button type="button" mat-icon-button matSuffix>
+                <mat-icon aria-label="remove registrations"
+                          (click)="removeRegistration(registration)">delete_outline</mat-icon>
+                </button>
+                </span>
+              </div>
+            </li>
+          </ul>
+        </mat-expansion-panel>
       </mat-accordion>
 
       <div class="buttons">

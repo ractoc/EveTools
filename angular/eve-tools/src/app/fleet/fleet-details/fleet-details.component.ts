@@ -20,6 +20,8 @@ import {InvitationDialogComponent} from "../invitation-dialog/invitation-dialog.
 import {InvitationService} from "../../services/invitation.service";
 import {CharacterService} from "../../services/character.service";
 import {CorporationService} from "../../services/corporation.service";
+import {Registration} from "../../services/model/registration";
+import {RegistrationService} from "../../services/registration.service";
 
 
 @Component({
@@ -34,6 +36,7 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
   types: Type[];
   fleetRoles: Role[];
   fleetInvitations: Invitation[];
+  fleetRegistrations: Registration[];
   editing: boolean;
   owner: boolean;
   private routeListener$: Subscription;
@@ -67,6 +70,7 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
     private typeService: TypeService,
     private roleService: RoleService,
     private invitationService: InvitationService,
+    private registrationService: RegistrationService,
     private characterService: CharacterService,
     private corporationService: CorporationService,
     public dialog: MatDialog,
@@ -96,10 +100,10 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked() {
-    if(this.myInvite) {
+    if (this.myInvite) {
       const itemToScrollTo = document.getElementById(String(this.myInvite.id));
       if (itemToScrollTo) {
-        itemToScrollTo.scrollIntoView({behavior:"smooth"});
+        itemToScrollTo.scrollIntoView({behavior: "smooth"});
       }
     }
   }
@@ -117,6 +121,14 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
     this.invitationService.loadInvitationsForFleet(this.fleet.id).subscribe(
       (invitationData: Invitation[]) => {
         this.fleetInvitations = invitationData.map(invitation => this.populateInvitation(invitation));
+      }
+    );
+  }
+
+  loadRegistrations() {
+    this.registrationService.loadRegistrationsForFleet(this.fleet.id).subscribe(
+      (registrationData: Registration[]) => {
+        this.fleetRegistrations = registrationData.map(registration => this.populateRegistration(registration));
       }
     );
   }
@@ -151,7 +163,6 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
       start: DateUtil.formatDate(startDate),
       restricted: this.fleetForm.value.restricted
     };
-    console.log('fleet', fleet);
     this.fleetService.saveFleet(fleet).subscribe(
       (fleetData: Fleet) => {
         if (fleetData) {
@@ -162,6 +173,7 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
         } else if (this.editing) {
           this.fleet = fleet;
         }
+        this.subTitle = 'Fleet Details';
         this.editing = false;
       },
       err => {
@@ -235,6 +247,14 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
     );
   }
 
+  removeRegistration(registration: Registration) {
+    this.registrationService.removeRegistration(registration.fleetId).subscribe(
+      (registrationData: Registration[]) => {
+        this.fleetRegistrations = registrationData.map(registration => this.populateRegistration(registration));
+      }
+    );
+  }
+
   private loadFleet(fleetId: number) {
     this.fleetService.getFleet(fleetId).subscribe(
       (fleetData: Fleet) => {
@@ -265,6 +285,7 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
       this.fleetForm.controls.restricted.disable();
 
       this.owner = this.userService.getCurrentUser().characterId === fleet.owner;
+      this.subTitle = 'Fleet Details';
       this.editing = false;
     } else {
       this.editFleet();
@@ -281,18 +302,32 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
 
   private populateInvitation(invitation: Invitation) {
     if (invitation.type === 'character') {
-      this.loadCharacter(invitation);
+      this.loadCharacterForInvitation(invitation);
     } else if (invitation.type === 'corporation') {
       this.loadCorporation(invitation);
     }
     return invitation;
   }
 
-  private loadCharacter(invitation: Invitation) {
+  private populateRegistration(registration: Registration) {
+    this.loadCharacterForRegistration(registration);
+    return registration;
+  }
+
+  private loadCharacterForInvitation(invitation: Invitation) {
     this.characterService.getCharacter(invitation.inviteeId).subscribe(character => {
       invitation.name = character.name;
       this.characterService.getPortrait(invitation.inviteeId).subscribe(portrait => {
         invitation.icon = portrait;
+      })
+    })
+  }
+
+  private loadCharacterForRegistration(registration: Registration) {
+    this.characterService.getCharacter(registration.characterId).subscribe(character => {
+      registration.name = character.name;
+      this.characterService.getPortrait(registration.characterId).subscribe(portrait => {
+        registration.icon = portrait;
       })
     })
   }
@@ -315,6 +350,10 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  isMyRegistration(registration: Registration) {
+    return registration.characterId === this.userService.getCurrentUser().characterId;
+  }
+
   acceptInvitation(invitation: Invitation) {
     this.invitationService.acceptInvitation(invitation.id).subscribe(
       (invitationData: Invitation[]) => {
@@ -331,7 +370,7 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
     );
   }
 
-  private loadInvitation(key:string) {
+  private loadInvitation(key: string) {
     this.invitationService.loadInvitation(key).subscribe(
       (invitationData: Invitation) => {
         this.myInvite = invitationData;
