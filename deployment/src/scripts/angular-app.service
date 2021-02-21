@@ -2,8 +2,8 @@
 WorkingDirectory=/opt/eve
 ExecStart=/opt/eve/angular.jar
 Restart=always
-StandardOutput=syslog
-StandardError=syslog
+StandardOutput=/var/log/eve/angular.log
+StandardError=/var/log/eve/angular_error.log
 SyslogIdentifier=angular-app
 User=eve
 Group=eve
