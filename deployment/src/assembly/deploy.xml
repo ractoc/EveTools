@@ -15,12 +15,14 @@
             <fileMode>0770</fileMode>
             <useTransitiveDependencies>false</useTransitiveDependencies>
         </dependencySet>
-        <dependencySet>
-            <fileMode>
-
-            </fileMode>
-        </dependencySet>
     </dependencySets>
+    <files>
+        <file>
+            <source>../angular/target/angular-${project.version}.zip</source>
+            <outputDirectory>/</outputDirectory>
+            <fileMode>0770</fileMode>
+        </file>
+    </files>
     <fileSets>
         <fileSet>
             <directory>src/scripts</directory>
