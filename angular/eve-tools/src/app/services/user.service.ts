@@ -41,10 +41,14 @@ export class UserService {
               user.accessToken
             );
             this.loadCorporation();
-            this.user$.next(this.currentUser);
+            console.log('currentUser: ', this.currentUser);
+            if (this.currentUser.characterId) {
+              this.user$.next(this.currentUser);
+            }
             return this.currentUser;
           }),
-          catchError(() => {
+          catchError((err) => {
+            console.log('error retreiving user details', err);
             return of(null);
           }));
       return this.observable;

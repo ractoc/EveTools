@@ -47,6 +47,10 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                 } else {
                   this.router.navigate(['home']);
                 }
+              },
+              error => {
+                this.localStorageService.remove('eve-state');
+                this.document.location.href = 'http://' + environment.apiHost + ':8484/user/launchSignOn';
               });
         } else {
           this.document.location.href = 'http://' + environment.apiHost + ':8484/user/launchSignOn';
