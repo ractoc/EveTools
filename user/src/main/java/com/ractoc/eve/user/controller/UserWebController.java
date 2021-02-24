@@ -3,6 +3,9 @@ package com.ractoc.eve.user.controller;
 import com.ractoc.eve.user.handler.UserHandler;
 import com.ractoc.eve.user.model.AccessDeniedException;
 import com.ractoc.eve.user.model.OAuthToken;
+import lombok.extern.log4j.Log4j2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -18,6 +21,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 
 @Controller
+@Log4j2
 public class UserWebController {
 
     public static final String REDIRECT = "redirect:";
@@ -44,6 +48,7 @@ public class UserWebController {
 
     @GetMapping(value = "/launchSignOn")
     public String launchSignOn(@CookieValue(value = "eve-state", defaultValue = "") String eveState) {
+        log.trace("launching signon for state " + eveState);
         if (eveState.isEmpty()) {
             return initiateLogin(clientScopes);
         }
@@ -52,11 +57,13 @@ public class UserWebController {
 
     @GetMapping(value = "/evetools")
     public String launchEveToolsSignOn() {
+        log.trace("getting user details for evetools");
         return initiateLogin(evetoolsScopes);
     }
 
     @GetMapping(value = "/eveCallBack")
     public String eveCallBack(@RequestParam String code, @RequestParam(name = "state") String eveState) {
+        log.trace("eveCallback for code "+ code + " and state " + eveState);
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
         formData.add("grant_type", "authorization_code");
         formData.add("code", code);
@@ -72,6 +79,7 @@ public class UserWebController {
 
     private String initiateLogin(String scopes) {
         String eveState = handler.initiateLogin();
+        log.trace("initiate login for state " + eveState + " and scopes " + scopes);
         return "redirect:https://login.eveonline.com/v2/oauth/authorize/"
                 + "?response_type=code"
                 + "&redirect_uri=" + clientUrl
@@ -81,6 +89,7 @@ public class UserWebController {
     }
 
     private String refreshToken(String eveState) {
+        log.trace("refreshing token for state " + eveState);
         try {
             String refreshToken = handler.getRefreshTokenForState(eveState);
             MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();

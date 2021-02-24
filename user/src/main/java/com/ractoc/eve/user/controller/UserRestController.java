@@ -7,6 +7,7 @@ import com.ractoc.eve.user.response.BaseResponse;
 import com.ractoc.eve.user.response.UserResponse;
 import com.ractoc.eve.user.service.ServiceException;
 import io.swagger.annotations.*;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +39,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/api")
 @Validated
+@Log4j2
 public class UserRestController {
-
-    private static final Logger log = LoggerFactory.getLogger(UserRestController.class.getName());
 
     private final Client client;
     private final UserHandler handler;
@@ -57,6 +57,7 @@ public class UserRestController {
     })
     @GetMapping(value = "/userdetails/{eveState}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<UserModel> getUserDetails(@PathVariable String eveState) {
+        log.trace("getting user details for state " + eveState);
         try {
             refreshToken(eveState);
             return new ResponseEntity<>(handler.getUserByState(eveState), OK);
@@ -74,6 +75,7 @@ public class UserRestController {
     @PreAuthorize("#request.getRemoteAddr().equals(#request.getLocalAddr())")
     @GetMapping(value = "/evetools", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<UserModel> getEveTools(@P("request") HttpServletRequest request) {
+        log.trace("getting evetools details for state ");
         try {
             UserModel evetools = handler.getEvetools();
             refreshToken(evetools.getEveState());
@@ -91,6 +93,7 @@ public class UserRestController {
     })
     @GetMapping(value = "/user/{eveState}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<UserModel> getUser(@PathVariable String eveState) {
+        log.trace("getting user for state " + eveState);
         try {
             UserModel user = handler.getUserNameByState(eveState);
             if (user != null) {
@@ -111,6 +114,7 @@ public class UserRestController {
     })
     @DeleteMapping(value = "/user", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<BaseResponse> logoutUser(@RequestHeader(AUTHORIZATION) @NotNull String authorization) {
+        log.trace("logout user");
         try {
             handler.logoutUser(StringUtils.removeStart(authorization, "Bearer").trim());
             return new ResponseEntity<>(new BaseResponse(GONE.value()), OK);
@@ -121,6 +125,7 @@ public class UserRestController {
     }
 
     private void refreshToken(String eveState) {
+        log.trace("refresh token for state " + eveState);
         String refreshToken = handler.getRefreshTokenForState(eveState);
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
         formData.add("grant_type", "refresh_token");

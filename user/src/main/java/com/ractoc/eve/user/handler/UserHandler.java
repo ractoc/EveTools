@@ -15,6 +15,7 @@ import com.ractoc.eve.user.model.AccessDeniedException;
 import com.ractoc.eve.user.model.EveJwtContent;
 import com.ractoc.eve.user.model.OAuthToken;
 import com.ractoc.eve.user.service.UserService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@Log4j2
 public class UserHandler {
 
     private final UserService service;
@@ -42,10 +44,12 @@ public class UserHandler {
     }
 
     public String initiateLogin() {
+        log.trace("initiate initial login");
         return service.initializeUser();
     }
 
     public String getRefreshTokenForState(String eveState) {
+        log.trace("refresh token for state " + eveState);
         return getUser(eveState)
                 .map(User::getRefreshToken)
                 .orElseThrow(() -> new AccessDeniedException(eveState))
@@ -53,10 +57,12 @@ public class UserHandler {
     }
 
     public void storeEveUserRegistration(String eveState, OAuthToken oAuthToken) {
+        log.trace("store user for state " + eveState);
         service.updateUser(convertOAuthTokenToUser(eveState, oAuthToken));
     }
 
     public UserModel getUserByState(String eveState) {
+        log.trace("get user for state " + eveState);
         return getUser(eveState)
                 .map(user -> {
                     UserModel result = UserModel.builder()
@@ -83,6 +89,7 @@ public class UserHandler {
     }
 
     public UserModel getUserNameByState(String eveState) {
+        log.trace("get user name for state " + eveState);
         return getUser(eveState)
                 .map(user ->
                         UserModel.builder()
@@ -98,14 +105,17 @@ public class UserHandler {
     }
 
     public void logoutUser(String eveState) {
+        log.trace("logout user for state " + eveState);
         service.logoutUser(eveState);
     }
 
     private Optional<User> getUser(String eveState) {
+        log.trace("get user for state " + eveState);
         return service.getUser(eveState);
     }
 
     public UserModel getEvetools() {
+        log.trace("get evetools");
         return service.getUser(evetoolsCharId)
                 .map(user -> {
                     UserModel result = UserModel.builder()
