@@ -2,6 +2,7 @@ package com.ractoc.eve.user.controller;
 
 import com.ractoc.eve.domain.user.UserModel;
 import com.ractoc.eve.user.handler.UserHandler;
+import com.ractoc.eve.user.model.AccessDeniedException;
 import com.ractoc.eve.user.model.OAuthToken;
 import com.ractoc.eve.user.response.BaseResponse;
 import com.ractoc.eve.user.response.UserResponse;
@@ -61,6 +62,8 @@ public class UserRestController {
         try {
             refreshToken(eveState);
             return new ResponseEntity<>(handler.getUserByState(eveState), OK);
+        } catch (AccessDeniedException e) {
+            return new ResponseEntity<>(UNAUTHORIZED);
         } catch (ServiceException e) {
             e.printStackTrace();
             return new ResponseEntity<>(BAD_REQUEST);
