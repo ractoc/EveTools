@@ -58,14 +58,15 @@ public class UserRestController {
     })
     @GetMapping(value = "/userdetails/{eveState}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<UserModel> getUserDetails(@PathVariable String eveState) {
-        log.trace("getting user details for state " + eveState);
+        log.info("getting user details for state " + eveState);
         try {
             refreshToken(eveState);
             return new ResponseEntity<>(handler.getUserByState(eveState), OK);
         } catch (AccessDeniedException e) {
+            log.error("unable to retreive user details", e);
             return new ResponseEntity<>(UNAUTHORIZED);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            log.error("unable to retreive user details", e);
             return new ResponseEntity<>(BAD_REQUEST);
         }
     }
@@ -84,9 +85,10 @@ public class UserRestController {
             refreshToken(evetools.getEveState());
             return new ResponseEntity<>(evetools, OK);
         } catch (AccessDeniedException e) {
+            log.error("unable to retreive user evetools", e);
             return new ResponseEntity<>(UNAUTHORIZED);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            log.error("unable to retreive user evetools", e);
             return new ResponseEntity<>(BAD_REQUEST);
         }
     }
@@ -107,9 +109,11 @@ public class UserRestController {
                 return new ResponseEntity<>(FORBIDDEN);
             }
         } catch (AccessDeniedException e) {
+            log.error("unable to retreive user", e);
             return new ResponseEntity<>(UNAUTHORIZED);
         } catch (ServiceException e) {
             e.printStackTrace();
+            log.error("unable to retreive user", e);
             return new ResponseEntity<>(BAD_REQUEST);
         }
     }
@@ -126,9 +130,10 @@ public class UserRestController {
             handler.logoutUser(StringUtils.removeStart(authorization, "Bearer").trim());
             return new ResponseEntity<>(new BaseResponse(GONE.value()), OK);
         } catch (AccessDeniedException e) {
+            log.error("unable to logout user", e);
             return new ResponseEntity<>(UNAUTHORIZED);
         } catch (ServiceException e) {
-            log.error(e.getMessage(), e);
+            log.error("unable to logout user", e);
             return new ResponseEntity<>(BAD_REQUEST);
         }
     }
