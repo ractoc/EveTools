@@ -83,6 +83,8 @@ public class UserRestController {
             UserModel evetools = handler.getEvetools();
             refreshToken(evetools.getEveState());
             return new ResponseEntity<>(evetools, OK);
+        } catch (AccessDeniedException e) {
+            return new ResponseEntity<>(UNAUTHORIZED);
         } catch (ServiceException e) {
             e.printStackTrace();
             return new ResponseEntity<>(BAD_REQUEST);
@@ -104,6 +106,8 @@ public class UserRestController {
             } else {
                 return new ResponseEntity<>(FORBIDDEN);
             }
+        } catch (AccessDeniedException e) {
+            return new ResponseEntity<>(UNAUTHORIZED);
         } catch (ServiceException e) {
             e.printStackTrace();
             return new ResponseEntity<>(BAD_REQUEST);
@@ -121,6 +125,8 @@ public class UserRestController {
         try {
             handler.logoutUser(StringUtils.removeStart(authorization, "Bearer").trim());
             return new ResponseEntity<>(new BaseResponse(GONE.value()), OK);
+        } catch (AccessDeniedException e) {
+            return new ResponseEntity<>(UNAUTHORIZED);
         } catch (ServiceException e) {
             log.error(e.getMessage(), e);
             return new ResponseEntity<>(BAD_REQUEST);
