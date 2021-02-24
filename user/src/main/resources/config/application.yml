@@ -45,17 +45,17 @@ dbms:
   password: Dr!lb00r
 
 sso:
-  frontend-url: http://31.21.178.162:8181/login
+  frontend-url: http://31.21.178.162:8181/user/login
   client-url: http://31.21.178.162:8484/user/eveCallBack
   client-id: 081e55136fb54046976193f395e1aadb
   client-secret: oCvUMSI8rykr0shRR41Y2DLVG50kG0bc1ahx2OXQ
 
 debug: false
 
-logging:
-  level:
-    root: WARN
-  file:
-    path: /var/log/eve
-    name: user.log
-  pattern.file: "%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n"
+#logging:
+#  level:
+#    root: WARN
+#  file:
+#    path: /var/log/eve
+#    name: user.log
+#  pattern.file: "%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n"
