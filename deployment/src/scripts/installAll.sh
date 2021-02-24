@@ -16,9 +16,12 @@ sudo chown -R root:www-data /var/www/html
 
 sudo cp /tmp/eve/fleetmanager-${project.version}-executable.jar /opt/eve/fleetmanager.jar
 sudo cp /tmp/eve/user-${project.version}-executable.jar /opt/eve/user.jar
+sudo cp /tmp/eve/runAll.sh /opt/eve/runAll.sh
 
 echo setting grants on executables
 sudo chown eve:eve /opt/eve/*.jar
+sudo chown eve:eve /opt/eve/runAll.sh
+sudo chmod u+rwx /opt/eve/runAll.sh
 
 echo setting up services
 sudo cp /tmp/eve/eve-tools-app.service /etc/systemd/system/

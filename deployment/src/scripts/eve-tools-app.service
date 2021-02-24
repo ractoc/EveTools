@@ -1,6 +1,6 @@
 [Service]
 WorkingDirectory=/opt/eve
-ExecStart=/opt/eve/runAll.sh
+ExecStart=/bin/bash /opt/eve/runAll.sh
 Restart=always
 StandardOutput=syslog
 StandardError=syslog
