@@ -5,7 +5,6 @@ import {catchError, map} from "rxjs/operators";
 
 import {User} from "./model/user";
 import {environment} from '../../environments/environment';
-import {Invitation} from "./model/invitation";
 import {CorporationService} from "./corporation.service";
 
 const USER_URI = 'http://' + environment.apiHost + ':8484/user/api';
@@ -25,6 +24,7 @@ export class UserService {
   }
 
   getUser(eveState: string): Observable<any> {
+    console.log('getting userdetails fr state', eveState);
     this.eveState = eveState;
     if (this.observable) {
       return this.observable;
