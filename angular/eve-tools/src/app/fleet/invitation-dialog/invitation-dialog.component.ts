@@ -17,14 +17,11 @@ export interface InvitationDialogData {
   styleUrls: ['./invitation-dialog.component.css']
 })
 export class InvitationDialogComponent implements OnInit {
-  searchType: string;
   invitation: Invitation;
   search: string;
 
   searchResultList: SearchResult[] = [];
 
-  TYPE_CHARACTER = 'character';
-  TYPE_CORPORATION = 'corporation';
   searchResult: SearchResult;
 
   constructor(public dialogRef: MatDialogRef<InvitationDialogComponent>,
@@ -43,13 +40,9 @@ export class InvitationDialogComponent implements OnInit {
 
   doSearch() {
     this.searchResultList = [];
-    this.searchService.search(this.search, this.searchType).subscribe(idList => {
+    this.searchService.search(this.search, 'character').subscribe(idList => {
       for (const id of idList) {
-        if (this.searchType === this.TYPE_CHARACTER) {
-          this.loadCharacter(id);
-        } else if (this.searchType === this.TYPE_CORPORATION) {
-          this.loadCorporation(id);
-        }
+        this.loadCharacter(id);
       }
     })
   }
@@ -69,6 +62,7 @@ export class InvitationDialogComponent implements OnInit {
         corporation.portrait = portrait;
       })
       this.searchResultList.push(corporation);
+      this.selectEntry(corporation);
     })
   }
 

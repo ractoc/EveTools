@@ -1,20 +1,12 @@
 <h1 mat-dialog-title>Search</h1>
 <div mat-dialog-content>
-  <label>Search by</label>
-  <mat-radio-group aria-label="Select an option"
-                   [(ngModel)]="searchType"
-                   class="radio-group"
-                   (ngModelChange)="resetSearch()">
-    <mat-radio-button class="radio-button" value="character">Character</mat-radio-button>
-    <mat-radio-button class="radio-button" value="corporation">Corporation</mat-radio-button>
-  </mat-radio-group>
   <mat-form-field appearance="fill" class="full-width">
     <mat-label>Search for</mat-label>
     <input matInput [(ngModel)]="search"/>
   </mat-form-field>
   <div class="form-group">
     <button type="button" class="btn btn-primary" [disabled]="!searchEnabled()" (click)="doSearch()">Search</button>
-    <button type="button" class="btn btn-primary" *ngIf="searchType==='corporation'" (click)="selectMyCorporation()">
+    <button type="button" class="btn btn-primary" (click)="selectMyCorporation()">
       My corporation
     </button>
   </div>
