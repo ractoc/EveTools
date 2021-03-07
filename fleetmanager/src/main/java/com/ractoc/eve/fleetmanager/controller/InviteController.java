@@ -50,7 +50,8 @@ public class InviteController {
         try {
             return new ResponseEntity<>(new InviteListResponse(CREATED,
                     inviteHandler.invite(fleetId, invitation,
-                            ((EveUserDetails) authentication.getPrincipal()).getCharId())),
+                            ((EveUserDetails) authentication.getPrincipal()).getCharId(),
+                            ((EveUserDetails) authentication.getPrincipal()).getAccessToken())),
                     CREATED);
         } catch (ServiceException e) {
             log.error(e.getMessage(), e);
@@ -139,7 +140,9 @@ public class InviteController {
                                                          @AuthenticationPrincipal Authentication authentication) {
         try {
             return new ResponseEntity<>(new InviteListResponse(CREATED,
-                    inviteHandler.acceptInvitation(invitationId, ((EveUserDetails) authentication.getPrincipal()).getCharId())),
+                    inviteHandler.acceptInvitation(invitationId,
+                            ((EveUserDetails) authentication.getPrincipal()).getCharId(),
+                            ((EveUserDetails) authentication.getPrincipal()).getAccessToken())),
                     CREATED);
         } catch (ServiceException e) {
             log.error(e.getMessage(), e);
@@ -154,10 +157,12 @@ public class InviteController {
     })
     @DeleteMapping(value = "/deny/{invitationId}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<BaseResponse> denyInvitation(@PathVariable("invitationId") Integer invitationId,
-                                                         @AuthenticationPrincipal Authentication authentication) {
+                                                       @AuthenticationPrincipal Authentication authentication) {
         try {
             return new ResponseEntity<>(new InviteListResponse(GONE,
-                    inviteHandler.denyInvitation(invitationId, ((EveUserDetails) authentication.getPrincipal()).getCharId())),
+                    inviteHandler.denyInvitation(invitationId,
+                            ((EveUserDetails) authentication.getPrincipal()).getCharId(),
+                            ((EveUserDetails) authentication.getPrincipal()).getAccessToken())),
                     OK);
         } catch (ServiceException e) {
             log.error(e.getMessage(), e);

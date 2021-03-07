@@ -65,7 +65,7 @@ public class RegistrationHandler {
         }
     }
 
-    public List<RegistrationModel> registerForFleet(Integer fleetId, int charId) {
+    public List<RegistrationModel> registerForFleet(Integer fleetId, int charId, String token) {
         try {
             FleetModel fleet = FleetMapper.INSTANCE.dbToModel(fleetService.getFleet(fleetId).orElseThrow(() -> new NoSuchEntryException("fleet not found")));
             if (fleet.isRestricted()) {
@@ -83,7 +83,7 @@ public class RegistrationHandler {
                         fleetId,
                         charId,
                         charName);
-                registrationService.sendRegistrationNotification(fleetId, fleet.getName(), charId, charName, fleet.getOwner(), ownerName);
+                registrationService.sendRegistrationNotification(fleetId, fleet.getName(), charId, charName, token, fleet.getOwner(), ownerName);
                 return getRegistrationsForFleet(fleetId, charId);
             } else {
                 throw new SecurityException("Access Denied");

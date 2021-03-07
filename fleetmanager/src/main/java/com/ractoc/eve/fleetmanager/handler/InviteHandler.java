@@ -57,7 +57,7 @@ public class InviteHandler {
         this.corporationApi = corporationApi;
     }
 
-    public List<InvitationModel> invite(Integer fleetId, InvitationModel invitation, Integer charId) {
+    public List<InvitationModel> invite(Integer fleetId, InvitationModel invitation, Integer charId, String token) {
         try {
             String charName = getCharName(charId);
             String inviteeName = getInviteeName(invitation);
@@ -66,6 +66,7 @@ public class InviteHandler {
             String inviteKey = inviteService.invite(fleetId, invitation.getId(), invitation.getType());
             inviteService.sendInviteMail(charId,
                     charName,
+                    token,
                     fleetId,
                     fleetName,
                     invitation.getId(),
@@ -174,7 +175,7 @@ public class InviteHandler {
         }
     }
 
-    public List<InvitationModel> acceptInvitation(Integer invitationId, int charId) {
+    public List<InvitationModel> acceptInvitation(Integer invitationId, int charId, String token) {
         try {
             InvitationModel invitation = getInvite(invitationId, charId);
             FleetModel fleet = FleetMapper.INSTANCE.dbToModel(fleetService.getFleet(invitation.getFleetId()).orElseThrow(() -> new NoSuchEntryException("fleet not found")));
@@ -191,14 +192,14 @@ public class InviteHandler {
             if (invitation.getType().equals("character")) {
                 inviteService.deleteInvitation(fleet.getId(), invitationId);
             }
-            registrationService.sendRegistrationNotification(fleet.getId(), fleet.getName(), charId, charName, fleet.getOwner(), ownerName);
+            registrationService.sendRegistrationNotification(fleet.getId(), fleet.getName(), charId, charName, token, fleet.getOwner(), ownerName);
             return getInvitesForFleet(fleet.getId(), charId);
         } catch (ApiException e) {
             throw new HandlerException("Unable to fetch data from EVE ESI", e);
         }
     }
 
-    public List<InvitationModel> denyInvitation(Integer invitationId, int charId) {
+    public List<InvitationModel> denyInvitation(Integer invitationId, int charId, String token) {
         try {
             InvitationModel invitation = getInvite(invitationId, charId);
             FleetModel fleet = FleetMapper.INSTANCE.dbToModel(fleetService.getFleet(invitation.getFleetId()).orElseThrow(() -> new NoSuchEntryException("fleet not found")));
@@ -215,7 +216,7 @@ public class InviteHandler {
             if (invitation.getType().equals("character")) {
                 inviteService.deleteInvitation(fleet.getId(), invitationId);
             }
-            registrationService.sendDenyNotification(fleet.getId(), fleet.getName(), charId, charName, fleet.getOwner(), ownerName);
+            registrationService.sendDenyNotification(fleet.getId(), fleet.getName(), charId, charName, token, fleet.getOwner(), ownerName);
             return getInvitesForFleet(fleet.getId(), charId);
         } catch (ApiException e) {
             throw new HandlerException("Unable to fetch data from EVE ESI", e);

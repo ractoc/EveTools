@@ -89,6 +89,7 @@ public class InviteService {
 
     public void sendInviteMail(Integer charId,
                                String charName,
+                               String token,
                                Integer fleetId,
                                String fleetName,
                                Integer inviteeId,
@@ -105,7 +106,7 @@ public class InviteService {
                 RecipientTypeEnum.fromValue(inviteeType),
                 additionalInfo,
                 inviteKey);
-        mailUtil.sendCharacterMail(mail);
+        mailUtil.sendCharacterMail(charId, token, mail);
     }
 
     private PostCharactersCharacterIdMailMail generateMail(Integer charId, String charName, Integer fleetId, String fleetName, Integer recipientId, String recipientName, RecipientTypeEnum recipientType, String additionalInfo, String inviteKey) {

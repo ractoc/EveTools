@@ -72,9 +72,9 @@ public class RegistrationService {
         registrationsManager.persist(registrations);
     }
 
-    public void sendRegistrationNotification(Integer fleetId, String fleetName, int charId, String charName, Integer ownerId, String ownerName) {
+    public void sendRegistrationNotification(Integer fleetId, String fleetName, int charId, String charName, String token, Integer ownerId, String ownerName) {
         PostCharactersCharacterIdMailMail mail = generateAcceptMail(charId, charName, fleetId, fleetName, ownerId, ownerName);
-        mailUtil.sendCharacterMail(mail);
+        mailUtil.sendCharacterMail(charId, token, mail);
     }
 
     private PostCharactersCharacterIdMailMail generateAcceptMail(int charId, String charName, Integer fleetId, String fleetName, Integer ownerId, String ownerName) {
@@ -103,9 +103,9 @@ public class RegistrationService {
         return String.format("<font size=\"13\" color=\"#ffffe400\"><a href=\"http://31.21.178.162:8181/fleet/details/%s\">%s</a></font>", fleetId, fleetName);
     }
 
-    public void sendDenyNotification(Integer fleetId, String fleetName, int charId, String charName, Integer ownerId, String ownerName) {
+    public void sendDenyNotification(Integer fleetId, String fleetName, int charId, String charName, String token, Integer ownerId, String ownerName) {
         PostCharactersCharacterIdMailMail mail = generateDenyMail(charId, charName, fleetId, fleetName, ownerId, ownerName);
-        mailUtil.sendCharacterMail(mail);
+        mailUtil.sendCharacterMail(charId, token, mail);
     }
 
     private PostCharactersCharacterIdMailMail generateDenyMail(int charId, String charName, Integer fleetId, String fleetName, Integer ownerId, String ownerName) {
