@@ -382,7 +382,7 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
   }
 
   displayRegistrations() {
-    return this.fleetRegistrations.filter(registration => registration.accept)
+    return this.fleetRegistrations && this.fleetRegistrations.filter(registration => registration.accept)
   }
 
 }
