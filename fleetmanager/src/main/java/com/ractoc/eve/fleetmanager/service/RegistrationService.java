@@ -29,7 +29,7 @@ public class RegistrationService {
     }
 
     public Stream<Registrations> getRegistrationsForFleet(Integer fleetId) {
-        return registrationsManager.stream().filter(FLEET_ID.equal(fleetId).and(ACCEPT.equal(true)));
+        return registrationsManager.stream().filter(FLEET_ID.equal(fleetId));
     }
 
     public Registrations getRegistrationsForFleetForCharacter(Integer fleetId, Integer characterId) {

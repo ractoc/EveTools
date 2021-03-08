@@ -94,11 +94,11 @@
 <!--            <mat-icon aria-label="register">add</mat-icon>-->
 <!--          </button>-->
           <ul>
-            <li *ngFor="let registration of fleetRegistrations">
+            <li *ngFor="let registration of displayRegistrations()">
               <div [id]="registration.id">
                 <img *ngIf="registration.icon" src="{{registration.icon}}"/>
                 {{registration.name}}
-                <span *ngIf="editing || isMyRegistration(registration)"> <button type="button" mat-icon-button matSuffix>
+                <span *ngIf="(editing || isMyRegistration(registration))"> <button type="button" mat-icon-button matSuffix>
                 <mat-icon aria-label="remove registrations"
                           (click)="removeRegistration(registration)">delete_outline</mat-icon>
                 </button>

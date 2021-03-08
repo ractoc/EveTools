@@ -186,9 +186,9 @@ public class InviteHandler {
                     null,
                     null).getName();
             registrationService.registerForFleet(
-                            fleet.getId(),
-                            charId,
-                            charName);
+                    fleet.getId(),
+                    charId,
+                    charName);
             if (invitation.getType().equals("character")) {
                 inviteService.deleteInvitation(fleet.getId(), invitationId);
             }

@@ -262,6 +262,8 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
           this.fleet = fleetData;
           this.subTitle = 'Fleet Details';
           this.initFleetForm(fleetData);
+          this.loadInvitations();
+          this.loadRegistrations();
         }
       },
       err => {
@@ -346,7 +348,7 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
       return invitation.inviteeId === this.userService.getCurrentUser().characterId;
     }
     if (invitation.type === 'corporation') {
-      return invitation.inviteeId === this.userService.getCurrentUser().corporationId;
+      return invitation.inviteeId === this.userService.getCurrentUser().corporationId && (this.fleetRegistrations && !this.fleetRegistrations.find(registration => registration.characterId == this.userService.getCurrentUser().characterId));
     }
   }
 
@@ -378,4 +380,9 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
       }
     );
   }
+
+  displayRegistrations() {
+    return this.fleetRegistrations.filter(registration => registration.accept)
+  }
+
 }

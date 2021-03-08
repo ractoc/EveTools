@@ -4,7 +4,8 @@ export class Registration {
               public fleetId: number,
               public characterId: number,
               public name: string,
-              public icon: string) {
+              public icon: string,
+              public accept: boolean) {
   }
 
 }
