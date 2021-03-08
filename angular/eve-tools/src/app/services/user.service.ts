@@ -8,6 +8,7 @@ import {environment} from '../../environments/environment';
 import {CorporationService} from "./corporation.service";
 
 const USER_URI = 'http://' + environment.apiHost + ':8484/user/api';
+const EVE_CHARACTER_URI = 'https://esi.evetech.net/latest/characters';
 
 @Injectable({
   providedIn: 'root'
@@ -109,8 +110,11 @@ export class UserService {
   }
 
   private loadCorporation() {
-    this.corporationService.getCorporation(this.currentUser.characterId).subscribe(corporation => {
-      this.currentUser.corporationId = corporation.id;
-    })
+    return this.http.get<any>(
+      EVE_CHARACTER_URI +
+      '/' + this.currentUser.characterId
+    ).subscribe(character => {
+      this.currentUser.corporationId = character.corporation_id;
+    });
   }
 }
