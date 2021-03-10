@@ -1,0 +1,31 @@
+<mat-toolbar>
+  <div fxHide.gt-xs>
+    <button mat-icon-button (click)="onToggleSidenav()" routerLink="/home">
+      <img src="assets/images/sidenav.png"/>
+    </button>
+  </div>
+  <div class="logo">
+    <a routerLink="/home"><img src="assets/images/eve-tools.png" /></a>
+  </div>
+  <div style="width:15px;"></div>
+  <div fxFlex fxLayout fxLayoutAlign="start" fxHide.xs>
+    <button mat-button [matMenuTriggerFor]="fleetMenu">Fleets</button>
+    <mat-menu #fleetMenu="matMenu">
+      <a mat-menu-item routerLink="/fleet/new">New</a>
+      <a mat-menu-item routerLink="/fleet/find">Find</a>
+    </mat-menu>
+  </div>
+  <div *ngIf="user; else login" fxFlex fxLayout fxLayoutAlign="end">
+    <button mat-button [matMenuTriggerFor]="fleetMenu">{{user.name}}</button>
+    <mat-menu #fleetMenu="matMenu">
+      <a mat-menu-item (click)="switch()">Switch Character</a>
+      <a mat-menu-item (click)="logout()">Logout</a>
+    </mat-menu>
+  </div>
+</mat-toolbar>
+
+<ng-template #login>
+  <div fxFlex fxLayout fxLayoutAlign="end">
+    <a routerLink="/user/login">Login</a>
+  </div>
+</ng-template>

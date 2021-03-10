@@ -1,0 +1,131 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+  <app-sub-header [subTitle]="subTitle"></app-sub-header>
+  <div fxLayout="row" class="content" fxFlexAlign="left" *ngIf="fleetForm; else loading">
+    <form class="form" [formGroup]="fleetForm">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Name
+          <mat-icon matSuffix>priority_high</mat-icon>
+        </mat-label>
+        <input matInput formControlName="name"/>
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Start
+          <mat-icon matSuffix>priority_high</mat-icon>
+        </mat-label>
+        <input matInput [ngxMatDatetimePicker]="picker" (dateChange)="cleanDate()" formControlName="start">
+        <button type="button" mat-icon-button matSuffix (click)="picker.open(); $event.stopPropagation();">
+          <mat-icon svgIcon="icon-calendar"></mat-icon>
+        </button>
+        <ngx-mat-datetime-picker #picker [touchUi]="true" [showSeconds]="false">
+        </ngx-mat-datetime-picker>
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Fleet type</mat-label>
+        <mat-select [compareWith]="compareById" formControlName="type">
+          <mat-option *ngFor="let type of types" [value]="type">{{type.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <section appearance="fill" class="full-width">
+        <mat-slide-toggle formControlName="restricted" color="primary">Restricted</mat-slide-toggle>
+      </section>
+
+      <mat-accordion *ngIf="this.fleet">
+        <mat-expansion-panel (opened)="loadFleetRoles()">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Roles
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <button type="button" mat-icon-button matSuffix (click)="openRolesDialog()" *ngIf="editing">
+            <mat-icon aria-label="add role">add</mat-icon>
+          </button>
+          <ul>
+            <li *ngFor="let role of fleetRoles">
+              <span *ngIf="role.amount">{{role.amount}} </span>
+              {{role.name}}
+              <span *ngIf="role.amount"> Posistions</span>
+              <span *ngIf="editing"> <button type="button" mat-icon-button matSuffix *ngIf="editing">
+                <mat-icon aria-label="remove role" (click)="removeRole(role)">delete_outline</mat-icon>
+              </button>
+              </span>
+            </li>
+          </ul>
+        </mat-expansion-panel>
+        <mat-expansion-panel (opened)="loadInvitations()" [expanded]="myInvite">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Invitations
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <button type="button" mat-icon-button matSuffix (click)="openInvitationsDialog()" *ngIf="editing">
+            <mat-icon aria-label="add invitation">add</mat-icon>
+          </button>
+          <ul>
+            <li *ngFor="let invitation of fleetInvitations">
+              <div [id]="invitation.id">
+                <img *ngIf="invitation.icon" src="{{invitation.icon}}"/>
+                {{invitation.name}}
+                <span *ngIf="editing"> <button type="button" mat-icon-button matSuffix>
+                <mat-icon aria-label="remove invitation"
+                          (click)="removeInvitation(invitation)">delete_outline</mat-icon>
+                </button>
+                </span>
+                <span *ngIf="isMyInvite(invitation)"> <button type="button" mat-icon-button matSuffix>
+                  <mat-icon aria-label="accept invitation" (click)="acceptInvitation(invitation)">check</mat-icon>
+                </button> <button type="button" mat-icon-button matSuffix>
+                  <mat-icon aria-label="deny invitation" (click)="denyInvitation(invitation)">clear</mat-icon>
+                </button>
+                </span>
+              </div>
+            </li>
+          </ul>
+        </mat-expansion-panel>
+        <mat-expansion-panel (opened)="loadRegistrations()">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Registrations
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+<!--          <button type="button" mat-icon-button matSuffix (click)="addRegistration()" *ngIf="!fleet.restricted">-->
+<!--            <mat-icon aria-label="register">add</mat-icon>-->
+<!--          </button>-->
+          <ul>
+            <li *ngFor="let registration of displayRegistrations()">
+              <div [id]="registration.id">
+                <img *ngIf="registration.icon" src="{{registration.icon}}"/>
+                {{registration.name}}
+                <span *ngIf="(editing || isMyRegistration(registration))"> <button type="button" mat-icon-button matSuffix>
+                <mat-icon aria-label="remove registrations"
+                          (click)="removeRegistration(registration)">delete_outline</mat-icon>
+                </button>
+                </span>
+              </div>
+            </li>
+          </ul>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+      <div class="buttons">
+        <button mat-stroked-button (click)="cancel()" *ngIf="editing && this.fleet">
+          <mat-icon aria-label="cancel">clear</mat-icon>
+        </button>
+        <button mat-stroked-button (click)="saveFleet()" [disabled]="!fleetForm.valid" *ngIf="editing">
+          <mat-icon aria-label="save">check</mat-icon>
+        </button>
+        <button (click)="editFleet()" *ngIf="!editing && owner" mat-stroked-button>
+          <mat-icon aria-label="edit">create</mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<ng-template #loading>
+  <div fxFlexAlign="center" class="fleet-spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

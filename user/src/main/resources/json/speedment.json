@@ -1,40 +1,40 @@
 {
   "config" : {
-    "speedmentVersion": "Speedment:3.2.9",
-    "companyName": "ractoc.com",
-    "appId": "cf4c4117-d611-438a-9456-c5218bedee77",
-    "name": "user",
-    "packageLocation": "target/generated-sources/java",
-    "packageName": "com.ractoc.eve.user.db",
-    "id": "user",
-    "enabled": true,
-    "dbmses": [
+    "speedmentVersion" : "Speedment:3.2.10",
+    "companyName" : "ractoc.com",
+    "appId" : "e9a2231f-a8df-44bb-ad9f-3de0bc2d0e2e",
+    "name" : "user",
+    "packageLocation" : "target/generated-sources/java",
+    "packageName" : "com.ractoc.eve.user.db",
+    "id" : "user",
+    "enabled" : true,
+    "dbmses" : [
       {
-        "port": 9876,
-        "schemas": [
+        "port" : 9876,
+        "schemas" : [
           {
-            "tables": [
+            "tables" : [
               {
-                "primaryKeyColumns": [
+                "primaryKeyColumns" : [
                   {
-                    "name": "eve_state",
-                    "id": "eve_state",
-                    "ordinalPosition": 1
+                    "name" : "eve_state",
+                    "id" : "eve_state",
+                    "ordinalPosition" : 1
                   }
                 ],
-                "indexes": [
+                "indexes" : [
                   {
-                    "unique": true,
-                    "name": "PRIMARY",
-                    "indexColumns": [
+                    "unique" : true,
+                    "name" : "PRIMARY",
+                    "indexColumns" : [
                       {
-                        "orderType": "ASC",
-                        "name": "eve_state",
-                        "id": "eve_state",
-                        "ordinalPosition": 1
+                        "orderType" : "ASC",
+                        "name" : "eve_state",
+                        "id" : "eve_state",
+                        "ordinalPosition" : 1
                       }
                     ],
-                    "id": "PRIMARY"
+                    "id" : "PRIMARY"
                   }
                 ],
                 "isView" : false,
@@ -47,39 +47,32 @@
                     "ordinalPosition" : 1
                   },
                   {
-                    "databaseType" : "java.lang.String",
-                    "nullable" : false,
-                    "name" : "ip_address",
-                    "id" : "ip_address",
-                    "ordinalPosition" : 2
-                  },
-                  {
                     "databaseType" : "java.lang.Integer",
                     "nullable" : true,
                     "name" : "characterId",
                     "id" : "characterId",
-                    "ordinalPosition" : 3
+                    "ordinalPosition" : 2
                   },
                   {
                     "databaseType" : "java.lang.String",
                     "nullable" : true,
                     "name" : "name",
                     "id" : "name",
-                    "ordinalPosition" : 4
+                    "ordinalPosition" : 3
                   },
                   {
                     "databaseType" : "java.lang.String",
                     "nullable" : true,
                     "name" : "refresh_token",
                     "id" : "refresh_token",
-                    "ordinalPosition" : 5
+                    "ordinalPosition" : 4
                   },
                   {
                     "databaseType" : "java.sql.Timestamp",
                     "nullable" : true,
                     "name" : "last_refresh",
                     "id" : "last_refresh",
-                    "ordinalPosition" : 6,
+                    "ordinalPosition" : 5,
                     "typeMapper" : "com.speedment.runtime.typemapper.time.TimestampToLocalDateTimeMapper"
                   },
                   {
@@ -87,14 +80,14 @@
                     "nullable" : true,
                     "name" : "expires_in",
                     "id" : "expires_in",
-                    "ordinalPosition" : 7
+                    "ordinalPosition" : 6
                   },
                   {
                     "databaseType" : "java.lang.String",
                     "nullable" : true,
                     "name" : "access_token",
                     "id" : "access_token",
-                    "ordinalPosition" : 8
+                    "ordinalPosition" : 7
                   }
                 ],
                 "name" : "user",

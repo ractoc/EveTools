@@ -1,0 +1,56 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+  <app-sub-header subTitle="Fleet Finder"></app-sub-header>
+  <div fxFlexAlign="center" class="content" fxLayoutGap="15px">
+    <p>Search for a fleet</p>
+    <mat-form-field appearance="fill" [formGroup]="fleetForm">
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate formControlName="start"/>
+        <input matEndDate formControlName="end"/>
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker">
+        <mat-icon matDatepickerToggleIcon svgIcon="icon-calendar"></mat-icon>
+      </mat-datepicker-toggle>
+      <mat-date-range-picker touchUi #picker></mat-date-range-picker>
+    </mat-form-field>
+    <mat-form-field appearance="fill" [formGroup]="fleetForm">
+      <mat-label>Types</mat-label>
+      <mat-select formControlName="fleetTypes" [compareWith]="compareById" multiple>
+        <mat-option *ngFor="let type of types" [value]="type">{{type.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <span [formGroup]="fleetForm">
+      <mat-checkbox formControlName="invited" color="primary" (change)="changeCheck('invited', $event.checked)">Invited</mat-checkbox>
+    </span>
+    <span [formGroup]="fleetForm">
+      <mat-checkbox formControlName="registered" color="primary" (change)="changeCheck('registered', $event.checked)">Registered</mat-checkbox>
+    </span>
+    <span [formGroup]="fleetForm">
+      <mat-checkbox formControlName="owned" color="primary" (change)="changeCheck('owned', $event.checked)">Owned</mat-checkbox>
+    </span>
+    <button mat-icon-button aria-label="Search" (click)="doSearch()">
+      <mat-icon>search</mat-icon>
+    </button>
+  </div>
+  <mat-divider></mat-divider>
+  <table mat-table [dataSource]="fleets" class="mat-elevation-z8" *ngIf="fleets">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let fleet"> {{fleet.name}} </td>
+    </ng-container>
+    <ng-container matColumnDef="start">
+      <th mat-header-cell *matHeaderCellDef> Start </th>
+      <td mat-cell *matCellDef="let fleet"> {{convertStartToDate(fleet.start) | date:'MM/dd/yyyy HH:mm:ss'}} </td>
+    </ng-container>
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef> Type </th>
+      <td mat-cell *matCellDef="let fleet"> {{fleet.type.name}} </td>
+    </ng-container>
+    <ng-container matColumnDef="restricted">
+      <th mat-header-cell *matHeaderCellDef> Restricted </th>
+      <td mat-cell *matCellDef="let fleet"> <mat-icon *ngIf="fleet.restricted">lock</mat-icon><mat-icon *ngIf="!fleet.restricted">lock_open</mat-icon> </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="showFleetDetails(row)"></tr>
+  </table>
+</section>

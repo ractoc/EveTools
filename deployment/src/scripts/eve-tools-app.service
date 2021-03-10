@@ -1,0 +1,12 @@
+[Service]
+WorkingDirectory=/opt/eve
+ExecStart=/bin/bash /opt/eve/runAll.sh
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=eve-tools-app
+User=eve
+Group=eve
+Environment=NODE_ENV=production
+[Install]
+WantedBy=multi-user.target

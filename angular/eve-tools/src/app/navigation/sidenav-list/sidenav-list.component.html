@@ -1,0 +1,17 @@
+<mat-nav-list>
+  <a mat-list-item routerLink="/home" (click)="onSidenavClose()">
+    <img src="assets/images/sidenav.png"/> <span class="nav-caption">Home</span>
+  </a>
+  <mat-list-item [matMenuTriggerFor]="fleetsMenu">
+    <a matline>
+      <img src="assets/images/fleet.png" /> <span class="nav-caption">Fleets</span>
+    </a>
+  </mat-list-item>
+  <mat-menu #fleetsMenu="matMenu">
+    <a mat-menu-item routerLink="/fleet/create">New</a>
+    <a mat-menu-item routerLink="/fleet/find">Find</a>
+  </mat-menu>
+  <a mat-list-item routerLink="#" (click)="onSidenavClose()">
+    <mat-icon>account_balance</mat-icon><span class="nav-caption">Account Actions</span>
+  </a>
+</mat-nav-list>

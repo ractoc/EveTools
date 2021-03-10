@@ -1,0 +1,22 @@
+a, button{
+  text-decoration: none;
+  font-family: Shentox, Rogan, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+a:hover, button:hover {
+  color: rgb(127, 137, 145);
+}
+
+.nav-caption{
+  display: inline-block;
+  padding-left: 6px;
+}
+
+mat-nav-list img {
+  width: 20px;
+  height: 20px;
+}

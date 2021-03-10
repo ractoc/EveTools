@@ -15,7 +15,9 @@ import com.ractoc.eve.user.model.AccessDeniedException;
 import com.ractoc.eve.user.model.EveJwtContent;
 import com.ractoc.eve.user.model.OAuthToken;
 import com.ractoc.eve.user.service.UserService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -28,46 +30,47 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@Log4j2
 public class UserHandler {
 
     private final UserService service;
+
+    @Value("${sso.evetools-charid}")
+    private Integer evetoolsCharId;
 
     @Autowired
     public UserHandler(UserService service) {
         this.service = service;
     }
 
-    public String initiateLogin(String remoteIP) {
-        return service.initializeUser(remoteIP);
+    public String initiateLogin() {
+        log.trace("initiate initial login");
+        return service.initializeUser();
     }
 
     public String getRefreshTokenForState(String eveState) {
+        log.trace("refresh token for state " + eveState);
         return getUser(eveState)
                 .map(User::getRefreshToken)
                 .orElseThrow(() -> new AccessDeniedException(eveState))
                 .orElseThrow(() -> new AccessDeniedException(eveState));
     }
 
-    public void storeEveUserRegistration(String eveState, OAuthToken oAuthToken, String remoteIp) {
-        service.updateUser(convertOAuthTokenToUser(eveState, oAuthToken, remoteIp));
-    }
-
-    public String getValidIpByState(String eveState) {
-        return getUser(eveState)
-                .map(User::getIpAddress)
-                .orElseThrow(() -> new AccessDeniedException(eveState));
+    public void storeEveUserRegistration(String eveState, OAuthToken oAuthToken) {
+        log.trace("store user for state " + eveState);
+        service.updateUser(convertOAuthTokenToUser(eveState, oAuthToken));
     }
 
     public UserModel getUserByState(String eveState) {
+        log.trace("get user for state " + eveState);
         return getUser(eveState)
                 .map(user -> {
                     UserModel result = UserModel.builder()
                             .charId(user.getCharacterId().orElseThrow(() -> new AccessDeniedException(eveState)))
                             .characterName(user.getName().orElseThrow(() -> new AccessDeniedException(eveState)))
                             .eveState(eveState)
-                            .ipAddress(user.getIpAddress())
                             .expiresAt(user.getLastRefresh().orElseThrow(() -> new AccessDeniedException(eveState))
-                                    .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + (1000 *
+                                    .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + (1000L *
                                     user.getExpiresIn().orElseThrow(() -> new AccessDeniedException(eveState))))
                             .accessToken(user.getAccessToken().orElseThrow(() -> new AccessDeniedException(eveState)))
                             .build();
@@ -86,6 +89,7 @@ public class UserHandler {
     }
 
     public UserModel getUserNameByState(String eveState) {
+        log.trace("get user name for state " + eveState);
         return getUser(eveState)
                 .map(user ->
                         UserModel.builder()
@@ -98,11 +102,34 @@ public class UserHandler {
                                 .eveState(eveState)
                                 .build())
                 .orElseThrow(() -> new AccessDeniedException(eveState));
+    }
 
+    public void logoutUser(String eveState) {
+        log.trace("logout user for state " + eveState);
+        service.logoutUser(eveState);
     }
 
     private Optional<User> getUser(String eveState) {
+        log.trace("get user for state " + eveState);
         return service.getUser(eveState);
+    }
+
+    public UserModel getEvetools() {
+        log.trace("get evetools");
+        return service.getUser(evetoolsCharId)
+                .map(user -> {
+                    UserModel result = UserModel.builder()
+                            .charId(user.getCharacterId().orElseThrow(() -> new AccessDeniedException("evetools")))
+                            .characterName(user.getName().orElseThrow(() -> new AccessDeniedException("evetools")))
+                            .eveState(user.getEveState())
+                            .expiresAt(user.getLastRefresh().orElseThrow(() -> new AccessDeniedException("evetools"))
+                                    .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + (1000L *
+                                    user.getExpiresIn().orElseThrow(() -> new AccessDeniedException("evetools"))))
+                            .accessToken(user.getAccessToken().orElseThrow(() -> new AccessDeniedException("evetools")))
+                            .build();
+                    return result;
+                })
+                .orElseThrow(() -> new AccessDeniedException("evetools"));
     }
 
     private int extractCharacterIdFromSub(String sub) {
@@ -110,12 +137,11 @@ public class UserHandler {
         return Integer.parseInt(charId);
     }
 
-    private User convertOAuthTokenToUser(String eveState, OAuthToken oAuthToken, String remoteIp) {
+    private User convertOAuthTokenToUser(String eveState, OAuthToken oAuthToken) {
         EveJwtContent jwtContent = decodeJwt(oAuthToken.getAccess_token());
         User user = new UserImpl();
         user.setCharacterId(extractCharacterIdFromSub(jwtContent.getSub()));
         user.setName(jwtContent.getName());
-        user.setIpAddress(remoteIp);
         user.setEveState(eveState);
         user.setRefreshToken(oAuthToken.getRefresh_token());
         user.setLastRefresh(LocalDateTime.now());

@@ -3,6 +3,9 @@ package com.ractoc.eve.user.controller;
 import com.ractoc.eve.user.handler.UserHandler;
 import com.ractoc.eve.user.model.AccessDeniedException;
 import com.ractoc.eve.user.model.OAuthToken;
+import lombok.extern.log4j.Log4j2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -10,7 +13,6 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
@@ -19,6 +21,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 
 @Controller
+@Log4j2
 public class UserWebController {
 
     public static final String REDIRECT = "redirect:";
@@ -34,6 +37,8 @@ public class UserWebController {
     private String clientId;
     @Value("${sso.client-scopes}")
     private String clientScopes;
+    @Value("${sso.evetools-scopes}")
+    private String evetoolsScopes;
 
     @Autowired
     public UserWebController(UserHandler handler, Client client) {
@@ -42,41 +47,49 @@ public class UserWebController {
     }
 
     @GetMapping(value = "/launchSignOn")
-    public String launchSignOn(HttpServletRequest request, @CookieValue(value = "eve-state", defaultValue = "") String eveState) {
+    public String launchSignOn(@CookieValue(value = "eve-state", defaultValue = "") String eveState) {
+        log.trace("launching signon for state " + eveState);
         if (eveState.isEmpty()) {
-            return initiateLogin(request);
+            return initiateLogin(clientScopes);
         }
-        return refreshToken(request, eveState);
+        return refreshToken(eveState);
+    }
+
+    @GetMapping(value = "/evetools")
+    public String launchEveToolsSignOn() {
+        log.trace("getting user details for evetools");
+        return initiateLogin(evetoolsScopes);
     }
 
     @GetMapping(value = "/eveCallBack")
-    public String eveCallBack(HttpServletRequest request, @RequestParam String code, @RequestParam(name = "state") String eveState) {
-        validatedIP(eveState, RequestUtils.getRemoteIP(request));
-
+    public String eveCallBack(@RequestParam String code, @RequestParam(name = "state") String eveState) {
+        log.trace("eveCallback for code "+ code + " and state " + eveState);
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
         formData.add("grant_type", "authorization_code");
         formData.add("code", code);
         OAuthToken accessToken = client.target("https://login.eveonline.com/v2/oauth/token")
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.form(formData), new GenericType<OAuthToken>() {
+                .post(Entity.form(formData), new GenericType<>() {
                 });
 
-        handler.storeEveUserRegistration(eveState, accessToken, RequestUtils.getRemoteIP(request));
+        handler.storeEveUserRegistration(eveState, accessToken);
 
         return REDIRECT + frontendUrl + "/" + eveState;
     }
 
-    private String initiateLogin(HttpServletRequest request) {
-        String eveState = handler.initiateLogin(RequestUtils.getRemoteIP(request));
+    private String initiateLogin(String scopes) {
+        String eveState = handler.initiateLogin();
+        log.trace("initiate login for state " + eveState + " and scopes " + scopes);
         return "redirect:https://login.eveonline.com/v2/oauth/authorize/"
                 + "?response_type=code"
                 + "&redirect_uri=" + clientUrl
                 + "&client_id=" + clientId
-                + "&scope=" + clientScopes
+                + "&scope=" + scopes
                 + "&state=" + eveState;
     }
 
-    private String refreshToken(HttpServletRequest request, String eveState) {
+    private String refreshToken(String eveState) {
+        log.trace("refreshing token for state " + eveState);
         try {
             String refreshToken = handler.getRefreshTokenForState(eveState);
             MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
@@ -84,20 +97,14 @@ public class UserWebController {
             formData.add("refresh_token", refreshToken);
             OAuthToken oAuthToken = client.target("https://login.eveonline.com/v2/oauth/token")
                     .request(MediaType.APPLICATION_JSON_TYPE)
-                    .post(Entity.form(formData), new GenericType<OAuthToken>() {
+                    .post(Entity.form(formData), new GenericType<>() {
                     });
 
-            handler.storeEveUserRegistration(eveState, oAuthToken, RequestUtils.getRemoteIP(request));
+            handler.storeEveUserRegistration(eveState, oAuthToken);
 
             return REDIRECT + frontendUrl + "/" + eveState;
         } catch (AccessDeniedException ade) {
-            return initiateLogin(request);
-        }
-    }
-
-    private void validatedIP(String eveState, String remoteIP) {
-        if (!handler.getValidIpByState(eveState).equals(remoteIP)) {
-            throw new AccessDeniedException("Unvalidated IP-Address");
+            return initiateLogin(clientScopes);
         }
     }
 

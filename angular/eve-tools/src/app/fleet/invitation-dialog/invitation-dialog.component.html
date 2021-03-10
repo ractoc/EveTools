@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>Search</h1>
+<div mat-dialog-content>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Search for</mat-label>
+    <input matInput [(ngModel)]="search"/>
+  </mat-form-field>
+  <div class="form-group">
+    <button type="button" class="btn btn-primary" [disabled]="!searchEnabled()" (click)="doSearch()">Search</button>
+    <button type="button" class="btn btn-primary" (click)="selectMyCorporation()">
+      My corporation
+    </button>
+  </div>
+  <mat-divider></mat-divider>
+  <div id="searchResult" *ngIf="searchResultList.length > 0">
+    <div *ngFor="let result of searchResultList" (click)="selectEntry(result)" [class]="highlightRow(result)">
+      <img *ngIf="result.portrait" src="{{result.portrait}}"/>
+      {{result.name}}
+    </div>
+  </div>
+  <button mat-button (click)="dialogRef.close()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="searchResult" cdkFocusInitial>Ok</button>
+</div>

@@ -18,6 +18,7 @@ import java.util.Set;
 public class BlueprintModel {
     private int id;
     private String name;
+    private double buyPrice;
     private ItemModel item;
     private Long locationId;
     private String locationFlag;
@@ -27,9 +28,9 @@ public class BlueprintModel {
     private int manufacturingTime;
     private int researchMaterialTime;
     private int researchTimeTime;
-    private Integer materialEfficiency;
-    private Integer timeEfficiency;
-    private Integer runs;
+    private Integer materialEfficiency = 0;
+    private Integer timeEfficiency = 0;
+    private Integer runs = 1;
     private Integer quantity;
     private double mineralBuyPrice;
     private double mineralSellPrice;
@@ -42,4 +43,12 @@ public class BlueprintModel {
     private Set<BlueprintMaterialModel> manufacturingMaterials = new HashSet<>();
     private Set<BlueprintProductModel> manufacturingProducts = new HashSet<>();
     private Set<BlueprintSkillModel> manufacturingSkills = new HashSet<>();
+
+    public Integer getMaterialEfficiency() {
+        if (materialEfficiency == null) {
+            return 0;
+        } else {
+            return materialEfficiency;
+        }
+    }
 }

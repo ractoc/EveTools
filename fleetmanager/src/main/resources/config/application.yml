@@ -1,0 +1,46 @@
+server:
+  port: 8282
+  servlet:
+    contextPath: /fleets
+
+auth-header-name: eve-state
+
+dbms:
+  host: localhost
+  port: 9876
+  schema: eve_fleetmanager
+  username: eve
+  collation: utf8_general_ci
+  collation.binary: utf8_bin
+
+---
+spring:
+  profiles: default
+
+dbms:
+  password: eve
+
+debug: true
+
+logging:
+  level:
+    root: WARN
+    com.ractoc: DEBUG
+  pattern.console: "%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
+
+---
+spring:
+  profiles: prod
+
+dbms:
+  password: Dr!lb00r
+
+debug: false
+
+logging:
+  level:
+    root: WARN
+  file:
+    path: /var/log/eve
+    name: fleetmanager.log
+  pattern.file: "%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n"

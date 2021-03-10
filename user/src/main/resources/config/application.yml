@@ -12,7 +12,9 @@ server:
     contextPath: /user
 
 sso:
-  client-scopes: esi-assets.read_assets.v1 esi-characters.read_blueprints.v1 esi-skills.read_skills.v1 esi-universe.read_structures.v1 esi-corporations.read_blueprints.v1 esi-characters.read_corporation_roles.v1
+  client-scopes: esi-mail.send_mail.v1 esi-assets.read_assets.v1 esi-characters.read_blueprints.v1 esi-skills.read_skills.v1 esi-universe.read_structures.v1 esi-corporations.read_blueprints.v1 esi-characters.read_corporation_roles.v1
+  evetools-scopes: esi-mail.send_mail.v1 esi-assets.read_assets.v1 esi-characters.read_blueprints.v1 esi-skills.read_skills.v1 esi-universe.read_structures.v1 esi-corporations.read_blueprints.v1 esi-characters.read_corporation_roles.v1
+  evetools-charid: 2118276970
 
 ---
 spring:
@@ -22,7 +24,7 @@ dbms:
   password: eve
 
 sso:
-  frontend-url: http://localhost:4200/login
+  frontend-url: http://localhost:4200/user/login
   client-url: http://localhost:8484/user/eveCallBack
   client-id: cf33fd256e884c81b634bf74ca21612a
   client-secret: SEmd2uiGUpW0Flvxaqe1XiTV6M6Ii8GvFd4dyyZy
@@ -43,17 +45,17 @@ dbms:
   password: Dr!lb00r
 
 sso:
-  frontend-url: http://31.21.178.162:8181/login
+  frontend-url: http://31.21.178.162:8181/user/login
   client-url: http://31.21.178.162:8484/user/eveCallBack
   client-id: 081e55136fb54046976193f395e1aadb
   client-secret: oCvUMSI8rykr0shRR41Y2DLVG50kG0bc1ahx2OXQ
 
 debug: false
 
-logging:
-  level:
-    root: WARN
-  file:
-    path: /var/log/eve
-    name: user.log
-  pattern.file: "%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n"
+#logging:
+#  level:
+#    root: WARN
+#  file:
+#    path: /var/log/eve
+#    name: user.log
+#  pattern.file: "%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n"

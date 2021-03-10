@@ -16,6 +16,13 @@
             <useTransitiveDependencies>false</useTransitiveDependencies>
         </dependencySet>
     </dependencySets>
+    <files>
+        <file>
+            <source>../angular/target/angular-${project.version}.tar.gz</source>
+            <outputDirectory>/</outputDirectory>
+            <fileMode>0770</fileMode>
+        </file>
+    </files>
     <fileSets>
         <fileSet>
             <directory>src/scripts</directory>

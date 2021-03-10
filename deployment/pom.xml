@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.ractoc.eve</groupId>
-        <artifactId>MineBuildSell</artifactId>
+        <artifactId>EveTools</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -17,7 +17,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>angular</artifactId>
             <version>${project.version}</version>
-            <classifier>executable</classifier>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -27,7 +26,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>calculator</artifactId>
+            <artifactId>fleetmanager</artifactId>
             <classifier>executable</classifier>
             <version>${project.version}</version>
         </dependency>
