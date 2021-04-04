@@ -348,7 +348,9 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
       return invitation.inviteeId === this.userService.getCurrentUser().characterId;
     }
     if (invitation.type === 'corporation') {
-      return invitation.inviteeId === this.userService.getCurrentUser().corporationId && (this.fleetRegistrations && !this.fleetRegistrations.find(registration => registration.characterId == this.userService.getCurrentUser().characterId));
+      return invitation.inviteeId === this.userService.getCurrentUser().corporationId
+        && (this.fleetRegistrations
+          && !this.fleetRegistrations.find(registration => registration.characterId == this.userService.getCurrentUser().characterId));
     }
   }
 
@@ -358,16 +360,16 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
 
   acceptInvitation(invitation: Invitation) {
     this.invitationService.acceptInvitation(invitation.id).subscribe(
-      (invitationData: Invitation[]) => {
-        this.fleetInvitations = invitationData.map(invitation => this.populateInvitation(invitation));
+      () => {
+        this.router.navigateByUrl('/fleet/details/' + this.fleet.id);
       }
     );
   }
 
   denyInvitation(invitation: Invitation) {
     this.invitationService.denyInvitation(invitation.id).subscribe(
-      (invitationData: Invitation[]) => {
-        this.fleetInvitations = invitationData.map(invitation => this.populateInvitation(invitation));
+      () => {
+        this.router.navigateByUrl('/fleet/details/' + this.fleet.id);
       }
     );
   }
