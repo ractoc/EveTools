@@ -141,7 +141,7 @@ public class InviteService {
     }
 
     private String generateRegistrationLink(String inviteKey) {
-        return String.format("<font size=\"13\" color=\"#ffffe400\"><a href=\"http://31.21.178.162:8181/fleets/register/%s\">Register</a></font>", inviteKey);
+        return String.format("<font size=\"13\" color=\"#ffffe400\"><a href=\"http://31.21.178.162:8181/fleet/register/%s\">Register</a></font>", inviteKey);
     }
 
     private String generateFleetLink(Integer fleetId, String fleetName) {
