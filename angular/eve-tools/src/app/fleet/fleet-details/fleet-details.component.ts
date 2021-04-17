@@ -167,16 +167,13 @@ export class FleetDetailsComponent implements OnInit, AfterViewChecked {
       description: this.fleetForm.value.description,
       type: this.fleetForm.value.type,
       start: DateUtil.formatDate(startDate),
-      solarsystemId: this.fleet.solarsystemId,
+      solarsystemId: this.fleet ? this.fleet.solarsystemId : undefined,
       restricted: this.fleetForm.value.restricted
     };
     this.fleetService.saveFleet(fleet).subscribe(
       (fleetData: Fleet) => {
         if (fleetData) {
-          this.fleet = fleetData;
-          this.fleetForm.controls.id.setValue(fleetData.id);
-          this.fleetForm.controls.owner.setValue(fleetData.owner);
-          this.owner = this.userService.getCurrentUser().characterId === fleet.owner;
+          this.router.navigateByUrl('/fleet/details/' + fleetData.id);
         } else if (this.editing) {
           this.fleet = fleet;
         }

@@ -73,7 +73,8 @@ public class InviteHandler {
                     invitation.getType(),
                     inviteeName,
                     inviteKey,
-                    fleet.getDescription().orElse(""));
+                    fleet.getDescription().orElse(""),
+                    fleet.getSolarsystemId());
             return getInvitesForFleet(fleetId, charId);
         } catch (ApiException e) {
             throw new HandlerException("unable to send create invitation", e);

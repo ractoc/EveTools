@@ -4,6 +4,8 @@ import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.Invite;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.InviteImpl;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.invite.InviteManager;
+import com.ractoc.eve.jesi.ApiException;
+import com.ractoc.eve.jesi.api.UniverseApi;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailMail;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient;
 import com.ractoc.eve.jesi.model.PostCharactersCharacterIdMailRecipient.RecipientTypeEnum;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -19,11 +22,13 @@ import java.util.stream.Stream;
 public class InviteService {
 
     private final InviteManager inviteManager;
+    private final UniverseApi universeApi;
     private final MailUtil mailUtil;
 
     @Autowired
-    public InviteService(InviteManager inviteManager, MailUtil mailUtil) {
+    public InviteService(InviteManager inviteManager, UniverseApi universeApi, MailUtil mailUtil) {
         this.inviteManager = inviteManager;
+        this.universeApi = universeApi;
         this.mailUtil = mailUtil;
     }
 
@@ -96,7 +101,8 @@ public class InviteService {
                                String inviteeType,
                                String inviteeName,
                                String inviteKey,
-                               String additionalInfo) {
+                               String additionalInfo,
+                               OptionalInt solarsystemId) {
         PostCharactersCharacterIdMailMail mail = generateMail(charId,
                 charName,
                 fleetId,
@@ -105,11 +111,21 @@ public class InviteService {
                 inviteeName,
                 RecipientTypeEnum.fromValue(inviteeType),
                 additionalInfo,
+                solarsystemId,
                 inviteKey);
         mailUtil.sendCharacterMail(charId, token, mail);
     }
 
-    private PostCharactersCharacterIdMailMail generateMail(Integer charId, String charName, Integer fleetId, String fleetName, Integer recipientId, String recipientName, RecipientTypeEnum recipientType, String additionalInfo, String inviteKey) {
+    private PostCharactersCharacterIdMailMail generateMail(Integer charId,
+                                                           String charName,
+                                                           Integer fleetId,
+                                                           String fleetName,
+                                                           Integer recipientId,
+                                                           String recipientName,
+                                                           RecipientTypeEnum recipientType,
+                                                           String additionalInfo,
+                                                           OptionalInt solarsystemId,
+                                                           String inviteKey) {
         PostCharactersCharacterIdMailMail mail = new PostCharactersCharacterIdMailMail();
         PostCharactersCharacterIdMailRecipient recipientItem = new PostCharactersCharacterIdMailRecipient();
         recipientItem.setRecipientId(recipientId);
@@ -126,6 +142,7 @@ public class InviteService {
                         "%s" +
                         "<br><br>" +
                         "%s" +
+                        "%s" +
                         "<font size=\"13\" color=\"#ff999999\">I hope to see you there.</font>" +
                         "<br><br>" +
                         "</font><font size=\"13\" color=\"#ffd98d00\"><a href=\"showinfo:1377//%s\">%s</a>",
@@ -133,11 +150,27 @@ public class InviteService {
                 generateFleetLink(fleetId, fleetName),
                 generateRegistrationLink(inviteKey),
                 generateAdditionalInfoText(additionalInfo),
+                generateRallyPointText(solarsystemId),
                 charId,
                 charName);
         mail.setBody(body);
 
         return mail;
+    }
+
+    private String generateRallyPointText(OptionalInt solarsystemId) {
+        if (solarsystemId.isPresent()) {
+            try {
+                String solarsystemName = universeApi.getUniverseSystemsSystemId(solarsystemId.getAsInt(), null, null, null, null).getName();
+                return String.format("The rallypoint for the even is in <font size=\"13\" color=\"#ffd98d00\"><loc><a href=\"showinfo:5//%s\">%s</a></loc></font><br><br>",
+                        solarsystemId.getAsInt(),
+                        solarsystemName);
+            } catch (ApiException e) {
+                throw new ServiceException("Unable to retreive solarsystem: " + solarsystemId);
+            }
+        } else {
+            return "";
+        }
     }
 
     private String generateRegistrationLink(String inviteKey) {
