@@ -3,6 +3,7 @@ package com.ractoc.eve.fleetmanager.mapper;
 import com.ractoc.eve.domain.BaseMapper;
 import com.ractoc.eve.domain.fleetmanager.FleetModel;
 import com.ractoc.eve.domain.fleetmanager.TypeModel;
+import com.ractoc.eve.domain.universe.SolarsystemModel;
 import com.ractoc.eve.fleetmanager.config.SpringContext;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.Fleet;
 import com.ractoc.eve.fleetmanager.db.fleetmanager.eve_fleetmanager.fleet.FleetImpl;

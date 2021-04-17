@@ -33,9 +33,12 @@ public class SolarsystemHandler {
         return SolarsystemMapper.INSTANCE.dbToModel(solarsystemService.getSolarsystemById(id));
     }
 
+    public void clearAllSolarSystems() {
+        solarsystemService.clearAllSolarSystems();
+    }
+
     public void saveSolarsystems(List<SolarsystemModel> solarsystems) {
         transactionHandler.createAndAccept(tx -> {
-            solarsystemService.clearAllSolarSystems();
             solarsystems.stream()
                     .map(SolarsystemMapper.INSTANCE::modelToDb)
                     .forEach(solarsystemService::saveSolarsystem);

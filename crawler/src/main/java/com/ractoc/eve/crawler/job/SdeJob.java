@@ -32,14 +32,13 @@ public class SdeJob {
         return jobBuilderFactory.get("import Static Data Dump Job")
                 .incrementer(new RunIdIncrementer())
                 .listener(listener)
-                .flow(typesStep.getStep())
 //                .flow(blueprintsStep.getStep())
 //                .next(typesStep.getStep())
 //                .next(marketGroupsStep.getStep())
 //                .next(regionStep.getStep())
 //                .next(constellationStep.getStep())
-//                .next(solarsystemStep.getStep())
-//                .next(marketHubStep.getStep())
+                .flow(solarsystemStep.getStep())
+                .next(marketHubStep.getStep())
                 .end()
                 .build();
     }

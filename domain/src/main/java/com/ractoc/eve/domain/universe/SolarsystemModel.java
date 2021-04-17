@@ -23,10 +23,8 @@ public class SolarsystemModel {
     @ApiModelProperty(value = "The security class of the system.")
     private String securityClass;
     @ApiModelProperty(value = "The security rating of the system.")
-    @NotNull
     private Float securityRating;
     @ApiModelProperty(value = "The id of the constellation this system is part of.")
-    @NotNull
     private Integer constellationId;
 
 }

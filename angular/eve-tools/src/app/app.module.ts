@@ -18,7 +18,8 @@ import {UserLoginComponent} from './user/user-login/user-login.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { SubHeaderComponent } from './sub-header/sub-header.component';
 import { RoleDialogComponent } from './fleet/role-dialog/role-dialog.component';
-import { InvitationDialogComponent } from './fleet/invitation-dialog/invitation-dialog.component';
+import { SearchCharCorpDialogComponent } from './search/search-char-corp-dialog/search-char-corp-dialog.component';
+import { SearchUniverseDialogComponent } from './search/search-universe-dialog/search-universe-dialog.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { InvitationDialogComponent } from './fleet/invitation-dialog/invitation-
     UserLoginComponent,
     SubHeaderComponent,
     RoleDialogComponent,
-    InvitationDialogComponent,
+    SearchCharCorpDialogComponent,
+    SearchUniverseDialogComponent,
   ],
     imports: [
         BrowserModule,

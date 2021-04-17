@@ -1,31 +1,24 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {Invitation} from "../../services/model/invitation";
+import {Component, OnInit} from '@angular/core';
+import {MatDialogRef} from "@angular/material/dialog";
 import {SearchService} from "../../services/search.service";
 import {CharacterService} from "../../services/character.service";
 import {CorporationService} from "../../services/corporation.service";
 import {SearchResult} from "../../services/model/search-result";
 import {UserService} from "../../services/user.service";
 
-export interface InvitationDialogData {
-  fleetId: number;
-}
-
 @Component({
-  selector: 'app-invitation-dialog',
-  templateUrl: './invitation-dialog.component.html',
-  styleUrls: ['./invitation-dialog.component.css']
+  selector: 'search-char-corp-dialog',
+  templateUrl: './search-char-corp-dialog.component.html',
+  styleUrls: ['./search-char-corp-dialog.component.css']
 })
-export class InvitationDialogComponent implements OnInit {
-  invitation: Invitation;
+export class SearchCharCorpDialogComponent implements OnInit {
   search: string;
 
   searchResultList: SearchResult[] = [];
 
   searchResult: SearchResult;
 
-  constructor(public dialogRef: MatDialogRef<InvitationDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: InvitationDialogData,
+  constructor(public dialogRef: MatDialogRef<SearchCharCorpDialogComponent>,
               private searchService: SearchService,
               private characterService: CharacterService,
               private corporationService: CorporationService,

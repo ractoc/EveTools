@@ -81,4 +81,19 @@ public class SolarsystemController {
         }
     }
 
+    @ApiOperation(value = "Clears all current solar systems.", response = BaseResponse.class, produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 410, message = "The solarsystem was successfully created", response = BaseResponse.class),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
+    @DeleteMapping(value = "/", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse> clearAllSolarsystems() {
+        try {
+            solarsystemHandler.clearAllSolarSystems();
+            return new ResponseEntity<>(new BaseResponse(GONE.value()), OK);
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage()), INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

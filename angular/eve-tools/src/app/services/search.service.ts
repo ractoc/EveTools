@@ -25,6 +25,8 @@ export class SearchService {
             return result.character;
           } else if (type === 'corporation') {
             return result.corporation;
+          } else if (type === 'solar_system') {
+            return result.solar_system;
           }
         }
       })

@@ -1,6 +1,4 @@
-import {Role} from './role';
 import {Type} from "./type";
-import {Character} from "./character";
 
 export class Fleet {
 
@@ -12,6 +10,7 @@ export class Fleet {
               public type: Type,
               public start: string,
               public duration: number,
+              public solarsystemId: number,
               public restricted: boolean) {
   }
 

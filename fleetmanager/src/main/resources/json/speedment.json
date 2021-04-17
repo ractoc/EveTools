@@ -2,7 +2,7 @@
   "config" : {
     "speedmentVersion" : "Speedment:3.2.10",
     "companyName" : "ractoc.com",
-    "appId" : "91a2c180-68bf-4b21-b8e4-051530691633",
+    "appId" : "3d0dbe0f-584d-4fc9-be6d-8062e7af350c",
     "name" : "fleetmanager",
     "packageLocation" : "target/generated-sources/java",
     "packageName" : "com.ractoc.eve.fleetmanager.db",
@@ -106,6 +106,13 @@
                     "name" : "description",
                     "id" : "description",
                     "ordinalPosition" : 9
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "nullable" : true,
+                    "name" : "solarsystem_id",
+                    "id" : "solarsystem_id",
+                    "ordinalPosition" : 10
                   }
                 ],
                 "name" : "fleet",

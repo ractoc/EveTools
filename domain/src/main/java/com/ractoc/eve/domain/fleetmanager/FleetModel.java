@@ -1,5 +1,6 @@
 package com.ractoc.eve.domain.fleetmanager;
 
+import com.ractoc.eve.domain.universe.SolarsystemModel;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NonNull;
@@ -22,6 +23,8 @@ public class FleetModel {
     @NonNull
     private String start;
     private Integer duration;
+
+    private Integer solarsystemId;
 
     private boolean restricted = false;
 

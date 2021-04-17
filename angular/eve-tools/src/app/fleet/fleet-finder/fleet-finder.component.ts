@@ -33,7 +33,6 @@ export class FleetFinderComponent implements OnInit {
   roles: Role[];
   fleets: Fleet[];
   ownedChecked: boolean;
-  invitedChecked: boolean;
 
   constructor(private router: Router,
               private userService: UserService,

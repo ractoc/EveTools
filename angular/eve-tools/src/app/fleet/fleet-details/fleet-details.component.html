@@ -24,6 +24,19 @@
         </ngx-mat-datetime-picker>
       </mat-form-field>
       <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Rally point</mat-label>
+        <input matInput formControlName="solarsystemName"/>
+        <button type="button" mat-icon-button matSuffix (click)="openSearchUniverseDialog()" *ngIf="editing">
+          <mat-icon aria-label="set rally point">search</mat-icon>
+        </button>
+        <button type="button" mat-icon-button matSuffix (click)="removeRallyPoint()" *ngIf="editing">
+          <mat-icon aria-label="remove rally point">clear</mat-icon>
+        </button>
+      </mat-form-field>
+      <section appearance="fill" class="full-width">
+        <mat-slide-toggle formControlName="restricted" color="primary">Restricted</mat-slide-toggle>
+      </section>
+      <mat-form-field appearance="fill" class="full-width">
         <mat-label>Fleet type</mat-label>
         <mat-select [compareWith]="compareById" formControlName="type">
           <mat-option *ngFor="let type of types" [value]="type">{{type.name}}</mat-option>
@@ -61,7 +74,7 @@
               Invitations
             </mat-panel-title>
           </mat-expansion-panel-header>
-          <button type="button" mat-icon-button matSuffix (click)="openInvitationsDialog()" *ngIf="editing">
+          <button type="button" mat-icon-button matSuffix (click)="openSearchCharCorpDialog()" *ngIf="editing">
             <mat-icon aria-label="add invitation">add</mat-icon>
           </button>
           <ul>
