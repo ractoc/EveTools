@@ -1,3 +1,12 @@
 steps:
-  - name: 'gcr.io/cloud-builders/mvn'
+  - name: mvn
     args: ['clean', 'package']
+    dir: 'backend'
+  - name: node
+    entrypoint: npm
+    args: ['run', 'install']
+    dir: 'frontend/eve-tools'
+  - name: node
+    entrypoint: npm
+    args: ['run', 'build']
+    dir: 'frontend/eve-tools'
